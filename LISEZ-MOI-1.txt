@@ -1,0 +1,33 @@
+MON CARNET ROUTIER V4 — INSTALLATION SAMSUNG
+
+FICHIERS DU SITE
+- index.html : application complète
+- manifest.json : identité et installation comme application
+- sw.js : mise en cache pour l'utilisation hors connexion
+- icon-192.png et icon-512.png : icônes
+
+MISE EN LIGNE AVEC GITHUB PAGES (à faire une seule fois)
+1. Dans GitHub, créer un nouveau dépôt nommé mon-carnet-routier.
+2. Pour GitHub Pages gratuit, choisir Public. Le code du site sera visible publiquement, mais les journées saisies restent dans le stockage local du navigateur et ne sont pas envoyées au dépôt.
+3. Dans le dépôt, choisir Add file > Upload files.
+4. Envoyer les cinq fichiers de ce dossier à la racine : index.html, manifest.json, sw.js, icon-192.png, icon-512.png.
+5. Valider avec Commit changes.
+6. Ouvrir Settings > Pages.
+7. Dans Build and deployment, choisir Deploy from a branch, branche main, dossier /(root), puis Save.
+8. Attendre la publication puis ouvrir l'adresse affichée par GitHub Pages. Elle sera de la forme https://NOM-UTILISATEUR.github.io/mon-carnet-routier/ .
+
+INSTALLATION SUR LE SAMSUNG
+1. Ouvrir cette adresse dans Chrome.
+2. Appuyer sur les trois points en haut à droite.
+3. Choisir Installer l'application ou Ajouter à l'écran d'accueil, puis confirmer.
+4. L'icône Mon Carnet Routier apparaît sur l'écran d'accueil et l'application s'ouvre sans barre d'adresse lorsqu'elle est installée comme application.
+
+DONNEES ET TRANSFERT
+- Les journées restent dans le stockage local du navigateur sur le téléphone.
+- Le site peut être téléchargé/mis en cache et fonctionner hors connexion après son premier chargement.
+- Exporter régulièrement une sauvegarde JSON depuis l'onglet Sauvegarde.
+- Pour changer de téléphone : transférer le JSON puis l'importer dans l'application sur le nouveau téléphone.
+- Ne pas effacer les données de Chrome sans avoir exporté une sauvegarde.
+
+MISE A JOUR
+Pour une future version, remplacer les fichiers concernés dans le dépôt GitHub. Après mise à jour, fermer puis rouvrir l'application. Si l'ancien affichage persiste, recharger le site une fois avec Chrome connecté.
