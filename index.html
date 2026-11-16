@@ -1,5 +1,3 @@
-
-
 <!doctype html>
 <html lang="fr">
 <head>
@@ -51,6 +49,17 @@ main{padding:12px 13px 24px}
 @media(max-width:370px){.dash-card{gap:6px;padding:10px 8px}.dash-card b{font-size:14px}.dash-card small{font-size:10px}.counter-value strong{font-size:19px}.counter-name{font-size:11px}}
 @media(min-width:650px){#home .dashboard-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.dash-card{min-height:125px}.counter-panel{max-width:800px}.nav{left:50%;right:auto;transform:translateX(-50%);width:min(100%,920px);border-radius:18px 18px 0 0}}
 
+
+/* Tableau de bord cockpit intuitif — conservation des écrans et fonctions existants */
+.home-period{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:4px 0 13px;padding:7px;border:1px solid #1d6db3;border-radius:17px;background:#071d3c}
+.period-switch{display:grid;grid-template-columns:1fr 1fr;gap:5px}.period-switch button{border:1px solid #245889;border-radius:12px;background:#0b2d56;color:#dcecff;padding:10px 6px;font-weight:800}.period-switch button.active{background:linear-gradient(145deg,#13a8ff,#075acb);border-color:#5ad9ff;box-shadow:0 0 14px #087cff55}
+#homePeriodSelect{min-width:0;width:100%;border:1px solid #245889;border-radius:12px;background:#0b2d56;color:#fff;padding:9px;font-weight:700}
+.home-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:10px}.metric-card{min-width:0;min-height:132px;padding:12px 6px;border:1.5px solid #147bd0;border-radius:19px;background:linear-gradient(150deg,#0d3768,#061b3b);text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;box-shadow:inset 0 0 16px #168cff20,0 5px 13px #0004}.metric-card .metric-icon{font-size:25px;color:#60d5ff}.metric-card small{font-size:11px;line-height:1.2;color:#c6e4ff;min-height:26px;display:flex;align-items:center;justify-content:center}.metric-card strong{font-size:clamp(17px,4.8vw,24px);white-space:nowrap;font-variant-numeric:tabular-nums;color:#fff}.metric-total{border:2px solid #20baff;background:linear-gradient(150deg,#075fca,#073477);box-shadow:0 0 16px #078cff55,inset 0 0 20px #3acbff22}.metric-total .metric-icon{font-size:31px;color:#fff}
+.home-secondary{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:12px}.mini-metric{display:grid;grid-template-columns:1fr auto;align-items:center;gap:3px 8px;padding:11px 14px;border:1px solid #176db5;border-radius:17px;background:linear-gradient(145deg,#0c315d,#071b39)}.mini-metric span{font-weight:800;color:#cdeaff}.mini-metric strong{grid-row:span 2;font-size:30px;color:#fff}.mini-metric small{font-size:10px;color:#9ec9ed}
+.route-panel{padding:12px;border:1px solid #1c67a8;border-radius:19px;background:linear-gradient(145deg,#0a2b53,#061a36);margin-bottom:11px}.section-heading{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}.section-heading b{font-size:16px}.section-heading span{font-size:10px;color:#9fc9ed}.route-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.route-action{position:relative;min-width:0;min-height:78px;padding:10px 26px 10px 11px;text-align:left;border:1px solid #235a8d;border-radius:13px;background:#0a2446;color:#fff}.route-action b{font-size:12px}.route-action small{display:block;margin:6px 0 0 17px;color:#b9d6f2;font-size:10px;overflow-wrap:anywhere}.route-action i{position:absolute;right:9px;top:27px;font-style:normal;font-size:20px;color:#67d8ff}.route-dot{font-size:12px;margin-right:5px}.route-dot.green{color:#51e39a}.route-dot.blue{color:#39baff}.route-dot.orange{color:#ffae4c}.route-dot.purple{color:#c79aff}
+.home-footer-metrics{display:grid;grid-template-columns:1fr 1.2fr;gap:8px;align-items:stretch}.km-card{display:flex;align-items:center;gap:9px;padding:12px;border:1px solid #176db5;border-radius:16px;background:#09264a;min-width:0}.km-card>span{font-size:28px}.km-card small{display:block;color:#b8d9f5;font-size:10px}.km-card strong{display:block;font-size:20px;white-space:nowrap}.home-footer-metrics .history-card{padding:10px;gap:7px}.home-footer-metrics .history-card>span:first-child{font-size:25px}.home-footer-metrics .history-card b{font-size:14px}.home-footer-metrics .history-card small{font-size:10px}
+@media(max-width:370px){.home-metrics{gap:5px}.metric-card{min-height:120px;padding:8px 3px}.metric-card small{font-size:9px}.metric-card strong{font-size:16px}.home-period{gap:6px}.route-action{padding-left:8px}.home-footer-metrics{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
@@ -65,31 +74,35 @@ main{padding:12px 13px 24px}
 </nav>
 
 <section class="view" id="home">
-  <div class="dashboard-grid">
-    <button type="button" class="dash-card" data-focus-form="work"><span class="dash-icon">◷</span><span><b>Mes heures</b><small>Saisir / Modifier</small></span><i>›</i></button>
-    <button type="button" class="dash-card" data-tour-action="departure"><span class="dash-icon">🚛</span><span><b>Mes départs</b><small>Heure + Ville</small></span><i>›</i></button>
-    <button type="button" class="dash-card" data-tour-action="loading"><span class="dash-icon">📦</span><span><b>Chargements</b><small>Ville uniquement</small></span><i>›</i></button>
-    <button type="button" class="dash-card" data-tour-action="unloading"><span class="dash-icon">📤</span><span><b>Déchargements</b><small>Ville uniquement</small></span><i>›</i></button>
-    <button type="button" class="dash-card" data-tour-action="arrival"><span class="dash-icon">🏁</span><span><b>Arrivée du soir</b><small>Ville + heure</small></span><i>›</i></button>
-    <button type="button" class="dash-card" data-focus-form="meals"><span class="dash-icon">🍴</span><span><b>Repas et nuitées</b><small>Ajouter / Modifier</small></span><i>›</i></button>
+  <div class="home-period">
+    <div class="period-switch" role="group" aria-label="Période"><button type="button" class="active" data-home-period="month">Mois</button><button type="button" data-home-period="year">Année</button></div>
+    <select id="homePeriodSelect" aria-label="Choisir le mois ou l'année"></select>
   </div>
-  <div class="counter-panel">
-    <div class="counter-group">
-      <div class="counter-icon">🍽</div><b class="counter-name">Repas et nuits</b>
-      <div class="counter-value"><small>Nombre de repas</small><strong id="totalMeals">0</strong></div>
-      <div class="counter-value"><small>Nombre de nuits</small><strong id="totalNights">0</strong></div>
-    </div>
-    <div class="counter-divider"></div>
-    <div class="counter-group">
-      <div class="counter-icon">◴</div><b class="counter-name">Activité</b>
-      <div class="counter-value"><small>Total des heures</small><strong id="totalHours">0 h 00</strong></div>
-      <div class="counter-value"><small>Kilomètres totaux</small><strong id="totalKm">0 km</strong></div>
+  <div class="home-metrics">
+    <div class="metric-card"><span class="metric-icon">◉</span><small>Heures de conduite</small><strong id="driveHours">0 h 00</strong></div>
+    <div class="metric-card"><span class="metric-icon">◷</span><small>Heures de travail</small><strong id="workHours">0 h 00</strong></div>
+    <div class="metric-card metric-total"><span class="metric-icon">Σ</span><small>Total des heures</small><strong id="totalHours">0 h 00</strong></div>
+  </div>
+  <div class="home-secondary">
+    <div class="mini-metric"><span>🍴 Repas</span><strong id="totalMeals">0</strong><small>Nombre de repas</small></div>
+    <div class="mini-metric"><span>🛏 Nuitées</span><strong id="totalNights">0</strong><small>Nombre de nuits</small></div>
+  </div>
+  <div class="route-panel">
+    <div class="section-heading"><b>Mon parcours</b><span>Accès rapide à la saisie</span></div>
+    <div class="route-grid">
+      <button type="button" class="route-action" data-tour-action="departure"><span class="route-dot green">●</span><b>Départ</b><small id="homeDeparture">Ville de départ</small><i>＋</i></button>
+      <button type="button" class="route-action" data-tour-action="loading"><span class="route-dot blue">●</span><b>Chargement(s)</b><small id="homeLoading">Ville(s) de chargement</small><i>＋</i></button>
+      <button type="button" class="route-action" data-tour-action="unloading"><span class="route-dot orange">●</span><b>Déchargement(s)</b><small id="homeUnloading">Ville(s) de déchargement</small><i>＋</i></button>
+      <button type="button" class="route-action" data-tour-action="arrival"><span class="route-dot purple">●</span><b>Arrivée le soir</b><small id="homeArrival">Ville d'arrivée</small><i>＋</i></button>
     </div>
   </div>
-  <button type="button" class="history-card" data-goto="history"><span>▤</span><span><b>Mon historique</b><small>Consulter et modifier vos journées</small></span><i>›</i></button>
+  <div class="home-footer-metrics">
+    <div class="km-card"><span>🛣</span><div><small>Kilométrage total</small><strong id="totalKm">0 km</strong></div></div>
+    <button type="button" class="history-card" data-goto="history"><span>▤</span><span><b>Historique</b><small>Consulter et modifier mes journées</small></span><i>›</i></button>
+  </div>
   <div class="dashboard-bottom-actions">
+    <button type="button" data-view="form" data-new-day="true">＋ Nouvelle journée</button>
     <button type="button" data-view="backup">Sauvegarde</button>
-    <button type="button" data-view="history">Voir mes journées</button>
   </div>
 </section>
 
@@ -163,7 +176,10 @@ function getCityFields(kind){return [...document.querySelectorAll('.'+kind+'-cit
 document.querySelectorAll('[data-add-city]').forEach(b=>b.addEventListener('click',()=>addCityField(b.dataset.addCity)));
 function dayHTML(x){let loads=cityArray(x,'loading'),unloads=cityArray(x,'unloading');let route=[x.startCity&&('Départ '+x.startCity+(x.departure?' à '+x.departure:'')),...loads.map(v=>'Chargement '+v),...unloads.map(v=>'Déchargement '+v),x.endCity&&('Arrivée '+x.endCity+(x.arrival?' à '+x.arrival:''))].filter(Boolean);return `<article class="day"><div class="daytop"><div><div class="daydate">${labelDate(x.date)}</div><div class="muted">${x.startCity?'Départ '+esc(x.startCity):'Départ'}${x.departure?' à '+esc(x.departure):''}${x.endCity||x.arrival?' · ':''}${x.endCity?'Arrivée '+esc(x.endCity):x.arrival?'Arrivée':''}${x.arrival?' à '+esc(x.arrival):''}</div>${route.length?`<div class="muted">Parcours : ${route.map(esc).join(' → ')}</div>`:''}</div><b>${(+x.km||0).toLocaleString('fr-FR')} km</b></div><div class="chips"><span class="chip">Conduite ${fmt(x.drive)}</span><span class="chip">Travail ${fmt(x.work)}</span><span class="chip">${x.nights||0} nuit(s)</span><span class="chip">${x.meals||0} repas</span></div>${x.remarks?`<div class="remarks"><b>Remarques</b><br>${esc(x.remarks)}</div>`:''}<div class="actions"><button class="btn secondary" data-edit="${esc(x.id)}">Modifier</button><button class="btn danger" data-del="${esc(x.id)}">Supprimer</button></div></article>`}
 function sorted(){return [...days].sort((a,b)=>b.date.localeCompare(a.date))}
-function renderHome(){$('totalMeals').textContent=sum(days,'meals');$('totalNights').textContent=sum(days,'nights');$('totalHours').textContent=fmt(sum(days,'work')+sum(days,'drive'));$('totalKm').textContent=sum(days,'km').toLocaleString('fr-FR')+' km';}
+let homePeriod='month';
+function setupHomePeriod(){let sel=$('homePeriodSelect');if(!sel)return;let now=new Date(),yy=now.getFullYear(),mm=String(now.getMonth()+1).padStart(2,'0');homePeriod='month';sel.innerHTML=Array.from({length:24},(_,i)=>{let d=new Date(yy,now.getMonth()-i,1),v=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;return `<option value="${v}">${d.toLocaleDateString('fr-FR',{month:'long',year:'numeric'})}</option>`}).join('')+`<option value="${yy}">${yy}</option>`;sel.value=yy+'-'+mm;}
+function renderHome(){let sel=$('homePeriodSelect');let value=sel?sel.value:'';let current;if(homePeriod==='year'){let y=value||String(new Date().getFullYear());current=days.filter(x=>inYear(x,y));}else{let m=value&&value.length===7?value:today().slice(0,7);current=days.filter(x=>inMonth(x,m));}let drive=sum(current,'drive'),work=sum(current,'work');$('driveHours').textContent=fmt(drive);$('workHours').textContent=fmt(work);$('totalHours').textContent=fmt(drive+work);$('totalMeals').textContent=sum(current,'meals');$('totalNights').textContent=sum(current,'nights');$('totalKm').textContent=sum(current,'km').toLocaleString('fr-FR')+' km';let last=[...current].sort((a,b)=>b.date.localeCompare(a.date))[0];$('homeDeparture').textContent=last?.startCity||'Ville de départ';$('homeLoading').textContent=last?cityArray(last,'loading').join(' · ')||'Ville(s) de chargement':'Ville(s) de chargement';$('homeUnloading').textContent=last?cityArray(last,'unloading').join(' · ')||'Ville(s) de déchargement':'Ville(s) de déchargement';$('homeArrival').textContent=last?.endCity||'Ville d’arrivée';}
+
 function renderHistory(){let q=$('search').value.toLocaleLowerCase('fr'),yr=$('yearFilter').value,mo=$('monthFilter').value,ord=$('sort').value;let a=[...days].filter(x=>(yr==='all'||x.date.startsWith(yr))&&(mo==='all'||x.date.slice(5,7)===mo)&&(x.date+' '+(x.remarks||'')+' '+(x.startCity||'')+' '+cityArray(x,'loading').join(' ')+' '+cityArray(x,'unloading').join(' ')+' '+(x.endCity||'')).toLocaleLowerCase('fr').includes(q));a.sort((x,y)=>ord==='desc'?y.date.localeCompare(x.date):x.date.localeCompare(y.date));$('entries').innerHTML=a.map(dayHTML).join('')||'<div class="panel empty">Aucune journée trouvée pour cette période.</div>'}
 function renderAll(){renderHome();renderHistory();fillYears()}
 function fillYears(){let old=$('yearFilter').value;let ys=[...new Set(days.map(x=>x.date.slice(0,4)))].sort().reverse();$('yearFilter').innerHTML='<option value="all">Toutes les années</option>'+ys.map(y=>`<option value="${y}">${y}</option>`).join('');if(ys.includes(old))$('yearFilter').value=old}
@@ -182,7 +198,9 @@ document.addEventListener('click',e=>{let a=e.target.closest('[data-edit]'),d=e.
 $('exportBtn').addEventListener('click',()=>{let data={application:'Mon Carnet Routier',version:2,exportedAt:new Date().toISOString(),days};let blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});let u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download='mon-carnet-routier-'+today()+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(u),1200)});
 $('importBtn').addEventListener('click',()=>{let f=$('importFile').files[0];if(!f){alert('Sélectionne un fichier JSON.');return}let r=new FileReader();r.onload=()=>{try{let z=JSON.parse(r.result),a=Array.isArray(z)?z:z.days;if(!Array.isArray(a)||!a.every(x=>x&&typeof x.date==='string'))throw 0;if(!confirm('Importer '+a.length+' journée(s) ? Les données présentes seront remplacées.'))return;days=a.map(x=>({...x,id:x.id||('d'+Date.now()+Math.random()),drive:Number(x.drive??x.drivingMin)||0,work:Number(x.work??x.workMin)||0,remarks:x.remarks??x.notes??''}));save();$('importFile').value='';alert('Sauvegarde restaurée.')}catch(e){alert('Fichier JSON invalide ou incompatible. Aucune donnée modifiée.')}};r.readAsText(f)});
 $('clearBtn').addEventListener('click',()=>{if(confirm('Effacer toutes les journées de ce téléphone ?')){if(confirm('Confirmation finale : as-tu exporté une sauvegarde ?')){days=[];save();alert('Toutes les journées ont été effacées.')}}});
-clearForm();renderAll();
+document.querySelectorAll('[data-home-period]').forEach(b=>b.addEventListener('click',()=>{homePeriod=b.dataset.homePeriod;document.querySelectorAll('[data-home-period]').forEach(x=>x.classList.toggle('active',x===b));let sel=$('homePeriodSelect');let now=new Date();if(homePeriod==='year'){sel.innerHTML=[...new Set([String(now.getFullYear()),...days.map(x=>x.date.slice(0,4))])].sort().reverse().map(y=>`<option value="${y}">${y}</option>`).join('');sel.value=String(now.getFullYear());}else{setupHomePeriod();}renderHome();}));
+$('homePeriodSelect').addEventListener('change',renderHome);
+setupHomePeriod();clearForm();renderAll();
 })();
 if ('serviceWorker' in navigator && location.protocol.startsWith('http')) { window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {})); }
 </script>
