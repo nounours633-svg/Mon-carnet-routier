@@ -1,5 +1,5 @@
 
-const CACHE_NAME = 'mon-carnet-routier-v4-9';
+const CACHE_NAME = 'mon-carnet-routier-v4-10';
 
 const FILES = [
   './',
