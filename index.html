@@ -139,6 +139,32 @@ main{padding:12px 13px 24px}
  #printDocument tfoot{font-weight:900}
  #printDocument .print-footer{margin-top:1.5mm;font-size:6pt;color:#555;border-top:1px solid #aaa;padding-top:1mm}
 }
+
+/* Restauration du tableau de bord compact et protégé */
+main{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:100;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;margin:0;padding:8px 7px calc(8px + env(safe-area-inset-bottom));background:#090d13f5;border-top:1px solid #29445e;backdrop-filter:blur(16px)}
+.nav button{min-width:0;padding:8px 1px;font-size:10px;line-height:1.2}
+.quick-entry-panel{padding:0;overflow:hidden}
+.quick-entry-panel>summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:14px;margin:0}
+.quick-entry-panel>summary::-webkit-details-marker{display:none}
+.quick-entry-panel>summary:after{content:'＋';font-size:20px;color:#8fd5ff}
+.quick-entry-panel[open]>summary:after{content:'−'}
+.quick-entry-panel>summary b{font-size:14px;color:#e8f5ff}
+.quick-entry-panel>summary small{font-size:10px;color:#a9c9e8}
+.quick-entry-panel .quick-entry-grid,.quick-entry-panel .quick-entry-save,.quick-entry-panel .quick-entry-help{margin-left:13px;margin-right:13px}
+.quick-entry-panel .quick-entry-grid{margin-top:0}
+.quick-entry-panel .quick-entry-save{width:calc(100% - 26px);margin-bottom:10px}
+.quick-entry-panel .quick-entry-help{margin-bottom:12px}
+.home-secondary .mini-metric{padding:12px 14px;min-height:112px;display:grid;grid-template-columns:1fr auto;align-content:center;gap:4px 8px}
+.home-secondary .mini-metric>strong{grid-row:span 2;font-size:32px;color:#fff}
+.home-secondary .mini-metric .month-total{grid-column:1/-1;margin-top:3px;color:#8fe4ff;font-size:11px;font-weight:800}
+.home-secondary .mini-metric .month-total b{color:#fff;font-size:15px;margin-left:3px}
+.day-count-panel{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin:10px 0 12px;padding:11px;border:1px solid #1b70b9;border-radius:18px;background:linear-gradient(145deg,#0b315d,#061a36)}
+.day-count-title{grid-column:1/-1;font-size:13px;font-weight:850;color:#e9f6ff;margin-bottom:2px}
+.day-count-item{text-align:center;min-width:0;padding:8px 3px;border:1px solid #246da7;border-radius:12px;background:#08264a}
+.day-count-item small{display:block;font-size:9px;line-height:1.2;color:#b8dafa;min-height:23px}.day-count-item strong{display:block;font-size:23px;color:#fff;font-variant-numeric:tabular-nums}
+@media(max-width:370px){.home-secondary .mini-metric{min-height:105px;padding:9px}.home-secondary .mini-metric>strong{font-size:27px}.day-count-item strong{font-size:19px}}
+
 </style>
 </head>
 <body>
@@ -163,20 +189,24 @@ main{padding:12px 13px 24px}
     <div class="metric-card"><span class="metric-icon">◷</span><small>Heures de travail</small><strong id="workHours">0 h 00</strong></div>
     <div class="metric-card metric-total"><span class="metric-icon">Σ</span><small>Total des heures</small><strong id="totalHours">0 h 00</strong></div>
   </div>
-  <section class="quick-entry-panel" aria-label="Saisie rapide des kilomètres et des heures">
-    <div class="quick-entry-heading"><b>＋ Saisie rapide de la journée</b><small>Km et durées du jour</small></div>
+  <details class="quick-entry-panel" aria-label="Saisie rapide des kilomètres, heures et repas">
+    <summary class="quick-entry-heading"><b>＋ Saisie rapide de la journée</b><small>Déplier pour saisir</small></summary>
     <div class="quick-entry-grid">
       <div class="quick-entry-field"><label for="quickKm">Kilomètres parcourus</label><input id="quickKm" type="number" min="0" step="1" inputmode="numeric" placeholder="Ex. 480"></div>
+      <div class="quick-entry-field"><label for="quickKmDeduct">Kilomètres à déduire (benne)</label><input id="quickKmDeduct" type="number" min="0" step="1" inputmode="numeric" placeholder="Ex. 120"></div>
       <div class="quick-entry-field"><label for="quickDriving">Heures de conduite</label><input id="quickDriving" type="text" inputmode="numeric" placeholder="Ex. 8:30"></div>
       <div class="quick-entry-field"><label for="quickWork">Heures de travail</label><input id="quickWork" type="text" inputmode="numeric" placeholder="Ex. 10:00"></div>
+      <div class="quick-entry-field"><label for="quickMeals">🍴 Repas du jour</label><input id="quickMeals" type="number" min="0" step="1" inputmode="numeric" placeholder="0"></div>
+      <div class="quick-entry-field"><label for="quickNights">🛏 Nuitées du jour</label><input id="quickNights" type="number" min="0" step="1" inputmode="numeric" placeholder="0"></div>
     </div>
-    <button type="button" class="quick-entry-save" id="quickStatsSave">Enregistrer les kilomètres et les heures</button>
+    <button type="button" class="quick-entry-save" id="quickStatsSave">Enregistrer la journée</button>
     <small class="quick-entry-help">Format des heures : heures:minutes (ex. 8:30). Ces valeurs concernent la journée d’aujourd’hui.</small>
-  </section>
+  </details>
   <div class="home-secondary">
-    <div class="mini-metric"><span>🍴 Repas</span><strong id="totalMeals">0</strong><small>Nombre de repas</small><button type="button" class="quick-plus" data-quick-count="meals" aria-label="Ajouter un repas">＋</button></div>
-    <div class="mini-metric"><span>🛏 Nuitées</span><strong id="totalNights">0</strong><small>Nombre de nuits</small><button type="button" class="quick-plus" data-quick-count="nights" aria-label="Ajouter une nuitée">＋</button></div>
+    <div class="mini-metric"><span>🍴 Repas</span><strong id="totalMeals">0</strong><small>Jour en cours</small><small class="month-total">Mois : <b id="monthMeals">0</b></small></div>
+    <div class="mini-metric"><span>🛏 Nuitées</span><strong id="totalNights">0</strong><small>Jour en cours</small><small class="month-total">Mois : <b id="monthNights">0</b></small></div>
   </div>
+  <div class="day-count-panel" aria-live="polite"><div class="day-count-title">Cumul des jours — période sélectionnée</div><div class="day-count-item"><small>Congés</small><strong id="countConge">0</strong></div><div class="day-count-item"><small>Repos</small><strong id="countRepos">0</strong></div><div class="day-count-item"><small>Récupérations</small><strong id="countRecup">0</strong></div></div>
   <div class="route-panel">
     <div class="section-heading"><b>Mon parcours</b><span>Accès rapide à la saisie</span></div>
     <div class="route-grid">
@@ -392,8 +422,8 @@ function closeDayDetail(){$('dayDetailModal').classList.remove('open');$('dayDet
 
 let homePeriod='month';
 function setupHomePeriod(){let sel=$('homePeriodSelect');if(!sel)return;let now=new Date(),yy=now.getFullYear(),mm=String(now.getMonth()+1).padStart(2,'0');homePeriod='month';sel.innerHTML=Array.from({length:24},(_,i)=>{let d=new Date(yy,now.getMonth()-i,1),v=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;return `<option value="${v}">${d.toLocaleDateString('fr-FR',{month:'long',year:'numeric'})}</option>`}).join('')+`<option value="${yy}">${yy}</option>`;sel.value=yy+'-'+mm;}
-function syncQuickStats(){let x=days.find(v=>v.date===today());$('quickKm').value=x&&Number(x.km)?x.km:'';$('quickDriving').value=x&&Number(x.drive)?`${Math.floor(x.drive/60)}:${String(x.drive%60).padStart(2,'0')}`:'';$('quickWork').value=x&&Number(x.work)?`${Math.floor(x.work/60)}:${String(x.work%60).padStart(2,'0')}`:'';}
-function renderHome(){syncQuickStats();let sel=$('homePeriodSelect');let value=sel?sel.value:'';let current;if(homePeriod==='year'){let y=value||String(new Date().getFullYear());current=days.filter(x=>inYear(x,y));}else{let m=value&&value.length===7?value:today().slice(0,7);current=days.filter(x=>inMonth(x,m));}let drive=sum(current,'drive'),work=sum(current,'work');$('driveHours').textContent=fmt(drive);$('workHours').textContent=fmt(work);$('totalHours').textContent=fmt(drive+work);$('totalMeals').textContent=sum(current,'meals');$('totalNights').textContent=sum(current,'nights');$('totalKm').textContent=sum(current,'km').toLocaleString('fr-FR')+' km';let last=[...current].sort((a,b)=>b.date.localeCompare(a.date))[0];$('homeDeparture').textContent=last?.startCity||'Ville de départ';$('homeLoading').textContent=last?cityArray(last,'loading').join(' · ')||'Ville(s) de chargement':'Ville(s) de chargement';$('homeUnloading').textContent=last?cityArray(last,'unloading').join(' · ')||'Ville(s) de déchargement':'Ville(s) de déchargement';$('homeArrival').textContent=last?.endCity||'Ville d’arrivée';}
+function syncQuickStats(){let x=days.find(v=>v.date===today());$('quickKm').value=x&&Number(x.km)?x.km:'';$('quickKmDeduct').value=x&&Number(x.kmDeduct)?x.kmDeduct:'';$('quickDriving').value=x&&Number(x.drive)?`${Math.floor(x.drive/60)}:${String(x.drive%60).padStart(2,'0')}`:'';$('quickWork').value=x&&Number(x.work)?`${Math.floor(x.work/60)}:${String(x.work%60).padStart(2,'0')}`:'';$('quickMeals').value=x?Number(x.meals)||0:0;$('quickNights').value=x?Number(x.nights)||0:0;}
+function renderHome(){syncQuickStats();let sel=$('homePeriodSelect');let value=sel?sel.value:'';let current;if(homePeriod==='year'){let y=value||String(new Date().getFullYear());current=days.filter(x=>inYear(x,y));}else{let m=value&&value.length===7?value:today().slice(0,7);current=days.filter(x=>inMonth(x,m));}let drive=sum(current,'drive'),work=sum(current,'work');$('driveHours').textContent=fmt(drive);$('workHours').textContent=fmt(work);$('totalHours').textContent=fmt(drive+work);let todayData=days.find(x=>x.date===today());$('totalMeals').textContent=todayData?Number(todayData.meals)||0:0;$('totalNights').textContent=todayData?Number(todayData.nights)||0:0;let monthData=days.filter(x=>inMonth(x,today().slice(0,7)));$('monthMeals').textContent=sum(monthData,'meals');$('monthNights').textContent=sum(monthData,'nights');$('totalKm').textContent=sumCountedKm(current).toLocaleString('fr-FR')+' km';$('countConge').textContent=countKind(current,'conge');$('countRepos').textContent=countKind(current,'repos');$('countRecup').textContent=countKind(current,'recuperation');let last=[...current].sort((a,b)=>b.date.localeCompare(a.date))[0];$('homeDeparture').textContent=last?.startCity||'Ville de départ';$('homeLoading').textContent=last?cityArray(last,'loading').join(' · ')||'Ville(s) de chargement':'Ville(s) de chargement';$('homeUnloading').textContent=last?cityArray(last,'unloading').join(' · ')||'Ville(s) de déchargement':'Ville(s) de déchargement';$('homeArrival').textContent=last?.endCity||'Ville d’arrivée';}
 
 function renderHistory(){let q=$('search').value.toLocaleLowerCase('fr'),yr=$('yearFilter').value,mo=$('monthFilter').value,ord=$('sort').value;let a=[...days].filter(x=>(yr==='all'||x.date.startsWith(yr))&&(mo==='all'||x.date.slice(5,7)===mo)&&(x.date+' '+(x.remarks||'')+' '+(x.startCity||'')+' '+cityArray(x,'loading').join(' ')+' '+cityArray(x,'unloading').join(' ')+' '+(x.endCity||'')).toLocaleLowerCase('fr').includes(q));a.sort((x,y)=>ord==='desc'?y.date.localeCompare(x.date):x.date.localeCompare(y.date));$('entries').innerHTML=a.map(dayHTML).join('')||'<div class="panel empty">Aucune journée trouvée pour cette période.</div>'}
 function renderAll(){renderHome();renderHistory();renderCalendar();fillYears()}
@@ -408,8 +438,7 @@ function closeQuick(){$('quickModal').classList.remove('open');$('quickModal').s
 function saveQuick(){let city=$('quickCity').value.trim(),time=$('quickTime').value;if(!city){$('quickCity').focus();return;}let x=todayEntry();if(quickAction==='departure'){x.startCity=city;if(time)x.departure=time;}else if(quickAction==='arrival'){x.endCity=city;if(time)x.arrival=time;}else{let kind=quickAction,arr=cityArray(x,kind);arr.push(city);x[kind+'CitiesList']=arr;x[kind+'Cities']=arr.join(', ');}save();closeQuick();}
 document.querySelectorAll('[data-tour-action]').forEach(b=>b.addEventListener('click',()=>openQuick(b.dataset.tourAction)));
 $('quickSave').addEventListener('click',saveQuick);$('quickClose').addEventListener('click',closeQuick);$('quickCancel').addEventListener('click',closeQuick);$('quickModal').addEventListener('click',e=>{if(e.target===$('quickModal'))closeQuick();});$('quickCity').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();saveQuick();}});
-document.querySelectorAll('[data-quick-count]').forEach(b=>b.addEventListener('click',()=>{let x=todayEntry(),key=b.dataset.quickCount;x[key]=(Number(x[key])||0)+1;save();}));
-$('quickStatsSave').addEventListener('click',()=>{try{let x=todayEntry(),km=$('quickKm').value.trim(),drive=$('quickDriving').value.trim(),work=$('quickWork').value.trim();if(km!==''&&(!Number.isFinite(Number(km))||Number(km)<0))throw Error('Le kilométrage doit être un nombre positif.');x.km=km===''?0:Number(km);x.drive=parseDur(drive);x.work=parseDur(work);x.driveText=drive;x.workText=work;save();alert('Kilomètres et heures enregistrés pour aujourd’hui.');}catch(err){alert(err.message)}});
+$('quickStatsSave').addEventListener('click',()=>{try{let x=todayEntry(),km=$('quickKm').value.trim(),kmDeduct=$('quickKmDeduct').value.trim(),drive=$('quickDriving').value.trim(),work=$('quickWork').value.trim(),meals=$('quickMeals').value.trim(),nights=$('quickNights').value.trim();if(km!==''&&(!Number.isFinite(Number(km))||Number(km)<0))throw Error('Le kilométrage doit être un nombre positif.');if(kmDeduct!==''&&(!Number.isFinite(Number(kmDeduct))||Number(kmDeduct)<0))throw Error('Les kilomètres à déduire doivent être un nombre positif.');if(Number(kmDeduct)>Number(km||0))throw Error('Les kilomètres à déduire ne peuvent pas dépasser les kilomètres parcourus.');if(meals!==''&&(!Number.isInteger(Number(meals))||Number(meals)<0))throw Error('Le nombre de repas doit être un nombre entier positif.');if(nights!==''&&(!Number.isInteger(Number(nights))||Number(nights)<0))throw Error('Le nombre de nuitées doit être un nombre entier positif.');x.km=km===''?0:Number(km);x.kmDeduct=kmDeduct===''?0:Number(kmDeduct);x.drive=parseDur(drive);x.work=parseDur(work);x.driveText=drive;x.workText=work;x.meals=meals===''?0:Number(meals);x.nights=nights===''?0:Number(nights);save();alert('Kilomètres, heures, repas et nuitées enregistrés pour aujourd’hui.');}catch(err){alert(err.message)}});
 document.addEventListener('click',e=>{const b=e.target.closest('[data-stat-open]');if(b)show('history')});
 
 function clearForm(){ $('dayForm').reset();$('editId').value='';$('date').value=today();$('nights').value=0;$('meals').value=0;$('leaveDays').value=0;$('restDays').value=0;$('recoveryDays').value=0;setCityFields('loading',[]);setCityFields('unloading',[]);$('formTitle').textContent='Ajouter une journée';$('saveBtn').textContent='ENREGISTRER LA JOURNÉE'}
