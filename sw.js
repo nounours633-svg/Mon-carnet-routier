@@ -1,8 +1,7 @@
-
-/* Mon Carnet Routier — correction enregistrement journées
+/* Mon Carnet Routier — correction du comptage des récupérations
    Mise à jour du 17/11/2026 */
 
-const CACHE_NAME = 'mon-carnet-routier-v20261117-jours-2';
+const CACHE_NAME = 'mon-carnet-routier-v20261117-jours-3';
 
 const APP_FILES = [
   './',
