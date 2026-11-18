@@ -194,8 +194,8 @@ main{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
     <div class="quick-entry-grid">
       <div class="quick-entry-field"><label for="quickKm">Kilomètres parcourus</label><input id="quickKm" type="number" min="0" step="1" inputmode="numeric" placeholder="Ex. 480"></div>
       <div class="quick-entry-field"><label for="quickKmDeduct">Kilomètres à déduire (benne)</label><input id="quickKmDeduct" type="number" min="0" step="1" inputmode="numeric" placeholder="Ex. 120"></div>
-      <div class="quick-entry-field"><label for="quickDriving">Heures de conduite</label><input id="quickDriving" type="text" inputmode="numeric" placeholder="Ex. 8:30"></div>
-      <div class="quick-entry-field"><label for="quickWork">Heures de travail</label><input id="quickWork" type="text" inputmode="numeric" placeholder="Ex. 10:00"></div>
+      <div class="quick-entry-field"><label for="quickDriving">Heures de conduite</label><input id="quickDriving" type="text" inputmode="text" autocomplete="off" placeholder="Ex. 8:30"></div>
+      <div class="quick-entry-field"><label for="quickWork">Heures de travail</label><input id="quickWork" type="text" inputmode="text" autocomplete="off" placeholder="Ex. 10:00"></div>
       <div class="quick-entry-field"><label for="quickMeals">🍴 Repas du jour</label><input id="quickMeals" type="number" min="0" step="1" inputmode="numeric" placeholder="0"></div>
       <div class="quick-entry-field"><label for="quickNights">🛏 Nuitées du jour</label><input id="quickNights" type="number" min="0" step="1" inputmode="numeric" placeholder="0"></div>
     </div>
@@ -339,17 +339,7 @@ function fmt(n){n=Number(n)||0;return `${Math.floor(n/60)} h ${String(n%60).padS
 function sum(a,k){return a.reduce((s,x)=>s+(Number(x[k])||0),0)}
 function countedKm(x){return Math.max(0,(Number(x.km)||0)-(Number(x.kmDeduct)||0))}
 function sumCountedKm(a){return a.reduce((s,x)=>s+countedKm(x),0)}
-function countKind(a,kind){
-  const field={conge:'leaveDays',repos:'restDays',recuperation:'recoveryDays'}[kind];
-  if(!field)return 0;
-  const byDate=new Map();
-  a.forEach(x=>{
-    const key=String(x.date||x.id||'');
-    const value=Math.max(0,Number(x[field])||0);
-    byDate.set(key,Math.max(byDate.get(key)||0,value));
-  });
-  return [...byDate.values()].reduce((total,value)=>total+value,0);
-}
+function countKind(a,kind){const field={conge:'leaveDays',repos:'restDays',recuperation:'recoveryDays'}[kind];return field?sum(a,field):0}
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function labelDate(s){if(!s)return'';let [y,m,d]=s.split('-');return `${d}/${m}/${y}`}
 function weekStart(s){let d=new Date(s+'T12:00:00');let day=(d.getDay()+6)%7;d.setDate(d.getDate()-day);return iso(d)}
