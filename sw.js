@@ -1,7 +1,7 @@
 /* Mon Carnet Routier — correction du comptage des récupérations
    Mise à jour du 19/11/2026 — tarifs simplifiés calendrier et historique */
 
-const CACHE_NAME = 'mon-carnet-routier-v20261119-historique-jours-semaine-10';
+const CACHE_NAME = 'mon-carnet-routier-v20261119-jours-feries-france-11';
 
 const APP_FILES = [
   './',
