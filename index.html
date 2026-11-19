@@ -558,6 +558,54 @@ main{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
  #home .mini-metric-priced>strong{right:10px!important;font-size:30px!important}
  #home .mini-metric-priced .month-amount{font-size:18px!important}
 }
+
+/* CORRECTION MOBILE : supprimer la colonne vide du menu latéral */
+@media(max-width:760px){
+  #home .dashboard-layout{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr)!important;
+    width:100%!important;
+    max-width:100%!important;
+  }
+  #home .dashboard-main{
+    grid-column:1/-1!important;
+    width:100%!important;
+    min-width:0!important;
+  }
+  #home .dashboard-main>*{
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    box-sizing:border-box!important;
+  }
+  #home .dashboard-top-metrics{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    width:100%!important;
+  }
+  #home .weekly-grid{
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    width:100%!important;
+  }
+  #home .home-side-menu.dashboard-menu-collapsed{display:none!important}
+}
+@media(max-width:760px){
+  .nav{
+    display:grid!important;
+    grid-template-columns:repeat(6,minmax(0,1fr))!important;
+    width:100%!important;
+    max-width:100%!important;
+    gap:4px!important;
+    box-sizing:border-box!important;
+  }
+  .nav button{
+    min-width:0!important;
+    width:100%!important;
+    padding:7px 2px!important;
+    font-size:clamp(8px,2.2vw,10px)!important;
+    white-space:normal!important;
+    overflow-wrap:anywhere!important;
+  }
+}
 </style>
 </head>
 <body>
