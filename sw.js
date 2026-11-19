@@ -1,7 +1,7 @@
-/* Mon Carnet Routier — correction du comptage des récupérations
-   Mise à jour du 19/11/2026 — tarifs simplifiés calendrier et historique */
+/* Mon Carnet Routier — historique des tournées chargement → déchargement
+   Mise à jour du 19/11/2026 */
 
-const CACHE_NAME = 'mon-carnet-routier-v20261119-impression-mois-compacte-12';
+const CACHE_NAME = 'mon-carnet-routier-v20261119-historique-tournees-13';
 
 const APP_FILES = [
   './',
