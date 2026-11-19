@@ -616,6 +616,14 @@ main{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
 .calendar-day-kind.rest{background:#45566b;color:#fff}
 .calendar-day-kind.recovery{background:#176b4c;color:#fff}
 .calendar-cell .calendar-day-kind{font-size:clamp(8px,1.8vw,11px)!important;line-height:1.15}
+
+/* Disposition demandée : quatre grandes cases, nuitées et repas réunis */
+@media(max-width:760px){
+ #home .dashboard-top-metrics{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ #home .cockpit-metric{min-width:0!important}
+ #home .cockpit-metric.nights strong{font-size:clamp(18px,5vw,25px)!important;white-space:nowrap}
+ #home .weekly-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
 </style>
 </head>
 <body>
@@ -626,10 +634,9 @@ main{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
 <nav class="nav">
 <button class="active" data-view="home">⌂<br>Accueil</button>
 <button data-view="history">▤<br>Historique</button>
-<button data-view="history">▥<br>Statistiques</button>
-<button data-view="history" data-scroll-print="true">▧<br>Rapports</button>
-<button data-view="backup">⚙<br>Paramètres</button>
-<button data-view="about">ⓘ<br>À propos</button>
+<button data-view="calendar">▦<br>Calendrier</button>
+<button data-view="form">＋<br>Journée</button>
+<button data-view="backup">⚙<br>Sauvegarde</button>
 </nav>
 
 <section class="view" id="home">
@@ -638,10 +645,10 @@ main{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
 <div class="cockpit-metric driving"><span class="cockpit-icon">◉</span><div><small>Conduite</small><strong id="dashDrive">0 h 00</strong><em>Cette semaine</em></div></div>
 <div class="cockpit-metric working"><span class="cockpit-icon">♟</span><div><small>Travail</small><strong id="dashWork">0 h 00</strong><em>Cette semaine</em></div></div>
 <div class="cockpit-metric total"><span class="cockpit-icon">◷</span><div><small>Total cumulé</small><strong id="dashTotal">0 h 00</strong><em>Cette semaine</em></div></div>
-<div class="cockpit-metric nights"><span class="cockpit-icon">▰</span><div><small>Nuitées</small><strong id="dashNights">0</strong><em>Cette semaine</em></div></div>
+<div class="cockpit-metric nights"><span class="cockpit-icon">🛏🍴</span><div><small>Nuitées / repas</small><strong id="dashNights">0 / 0</strong><em>Cette semaine</em></div></div>
 </div>
 <section class="weekly-panel"><div class="weekly-heading"><b>▥ Bilan hebdomadaire</b><span id="dashWeekLabel">Semaine en cours</span></div><div class="weekly-grid">
-<div><span>▦</span><small>Jours travaillés</small><strong id="dashWorked">0 / 7</strong></div><div><span>🍴</span><small>Repas</small><strong id="dashMeals">0</strong></div><div><span>▰</span><small>Nuitées</small><strong id="dashWeekNights">0</strong></div><div><span>★</span><small>Total semaine</small><strong id="dashWeekTotal">0 h 00</strong></div>
+<div><span>▦</span><small>Jours travaillés</small><strong id="dashWorked">0 / 7</strong></div><div><span>★</span><small>Total semaine</small><strong id="dashWeekTotal">0 h 00</strong></div>
 </div></section>
 <section class="timeline-panel"><div class="timeline-heading"><b>◷ Chronologie du jour</b><label class="timeline-date-wrap"><span class="visually-hidden">Journée affichée</span><select id="dashDaySelect" aria-label="Choisir la journée"></select></label></div>
 <div id="dashboardTimeline" class="dashboard-timeline"><div class="timeline-empty">Aucune journée enregistrée pour le moment.</div></div>
@@ -1004,8 +1011,8 @@ function renderDashboardPanels(){
  const start=weekStart(today()),endDate=new Date(start+'T12:00:00');endDate.setDate(endDate.getDate()+6);const end=iso(endDate);
  const week=days.filter(x=>x.date>=start&&x.date<=end),drive=sum(week,'drive'),work=sum(week,'work'),total=drive+work;
  const worked=week.filter(x=>(Number(x.drive)||0)+(Number(x.work)||0)+(Number(x.km)||0)>0||(Array.isArray(x.operations)&&x.operations.length>0)||!!x.startCity||!!x.endCity).length;
- $('dashDrive').textContent=fmt(drive);$('dashWork').textContent=fmt(work);$('dashTotal').textContent=fmt(total);$('dashNights').textContent=sum(week,'nights');
- $('dashWorked').textContent=worked+' / 7';$('dashMeals').textContent=sum(week,'meals');$('dashWeekNights').textContent=sum(week,'nights');$('dashWeekTotal').textContent=fmt(total);
+ $('dashDrive').textContent=fmt(drive);$('dashWork').textContent=fmt(work);$('dashTotal').textContent=fmt(total);$('dashNights').textContent=sum(week,'nights')+' / '+sum(week,'meals');
+ $('dashWorked').textContent=worked+' / 7';$('dashWeekTotal').textContent=fmt(total);
  $('dashWeekLabel').textContent='Du '+labelDate(start)+' au '+labelDate(end);$('dashStatusText').textContent=worked+' jour(s) renseigné(s) sur 7';$('dashStatusBar').style.width=(Math.min(7,worked)/7*100)+'%';
  const sel=$('dashDaySelect'),old=sel.value,dates=[...days].sort((a,b)=>b.date.localeCompare(a.date));
  sel.innerHTML=dates.map(x=>'<option value="'+esc(x.id)+'">'+labelDate(x.date)+(x.startCity?' · '+esc(x.startCity):'')+'</option>').join('');
