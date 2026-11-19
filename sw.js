@@ -1,7 +1,7 @@
 /* Mon Carnet Routier — correction du comptage des récupérations
    Mise à jour du 17/11/2026 */
 
-const CACHE_NAME = 'mon-carnet-routier-v20261119-repas-nuitees-1';
+const CACHE_NAME = 'mon-carnet-routier-v20261119-tarifs-masques-2';
 
 const APP_FILES = [
   './',
