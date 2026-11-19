@@ -95,7 +95,7 @@ main{padding:12px 13px 24px}
 .calendar-cell.today{border:2px solid #42caff;box-shadow:0 0 12px #078cff55}
 .calendar-cell.selected{background:linear-gradient(145deg,#087cff,#06428f);border-color:#7de4ff}
 .calendar-cell .date-num{display:block;font-weight:900;font-size:14px}
-.calendar-cell small{display:block;color:#c6e4ff;font-size:8px;line-height:1.25;margin-top:3px;white-space:nowrap}
+.calendar-cell small{display:block;color:#c6e4ff;font-size:8px;line-height:1.25;margin-top:3px;white-space:nowrap}.calendar-cell .calendar-tariffs{font-size:7px;line-height:1.1;margin-top:2px;font-weight:650;letter-spacing:-.1px}
 .calendar-cell .star{color:#ffdc42;font-size:12px}
 .detail-backdrop{display:none;position:fixed;inset:0;z-index:10000;background:#020916e8;backdrop-filter:blur(5px);padding:15px;align-items:center;justify-content:center}
 .detail-backdrop.open{display:flex}
@@ -414,7 +414,7 @@ function renderCalendar(){
   const date=iso(new Date(y,m,d)),x=days.find(v=>v.date===date);
   cells+=`<button type="button" class="calendar-cell ${date===today()?'today':''} ${date===selectedCalendarDate?'selected':''}" data-calendar-date="${date}">
    <span class="date-num">${d}${x&&isStarDay(x)?' <span class="star">★</span>':''}</span>
-   ${x?`<small>${fmt(x.work)} travail</small><small>${fmt(x.drive)} conduite</small><small>${Number(x.km)||0} km</small>${dayPriceChips(x).replace(/<span class="chip">|<\/span>/g,'').replace(/ · /g,' | ')}`:''}
+   ${x?`<small>${fmt(x.work)} travail</small><small>${fmt(x.drive)} conduite</small><small>${Number(x.km)||0} km</small><small class="calendar-tariffs">${dayPriceChips(x).replace(/<span class="chip">|<\/span>/g,'').replace(/ · /g,' | ')}</small>`:''}
   </button>`;
  }
  const total=Math.ceil((offset+daysInMonth)/7)*7-(offset+daysInMonth);
