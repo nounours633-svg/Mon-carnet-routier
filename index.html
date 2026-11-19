@@ -94,6 +94,8 @@ main{padding:12px 13px 24px}
 .calendar-weekdays,.calendar-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
 .calendar-weekdays span{text-align:center;color:#9ed7ff;font-size:10px;font-weight:800;padding:8px 0}
 .calendar-cell{min-width:0;min-height:76px;padding:5px 2px;border:1px solid #1d5e98;border-radius:10px;background:linear-gradient(145deg,#0b2e59,#071a35);color:#fff;text-align:center;overflow:hidden}
+.calendar-cell.rest-11h-after{position:relative;z-index:2;overflow:visible}
+.calendar-cell.rest-11h-after::after{content:'*';position:absolute;right:-6px;top:50%;transform:translateY(-50%);color:#35e58b;font-size:17px;font-weight:950;line-height:1;text-shadow:0 0 5px #062b1b;pointer-events:none;z-index:5}
 .calendar-cell.empty{background:#07172d;border-color:#142d49;opacity:.45}
 .calendar-cell.today{border:2px solid #42caff;box-shadow:0 0 12px #078cff55}
 .calendar-cell.selected{background:linear-gradient(145deg,#087cff,#06428f);border-color:#7de4ff}
@@ -420,6 +422,22 @@ function frenchPublicHolidays(year){
 function frenchPublicHoliday(date){return frenchPublicHolidays(Number(date.slice(0,4)))[date]||'';}
 
 function isStarDay(x){return (Number(x.drive)||0)>540;}
+function hasElevenHourRestAfter(x){
+ if(!x||!x.date||!x.arrival)return false;
+ const nextDateObj=new Date(x.date+'T12:00:00');
+ nextDateObj.setDate(nextDateObj.getDate()+1);
+ const nextDate=iso(nextDateObj);
+ const next=days.find(v=>v.date===nextDate);
+ if(!next||!next.departure)return false;
+ const a=String(x.arrival).match(/^([0-9]{1,2}):([0-9]{2})$/);
+ const d=String(next.departure).match(/^([0-9]{1,2}):([0-9]{2})$/);
+ if(!a||!d)return false;
+ const arrivalMinutes=Number(a[1])*60+Number(a[2]);
+ const departureMinutes=Number(d[1])*60+Number(d[2]);
+ if(arrivalMinutes>=1440||departureMinutes>=1440||Number(a[2])>59||Number(d[2])>59)return false;
+ const restMinutes=1440-arrivalMinutes+departureMinutes;
+ return restMinutes>=660;
+}
 function periodLabel(d,mode){return mode==='year'?String(d.getFullYear()):d.toLocaleDateString('fr-FR',{month:'long',year:'numeric'});}
 function historyMove(delta){if(historyMode==='year')historyCursor.setFullYear(historyCursor.getFullYear()+delta);else historyCursor.setMonth(historyCursor.getMonth()+delta);renderHistory();}
 function renderHistory(){
@@ -442,7 +460,7 @@ function renderCalendar(){
  for(let i=0;i<offset;i++)cells+='<div class="calendar-cell empty"></div>';
  for(let d=1;d<=daysInMonth;d++){
   const date=iso(new Date(y,m,d)),x=days.find(v=>v.date===date),holiday=frenchPublicHoliday(date);
-  cells+=`<button type="button" class="calendar-cell ${date===today()?'today':''} ${date===selectedCalendarDate?'selected':''} ${holiday?'public-holiday':''}" data-calendar-date="${date}">
+  cells+=`<button type="button" class="calendar-cell ${date===today()?'today':''} ${date===selectedCalendarDate?'selected':''} ${holiday?'public-holiday':''} ${x&&date.slice(0,7)===`${y}-${String(m+1).padStart(2,'0')}`&&hasElevenHourRestAfter(x)?'rest-11h-after':''}" data-calendar-date="${date}">
    <span class="date-num">${d}${x&&isStarDay(x)?' <span class="star">★</span>':''}</span>
    ${holiday?'<small class="calendar-holiday">Férié · '+holiday+'</small>':''}
    ${x?`<small>${fmt(x.work)} travail</small><small>${fmt(x.drive)} conduite</small><small>${Number(x.km)||0} km</small><small class="calendar-tariffs">${dayPriceChips(x).replace(/<span class="chip">|<\/span>/g,'').replace(/ · /g,' | ')}</small>`:''}
