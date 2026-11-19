@@ -1,7 +1,7 @@
 /* Mon Carnet Routier — historique chronologique des journées et tournées
    Mise à jour du 19/11/2026 */
 
-const CACHE_NAME = 'mon-carnet-routier-v20261119-ordre-chronologique-14';
+const CACHE_NAME = 'mon-carnet-routier-v20261119-operations-chronologiques-15';
 
 const APP_FILES = [
   './',
