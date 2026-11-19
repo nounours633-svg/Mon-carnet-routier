@@ -123,9 +123,11 @@ main{padding:12px 13px 24px}
 @media print{
  @page{size:A4 portrait;margin:7mm}
  html,body{width:100%;height:auto!important;margin:0!important;padding:0!important;background:#fff!important;color:#111!important;font-family:Arial,sans-serif!important}
- body *{visibility:hidden!important}
- #printDocument,#printDocument *{visibility:visible!important}
- #printDocument{display:block!important;position:absolute!important;left:0!important;top:0!important;width:100%!important;max-height:283mm!important;overflow:hidden!important;color:#111!important;background:#fff!important;font-size:7pt!important;break-inside:avoid!important;page-break-inside:avoid!important}
+ body{display:block!important}
+ body>header{display:none!important}
+ body>main{display:block!important;position:static!important;width:100%!important;max-width:none!important;margin:0!important;padding:0!important;background:#fff!important}
+ body>main>*:not(#printDocument){display:none!important}
+ #printDocument{display:block!important;position:static!important;width:100%!important;max-height:none!important;overflow:visible!important;color:#111!important;background:#fff!important;font-size:7pt!important;break-inside:avoid!important;page-break-inside:avoid!important}
  #printDocument h1{font-size:15pt;margin:0 0 1.5mm;color:#10243c}
  #printDocument h2{font-size:9pt;margin:2mm 0 1mm;color:#10243c}
  #printDocument .print-sub{font-size:7pt;color:#444;margin-bottom:2mm;line-height:1.25}
@@ -505,7 +507,11 @@ function printHistory(){
  const total=(a,k)=>a.reduce((n,x)=>n+(Number(x[k])||0),0);
  const fields=[['km','Km'],['drive','Conduite'],['work','Travail'],['meals','Repas'],['nights','Nuits'],['leaveDays','Congés'],['restDays','Repos'],['recoveryDays','Récup.']];
  const display=(k,v)=>k==='drive'||k==='work'?fmt(v):(Number(v)||0).toLocaleString('fr-FR');
- const summary=[['Journées',rows.length],['Conduite',fmt(total(rows,'drive'))],['Travail',fmt(total(rows,'work'))],['Kilomètres',total(rows,'km').toLocaleString('fr-FR')+' km'],['Repas',total(rows,'meals')],['Nuitées',total(rows,'nights')],['Congés',total(rows,'leaveDays')],['Repos',total(rows,'restDays')],['Récupérations',total(rows,'recoveryDays')]];
+ const mealRate=Number(localStorage.getItem(MEAL_RATE_KEY));
+ const nightRate=Number(localStorage.getItem(NIGHT_RATE_KEY));
+ const mealAmount=Number.isFinite(mealRate)&&mealRate>=0?total(rows,'meals')*mealRate:null;
+ const nightAmount=Number.isFinite(nightRate)&&nightRate>=0?total(rows,'nights')*nightRate:null;
+ const summary=[['Journées',rows.length],['Conduite',fmt(total(rows,'drive'))],['Travail',fmt(total(rows,'work'))],['Kilomètres',total(rows,'km').toLocaleString('fr-FR')+' km'],['Repas',total(rows,'meals')],['Nuitées',total(rows,'nights')],...(mealAmount===null?[]:[['Montant repas',money(mealAmount)]]),...(nightAmount===null?[]:[['Montant nuitées',money(nightAmount)]]),['Congés',total(rows,'leaveDays')],['Repos',total(rows,'restDays')],['Récupérations',total(rows,'recoveryDays')]];
  let table='';
  if(mode==='month'){
   const head='<tr><th style="width:13%">Date</th><th>Km</th><th>Conduite</th><th>Travail</th><th>Repas</th><th>Nuits</th><th>Congés</th><th>Repos</th><th>Récup.</th></tr>';
