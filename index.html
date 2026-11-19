@@ -301,6 +301,82 @@ main{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
  #home .quick-entry-heading:after{font-size:24px!important}
 }
 </style>
+<style id="approved-dashboard-layout">
+/* Reproduction de la disposition de la maquette approuvée — dimensions mobile */
+.truck-banner{margin-top:13px!important;margin-bottom:14px!important;border-radius:0 0 20px 20px!important}
+.truck-banner img{display:block!important;width:100%!important;height:92px!important;max-height:92px!important;object-fit:cover!important;object-position:center 50%!important}
+.banner-menu-button,.banner-settings-button{display:grid!important;place-items:center!important;width:42px!important;height:42px!important;top:10px!important;background:#071426c9!important;border:1px solid #6abfff55!important}
+#home .home-layout{display:block!important}
+#home .home-main-column{display:block!important;width:100%!important;min-width:0!important}
+#home .home-period{
+ display:grid!important;grid-template-columns:1fr 1fr 2.05fr!important;
+ gap:6px!important;align-items:stretch!important;
+ height:62px!important;min-height:62px!important;
+ margin:0 0 13px!important;padding:6px!important;
+ border:1px solid #1d6db3!important;border-radius:25px!important;
+ background:#071d3c!important
+}
+#home .period-switch{display:contents!important}
+#home .period-switch button{
+ display:block!important;width:100%!important;min-width:0!important;
+ height:48px!important;min-height:48px!important;
+ padding:5px 3px!important;border-radius:18px!important;
+ font-size:14px!important;white-space:nowrap!important
+}
+#home #homePeriodSelect{
+ width:100%!important;min-width:0!important;height:48px!important;min-height:48px!important;
+ padding:7px 12px!important;border-radius:18px!important;font-size:14px!important
+}
+#home .home-metrics{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important;margin:0 0 10px!important}
+#home .metric-card{
+ height:134px!important;min-height:134px!important;max-height:134px!important;
+ padding:10px 5px!important;border-radius:25px!important;
+ display:flex!important;flex-direction:column!important;justify-content:center!important;
+ gap:6px!important
+}
+#home .metric-card .metric-icon{font-size:24px!important;line-height:1!important}
+#home .metric-card small{font-size:11px!important;line-height:1.2!important;min-height:26px!important}
+#home .metric-card strong{font-size:19px!important;line-height:1.15!important}
+#home .metric-card.metric-total .metric-icon{font-size:30px!important}
+#home .quick-entry-panel{
+ margin:0 0 12px!important;padding:0!important;min-height:0!important;
+ border-radius:23px!important;overflow:hidden!important
+}
+#home .quick-entry-heading{
+ display:grid!important;grid-template-columns:minmax(0,1fr) auto 22px!important;
+ align-items:center!important;column-gap:8px!important;
+ height:59px!important;min-height:59px!important;padding:8px 14px!important;margin:0!important
+}
+#home .quick-entry-heading b{font-size:14px!important;line-height:1.15!important;white-space:nowrap!important}
+#home .quick-entry-heading small{font-size:11px!important;line-height:1.15!important;white-space:nowrap!important}
+#home .quick-entry-heading:after{font-size:24px!important;line-height:1!important}
+#home .quick-entry-panel[open] .quick-entry-heading{height:auto!important;min-height:59px!important}
+#home .home-secondary{display:grid!important;grid-template-columns:1fr 1fr!important;gap:12px!important;margin:0 0 12px!important}
+#home .mini-metric-priced{
+ position:relative!important;display:block!important;
+ height:163px!important;min-height:163px!important;max-height:163px!important;
+ padding:12px 14px!important;border-radius:25px!important;overflow:hidden!important
+}
+#home .mini-metric-priced>span{display:block!important;font-size:14px!important;line-height:1.2!important}
+#home .mini-metric-priced>strong{position:absolute!important;top:46px!important;right:14px!important;font-size:34px!important;line-height:1!important}
+#home .mini-metric-priced>small{display:block!important;font-size:10px!important;line-height:1.25!important}
+#home .mini-metric-priced .month-total{margin-top:8px!important;font-size:11px!important}
+#home .mini-metric-priced .amount-label{margin-top:7px!important}
+#home .mini-metric-priced .month-amount{display:block!important;margin-top:2px!important;font-size:21px!important;line-height:1.1!important}
+#home .rate-settings{margin-top:8px!important}
+#home .rate-settings summary{display:inline-block!important;padding:6px 8px!important;font-size:11px!important}
+#home .day-count-panel{margin:0 0 12px!important;padding:12px!important}
+#home .home-side-menu{display:none!important}
+#home .home-side-menu.dashboard-menu-open{display:grid!important}
+@media(max-width:390px){
+ #home .quick-entry-heading{column-gap:6px!important;padding-left:12px!important;padding-right:12px!important}
+ #home .quick-entry-heading b{font-size:12px!important}
+ #home .quick-entry-heading small{font-size:9px!important}
+ #home .mini-metric-priced{padding:10px 9px!important}
+ #home .mini-metric-priced>strong{right:10px!important;font-size:30px!important}
+ #home .mini-metric-priced .month-amount{font-size:18px!important}
+}
+</style>
 </head>
 <body>
 <header><div class="head"><div class="logo">🚛</div><div><h1>Mon Carnet Routier</h1><p>SIMPLE · RAPIDE · EFFICACE</p></div></div></header>
