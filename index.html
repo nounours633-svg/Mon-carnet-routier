@@ -264,6 +264,42 @@ main{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
  #home .mini-metric-priced>strong{right:11px;top:62px;font-size:35px}
  #home .mini-metric-priced .month-amount{font-size:18px}
 }
+
+/* Ajustements précis après comparaison avec la capture de référence */
+#home .truck-banner img,.truck-banner img{
+  height:auto!important;
+  max-height:none!important;
+  object-fit:contain!important;
+  object-position:center!important;
+}
+#home .quick-entry-panel{padding:8px 16px!important;min-height:0!important}
+#home .quick-entry-heading{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto auto!important;
+  align-items:center!important;
+  column-gap:14px!important;
+  min-height:78px!important;
+  height:78px!important;
+}
+#home .quick-entry-heading b{
+  white-space:nowrap!important;
+  font-size:16px!important;
+  line-height:1.15!important;
+}
+#home .quick-entry-heading small{
+  white-space:nowrap!important;
+  font-size:12px!important;
+  line-height:1.2!important;
+}
+#home .quick-entry-heading:after{font-size:28px!important;line-height:1!important}
+#home .quick-entry-panel[open] .quick-entry-heading{height:auto!important;min-height:78px!important}
+@media(max-width:420px){
+ #home .quick-entry-panel{padding:7px 11px!important}
+ #home .quick-entry-heading{column-gap:8px!important;min-height:70px!important;height:70px!important}
+ #home .quick-entry-heading b{font-size:13px!important}
+ #home .quick-entry-heading small{font-size:10px!important}
+ #home .quick-entry-heading:after{font-size:24px!important}
+}
 </style>
 </head>
 <body>
