@@ -394,6 +394,11 @@ main{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
 #home .weekly-grid>div:nth-child(4n){border-right:0!important}
 #home .weekly-grid>div:nth-last-child(-n+3){border-bottom:0!important}
 }
+/* Navigation basse étendue bord à bord et commandes de parcours en grille 2x2 */
+@media(max-width:760px){.nav{left:0!important;right:0!important;width:100vw!important;max-width:none!important;padding-left:0!important;padding-right:0!important;gap:2px!important;grid-template-columns:repeat(5,minmax(0,1fr))!important}.nav button{width:100%!important;min-width:0!important;margin:0!important;padding-left:0!important;padding-right:0!important}}
+#home .timeline-actions{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important;padding:9px!important}
+#home .timeline-actions button{width:100%;min-height:44px;font-size:11px!important;padding:7px 4px!important}
+#home .timeline-actions .timeline-edit{grid-column:1/-1}
 </style>
 
 <style id="dashboard-capture-layout">
@@ -652,7 +657,7 @@ main{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
 </div></section>
 <section class="timeline-panel"><div class="timeline-heading"><b>◷ Chronologie du jour</b><label class="timeline-date-wrap"><span class="visually-hidden">Journée affichée</span><select id="dashDaySelect" aria-label="Choisir la journée"></select></label></div>
 <div id="dashboardTimeline" class="dashboard-timeline"><div class="timeline-empty">Aucune journée enregistrée pour le moment.</div></div>
-<div class="timeline-actions"><button type="button" data-add-dash-operation="loading">＋ Ajouter chargement</button><button type="button" data-add-dash-operation="unloading">＋ Ajouter déchargement</button><button type="button" class="timeline-edit" id="dashEditDay">Modifier la journée</button></div></section>
+<div class="timeline-actions"><button type="button" data-add-dash-operation="departure">＋ Départ</button><button type="button" data-add-dash-operation="arrival">＋ Arrivée</button><button type="button" data-add-dash-operation="loading">＋ Chargement</button><button type="button" data-add-dash-operation="unloading">＋ Déchargement</button><button type="button" class="timeline-edit" id="dashEditDay">Modifier la journée</button></div></section>
 <div class="dashboard-status-row"><div class="status-card"><span class="status-check">✓</span><div><small>Dernière sauvegarde</small><strong id="dashBackupStatus">Données enregistrées sur ce téléphone</strong><em>Enregistrement automatique</em></div></div><div class="status-card week-status"><span class="status-check">✓</span><div><small>Suivi du mois</small><strong id="dashStatusText">Cumuls calculés depuis tes journées</strong><div class="status-track"><i id="dashStatusBar"></i></div></div></div></div>
 </div>
 <aside class="home-side-menu" aria-label="Accès rapides"><div class="side-menu-heading"><span>MON CARNET ROUTIER</span><b>Accès rapides</b></div>
@@ -1043,7 +1048,7 @@ document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',(
 
 $('dashDaySelect').addEventListener('change',renderDashboardPanels);
 $('dashEditDay').addEventListener('click',()=>{const x=days.find(v=>v.id===$('dashDaySelect').value);if(x)edit(x.id);});
-function openDashboardQuick(kind){const x=days.find(v=>v.id===$('dashDaySelect').value);if(!x)return;quickTargetDayId=x.id;quickAction=kind;$('quickModalTitle').textContent=kind==='loading'?'Ajouter un chargement':'Ajouter un déchargement';$('quickCityLabel').textContent=kind==='loading'?'Ville du chargement':'Ville du déchargement';$('quickCity').value='';$('quickTime').value='';$('quickTimeWrap').style.display='none';$('quickModalDate').textContent='Journée du '+new Date(x.date+'T12:00:00').toLocaleDateString('fr-FR');$('quickSave').textContent='Valider';$('quickModal').classList.add('open');$('quickModal').setAttribute('aria-hidden','false');setTimeout(()=>$('quickCity').focus(),60);}document.querySelectorAll('[data-add-dash-operation]').forEach(b=>b.addEventListener('click',()=>openDashboardQuick(b.dataset.addDashOperation)));
+function openDashboardQuick(kind){const x=days.find(v=>v.id===$('dashDaySelect').value);if(!x)return;quickTargetDayId=x.id;quickAction=kind;const labels={departure:['Ajouter un départ','Ville de départ','Heure de départ'],arrival:['Ajouter une arrivée','Ville d’arrivée','Heure d’arrivée'],loading:['Ajouter un chargement','Ville du chargement',''],unloading:['Ajouter un déchargement','Ville du déchargement','']};const v=labels[kind];$('quickModalTitle').textContent=v[0];$('quickCityLabel').textContent=v[1];$('quickCity').value='';$('quickTime').value='';$('quickTimeWrap').style.display=(kind==='departure'||kind==='arrival')?'block':'none';$('quickTimeLabel').textContent=v[2];$('quickModalDate').textContent='Journée du '+new Date(x.date+'T12:00:00').toLocaleDateString('fr-FR');$('quickSave').textContent='Valider';$('quickModal').classList.add('open');$('quickModal').setAttribute('aria-hidden','false');setTimeout(()=>$('quickCity').focus(),60);}document.querySelectorAll('[data-add-dash-operation]').forEach(b=>b.addEventListener('click',()=>openDashboardQuick(b.dataset.addDashOperation)));
 document.querySelectorAll('[data-scroll-print]').forEach(b=>b.addEventListener('click',()=>{setTimeout(()=>document.querySelector('.print-panel')?.scrollIntoView({behavior:'smooth',block:'start'}),80)}));
 document.querySelectorAll('[data-focus-form]').forEach(b=>b.addEventListener('click',()=>{if(!$('editId').value)clearForm();show('form');let target=b.dataset.focusForm==='work'?'work':'meals';$(target).focus();$(target).scrollIntoView({behavior:'smooth',block:'center'});}));
 let quickAction='',quickTargetDayId='';
