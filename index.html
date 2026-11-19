@@ -97,6 +97,7 @@ main{padding:12px 13px 24px}
 .calendar-cell .date-num{display:block;font-weight:900;font-size:14px}
 .calendar-cell small{display:block;color:#c6e4ff;font-size:8px;line-height:1.25;margin-top:3px;white-space:nowrap}.calendar-cell .calendar-tariffs{font-size:7px;line-height:1.1;margin-top:2px;font-weight:650;letter-spacing:-.1px}
 .calendar-cell .star{color:#ffdc42;font-size:12px}
+.calendar-cell.public-holiday{border-color:#e5a33a;background:linear-gradient(145deg,#59401c,#172c48)}.calendar-cell .calendar-holiday{color:#ffd58a;font-weight:850;white-space:normal;line-height:1.15}
 .detail-backdrop{display:none;position:fixed;inset:0;z-index:10000;background:#020916e8;backdrop-filter:blur(5px);padding:15px;align-items:center;justify-content:center}
 .detail-backdrop.open{display:flex}
 .detail-modal{width:min(100%,480px);max-height:88vh;overflow:auto;padding:17px;border:1px solid #238bdb;border-radius:20px;background:linear-gradient(155deg,#10345f,#06162e);box-shadow:0 18px 55px #000b}
@@ -389,6 +390,17 @@ let historyCursor=new Date(); historyCursor.setDate(1);
 let calendarCursor=new Date(); calendarCursor.setDate(1);
 let selectedCalendarDate=today();
 const monthNames=['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+function frenchPublicHolidays(year){
+ const a=year%19,b=Math.floor(year/100),c=year%100,d=Math.floor(b/4),e=b%4,f=Math.floor((b+8)/25),g=Math.floor((b-f+1)/3),h=(19*a+b-d-g+15)%30,i=Math.floor(c/4),k=c%4,l=(32+2*e+2*i-h-k)%7,m=Math.floor((a+11*h+22*l)/451),month=Math.floor((h+l-7*m+114)/31),day=((h+l-7*m+114)%31)+1;
+ const easter=new Date(year,month-1,day,12),move=n=>{const date=new Date(easter);date.setDate(date.getDate()+n);return iso(date);};
+ const holidays={};
+ holidays[year+'-01-01']='Jour de l’An'; holidays[year+'-05-01']='Fête du Travail'; holidays[year+'-05-08']='Victoire 1945';
+ holidays[year+'-07-14']='Fête nationale'; holidays[year+'-08-15']='Assomption'; holidays[year+'-11-01']='Toussaint'; holidays[year+'-11-11']='Armistice 1918'; holidays[year+'-12-25']='Noël';
+ holidays[move(1)]='Lundi de Pâques'; holidays[move(39)]='Ascension'; holidays[move(50)]='Lundi de Pentecôte';
+ return holidays;
+}
+function frenchPublicHoliday(date){return frenchPublicHolidays(Number(date.slice(0,4)))[date]||'';}
+
 function isStarDay(x){return (Number(x.drive)||0)>540;}
 function periodLabel(d,mode){return mode==='year'?String(d.getFullYear()):d.toLocaleDateString('fr-FR',{month:'long',year:'numeric'});}
 function historyMove(delta){if(historyMode==='year')historyCursor.setFullYear(historyCursor.getFullYear()+delta);else historyCursor.setMonth(historyCursor.getMonth()+delta);renderHistory();}
@@ -411,9 +423,10 @@ function renderCalendar(){
  let cells='';
  for(let i=0;i<offset;i++)cells+='<div class="calendar-cell empty"></div>';
  for(let d=1;d<=daysInMonth;d++){
-  const date=iso(new Date(y,m,d)),x=days.find(v=>v.date===date);
-  cells+=`<button type="button" class="calendar-cell ${date===today()?'today':''} ${date===selectedCalendarDate?'selected':''}" data-calendar-date="${date}">
+  const date=iso(new Date(y,m,d)),x=days.find(v=>v.date===date),holiday=frenchPublicHoliday(date);
+  cells+=`<button type="button" class="calendar-cell ${date===today()?'today':''} ${date===selectedCalendarDate?'selected':''} ${holiday?'public-holiday':''}" data-calendar-date="${date}">
    <span class="date-num">${d}${x&&isStarDay(x)?' <span class="star">★</span>':''}</span>
+   ${holiday?'<small class="calendar-holiday">Férié · '+holiday+'</small>':''}
    ${x?`<small>${fmt(x.work)} travail</small><small>${fmt(x.drive)} conduite</small><small>${Number(x.km)||0} km</small><small class="calendar-tariffs">${dayPriceChips(x).replace(/<span class="chip">|<\/span>/g,'').replace(/ · /g,' | ')}</small>`:''}
   </button>`;
  }
