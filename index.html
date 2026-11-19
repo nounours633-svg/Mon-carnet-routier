@@ -671,7 +671,7 @@ main{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
  #home .dashboard-top-metrics{grid-template-columns:repeat(2,minmax(0,1fr))!important}
  #home .cockpit-metric{min-width:0!important}
  #home .cockpit-metric.nights strong{font-size:clamp(18px,5vw,25px)!important;white-space:nowrap}
- #home .weekly-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ #home .weekly-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
 }
 </style>
 </head>
@@ -697,7 +697,7 @@ main{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
 <div class="cockpit-metric nights"><span class="cockpit-icon">🛏🍴</span><div><small>Nuitées / repas</small><strong id="dashNights">0 / 0</strong><em>Ce mois-ci</em></div></div>
 </div>
 <section class="weekly-panel"><div class="weekly-heading"><b>▥ Bilan mensuel</b><span id="dashWeekLabel">Mois en cours</span></div><div class="weekly-grid">
-<div><span>▦</span><small>Jours travaillés</small><strong id="dashWorked">0 / 7</strong></div><div><span>★</span><small>Total du mois</small><strong id="dashWeekTotal">0 h 00</strong></div>
+<div><span>▦</span><small>Jours travaillés</small><strong id="dashWorked">0 / 7</strong></div><div><span>★</span><small>Total du mois</small><strong id="dashWeekTotal">0 h 00</strong></div><div><span>🛣</span><small>Kilomètres du mois</small><strong id="dashMonthKm">0 km</strong></div>
 </div></section>
 <section class="timeline-panel"><div class="timeline-heading"><b>◷ Chronologie du jour</b><label class="timeline-date-wrap"><span class="visually-hidden">Journée affichée</span><select id="dashDaySelect" aria-label="Choisir la journée"></select></label></div>
 <div id="dashboardTimeline" class="dashboard-timeline"><div class="timeline-empty">Aucune journée enregistrée pour le moment.</div></div>
@@ -1061,7 +1061,7 @@ function renderDashboardPanels(){
  const monthly=days.filter(x=>inMonth(x,month)),drive=sum(monthly,'drive'),work=sum(monthly,'work'),total=drive+work;
  const worked=monthly.filter(x=>(Number(x.drive)||0)+(Number(x.work)||0)+(Number(x.km)||0)>0||(Array.isArray(x.operations)&&x.operations.length>0)||!!x.startCity||!!x.endCity).length;
  $('dashDrive').textContent=fmt(drive);$('dashWork').textContent=fmt(work);$('dashTotal').textContent=fmt(total);$('dashNights').textContent=sum(monthly,'nights')+' / '+sum(monthly,'meals');
- $('dashWorked').textContent=worked+' / '+daysInMonth;$('dashWeekTotal').textContent=fmt(total);
+ $('dashWorked').textContent=worked+' / '+daysInMonth;$('dashWeekTotal').textContent=fmt(total);$('dashMonthKm').textContent=sumCountedKm(monthly).toLocaleString('fr-FR')+' km';
  $('dashWeekLabel').textContent=now.toLocaleDateString('fr-FR',{month:'long',year:'numeric'});$('dashStatusText').textContent=worked+' jour(s) renseigné(s) sur '+daysInMonth;$('dashStatusBar').style.width=(Math.min(daysInMonth,worked)/daysInMonth*100)+'%';
  const sel=$('dashDaySelect'),old=sel.value,dates=[...days].sort((a,b)=>b.date.localeCompare(a.date));
  sel.innerHTML=dates.map(x=>'<option value="'+esc(x.id)+'">'+labelDate(x.date)+(x.startCity?' · '+esc(x.startCity):'')+'</option>').join('');
