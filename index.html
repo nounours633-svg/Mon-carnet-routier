@@ -597,7 +597,7 @@ function printHistory(){
  const nightRate=storedRate(NIGHT_RATE_KEY);
  const mealAmount=Number.isFinite(mealRate)&&mealRate>=0?total(rows,'meals')*mealRate:null;
  const nightAmount=Number.isFinite(nightRate)&&nightRate>=0?total(rows,'nights')*nightRate:null;
- const summary=[['Journées',rows.length],['Conduite',fmt(total(rows,'drive'))],['Travail',fmt(total(rows,'work'))],['Kilomètres',total(rows,'km').toLocaleString('fr-FR')+' km'],['Repas',total(rows,'meals')],['Nuitées',total(rows,'nights')],...(mealAmount===null?[]:[['Montant repas',money(mealAmount)]]),...(nightAmount===null?[]:[['Montant nuitées',money(nightAmount)]]),['Congés',total(rows,'leaveDays')],['Repos',total(rows,'restDays')],['Récupérations',total(rows,'recoveryDays')]];
+ const summary=[['Journées',rows.length],['Conduite',fmt(total(rows,'drive'))],['Travail',fmt(total(rows,'work'))],['Total heures',fmt(total(rows,'drive')+total(rows,'work'))],['Kilomètres',total(rows,'km').toLocaleString('fr-FR')+' km'],['Repas',total(rows,'meals')],['Nuitées',total(rows,'nights')],...(mealAmount===null?[]:[['Montant repas',money(mealAmount)]]),...(nightAmount===null?[]:[['Montant nuitées',money(nightAmount)]]),['Congés',total(rows,'leaveDays')],['Repos',total(rows,'restDays')],['Récupérations',total(rows,'recoveryDays')]];
  let table='';
  if(mode==='month'){
   const head='<tr><th style="width:11%">Date</th><th>Km</th><th>Conduite</th><th>Travail</th><th>Repas</th><th>Montant repas</th><th>Nuits</th><th>Montant nuitées</th><th>Congés</th><th>Repos</th><th>Récup.</th></tr>';
