@@ -1,7 +1,7 @@
 /* Mon Carnet Routier — historique chronologique des journées et tournées
    Mise à jour du 19/11/2026 */
 
-const CACHE_NAME = 'mon-carnet-routier-v20261119-total-heures-26';
+const CACHE_NAME = 'mon-carnet-routier-v20261119-dashboard-cockpit-27';
 
 const APP_FILES = [
   './',
