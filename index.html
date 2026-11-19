@@ -141,6 +141,18 @@ main{padding:12px 13px 24px}
  #printDocument tbody tr{height:5.2mm;break-inside:avoid;page-break-inside:avoid}
  #printDocument tfoot{font-weight:900}
  #printDocument .print-footer{margin-top:1.5mm;font-size:6pt;color:#555;border-top:1px solid #aaa;padding-top:1mm}
+ /* Impression mensuelle compacte : garder le mois entier sur une page A4 */
+ #printDocument .print-summary{grid-template-columns:repeat(6,minmax(0,1fr));gap:.6mm;margin:1mm 0 1.2mm}
+ #printDocument .print-summary div{padding:.55mm .7mm;font-size:5.5pt;line-height:1}
+ #printDocument .print-summary b{font-size:6.8pt;margin-top:.2mm}
+ #printDocument h1{font-size:13pt;margin-bottom:1mm}
+ #printDocument h2{font-size:8pt;margin:1mm 0 .6mm}
+ #printDocument .print-sub{font-size:6pt;margin-bottom:1mm;line-height:1.1}
+ #printDocument table{font-size:5.8pt}
+ #printDocument th,#printDocument td{padding:.35mm .45mm;line-height:1;overflow-wrap:anywhere}
+ #printDocument tbody tr{height:4mm}
+ #printDocument tbody td small{font-size:4.8pt;line-height:1}
+ #printDocument .print-footer{margin-top:1mm;font-size:5.5pt;padding-top:.6mm}
 }
 
 /* Restauration du tableau de bord compact et protégé */
