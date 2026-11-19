@@ -127,7 +127,7 @@ main{padding:12px 13px 24px}
  body>header{display:none!important}
  body>main{display:block!important;position:static!important;width:100%!important;max-width:none!important;margin:0!important;padding:0!important;background:#fff!important}
  body>main>*:not(#printDocument){display:none!important}
- #printDocument{display:block!important;position:static!important;width:100%!important;max-height:none!important;overflow:visible!important;color:#111!important;background:#fff!important;font-size:7pt!important;break-inside:avoid!important;page-break-inside:avoid!important}
+ #printDocument{display:block!important;position:static!important;width:100%!important;max-height:none!important;overflow:visible!important;color:#111!important;background:#fff!important;font-size:7pt!important;break-inside:auto!important;page-break-inside:auto!important}
  #printDocument h1{font-size:15pt;margin:0 0 1.5mm;color:#10243c}
  #printDocument h2{font-size:9pt;margin:2mm 0 1mm;color:#10243c}
  #printDocument .print-sub{font-size:7pt;color:#444;margin-bottom:2mm;line-height:1.25}
@@ -350,7 +350,7 @@ const $=id=>document.getElementById(id);
 function readRate(id){const el=$(id);if(!el)return null;const raw=el.value.trim().replace(',','.');if(raw==='')return null;const n=Number(raw);return Number.isFinite(n)&&n>=0?n:null}
 function money(n){return Number(n||0).toLocaleString('fr-FR',{style:'currency',currency:'EUR'})}
 function storedRate(key){const raw=localStorage.getItem(key);if(raw===null||String(raw).trim()==='')return null;const n=Number(String(raw).replace(',','.'));return Number.isFinite(n)&&n>=0?n:null}
-function dayPriceChips(x){const mr=storedRate(MEAL_RATE_KEY),nr=storedRate(NIGHT_RATE_KEY),meals=Number(x.meals)||0,nights=Number(x.nights)||0;let out='';if(nights)out+='<span class="chip">🛏 '+nights+' nuit(s)'+(nr===null?' · tarif à renseigner':' · '+money(nr)+'/nuit = '+money(nights*nr))+'</span>';if(meals)out+='<span class="chip">🍴 '+meals+' repas'+(mr===null?' · tarif à renseigner':' · '+money(mr)+'/repas = '+money(meals*mr))+'</span>';return out}
+function dayPriceChips(x){const mr=storedRate(MEAL_RATE_KEY),nr=storedRate(NIGHT_RATE_KEY),meals=Number(x.meals)||0,nights=Number(x.nights)||0;let out='';if(nights)out+='<span class="chip">🛏 '+nights+' nuit(s)'+(nr===null?' · tarif à renseigner':' · '+money(nr)+'/nuit')+'</span>';if(meals)out+='<span class="chip">🍴 '+meals+' repas'+(mr===null?' · tarif à renseigner':' · '+money(mr)+'/repas')+'</span>';return out}
 function normalizeDay(x){x={...x};const kind=String(x.dayKind??x.dayStatus??x.dayType??x.type??'').toLowerCase();const has=(k)=>Object.prototype.hasOwnProperty.call(x,k)&&x[k]!==null&&x[k]!=='';if(!has('leaveDays'))x.leaveDays=/cong|leave|vacance|paid/.test(kind)?1:0;if(!has('restDays'))x.restDays=/repos|rest|off|rtt/.test(kind)?1:0;if(!has('recoveryDays'))x.recoveryDays=/recup|récup|recovery/.test(kind)?1:0;x.leaveDays=Number(x.leaveDays)||0;x.restDays=Number(x.restDays)||0;x.recoveryDays=Number(x.recoveryDays)||0;return x}
 function load(){try{let d=JSON.parse(localStorage.getItem(KEY)||'[]');return Array.isArray(d)?d.map(normalizeDay):[]}catch(e){return[]}}
 function save(){localStorage.setItem(KEY,JSON.stringify(days));renderAll()}
@@ -414,7 +414,7 @@ function renderCalendar(){
   const date=iso(new Date(y,m,d)),x=days.find(v=>v.date===date);
   cells+=`<button type="button" class="calendar-cell ${date===today()?'today':''} ${date===selectedCalendarDate?'selected':''}" data-calendar-date="${date}">
    <span class="date-num">${d}${x&&isStarDay(x)?' <span class="star">★</span>':''}</span>
-   ${x?`<small>${fmt(x.work)} travail</small><small>${fmt(x.drive)} conduite</small><small>${Number(x.km)||0} km</small><small>☾ ${x.nights||0} · 🍴 ${x.meals||0}</small>${dayPriceChips(x).replace(/<span class="chip">|<\/span>/g,'').replace(/ · /g,' | ')}`:''}
+   ${x?`<small>${fmt(x.work)} travail</small><small>${fmt(x.drive)} conduite</small><small>${Number(x.km)||0} km</small>${dayPriceChips(x).replace(/<span class="chip">|<\/span>/g,'').replace(/ · /g,' | ')}`:''}
   </button>`;
  }
  const total=Math.ceil((offset+daysInMonth)/7)*7-(offset+daysInMonth);
@@ -516,9 +516,9 @@ function printHistory(){
  const summary=[['Journées',rows.length],['Conduite',fmt(total(rows,'drive'))],['Travail',fmt(total(rows,'work'))],['Kilomètres',total(rows,'km').toLocaleString('fr-FR')+' km'],['Repas',total(rows,'meals')],['Nuitées',total(rows,'nights')],...(mealAmount===null?[]:[['Montant repas',money(mealAmount)]]),...(nightAmount===null?[]:[['Montant nuitées',money(nightAmount)]]),['Congés',total(rows,'leaveDays')],['Repos',total(rows,'restDays')],['Récupérations',total(rows,'recoveryDays')]];
  let table='';
  if(mode==='month'){
-  const head='<tr><th style="width:13%">Date</th><th>Km</th><th>Conduite</th><th>Travail</th><th>Repas</th><th>Nuits</th><th>Congés</th><th>Repos</th><th>Récup.</th></tr>';
-  const body=rows.map(x=>`<tr><td>${labelDate(x.date)}</td><td>${display('km',x.km)}</td><td>${display('drive',x.drive)}</td><td>${display('work',x.work)}</td><td>${display('meals',x.meals)}</td><td>${display('nights',x.nights)}</td><td>${display('leaveDays',x.leaveDays)}</td><td>${display('restDays',x.restDays)}</td><td>${display('recoveryDays',x.recoveryDays)}</td></tr>`).join('');
-  const foot=`<tr><th>TOTAL</th>${fields.map(([k])=>`<th>${display(k,total(rows,k))}</th>`).join('')}</tr>`;
+  const head='<tr><th style="width:11%">Date</th><th>Km</th><th>Conduite</th><th>Travail</th><th>Repas</th><th>Tarif repas</th><th>Nuits</th><th>Tarif nuit</th><th>Congés</th><th>Repos</th><th>Récup.</th></tr>';
+  const body=rows.map(x=>`<tr><td>${labelDate(x.date)}</td><td>${display('km',x.km)}</td><td>${display('drive',x.drive)}</td><td>${display('work',x.work)}</td><td>${display('meals',x.meals)}</td><td>${Number(x.meals)>0&&mealAmount!==null?money(mealRate):'—'}</td><td>${display('nights',x.nights)}</td><td>${Number(x.nights)>0&&nightAmount!==null?money(nightRate):'—'}</td><td>${display('leaveDays',x.leaveDays)}</td><td>${display('restDays',x.restDays)}</td><td>${display('recoveryDays',x.recoveryDays)}</td></tr>`).join('');
+  const foot=`<tr><th>TOTAL</th><th>${display('km',total(rows,'km'))}</th><th>${fmt(total(rows,'drive'))}</th><th>${fmt(total(rows,'work'))}</th><th>${total(rows,'meals')}</th><th>${mealAmount===null?'—':money(mealRate)}</th><th>${total(rows,'nights')}</th><th>${nightAmount===null?'—':money(nightRate)}</th><th>${total(rows,'leaveDays')}</th><th>${total(rows,'restDays')}</th><th>${total(rows,'recoveryDays')}</th></tr>`;
   table=`<h2>Détail des journées enregistrées</h2><table><thead>${head}</thead><tbody>${body}</tbody><tfoot>${foot}</tfoot></table>`;
  }else{
   const monthRows=[];
@@ -526,9 +526,9 @@ function printHistory(){
    const monthDays=rows.filter(x=>Number(x.date.slice(5,7))===m+1);
    monthRows.push({m,items:monthDays});
   }
-  const head='<tr><th style="width:19%">Mois</th><th>Journées</th><th>Km</th><th>Conduite</th><th>Travail</th><th>Repas</th><th>Nuits</th><th>Congés</th><th>Repos</th><th>Récup.</th></tr>';
-  const body=monthRows.map(({m,items})=>`<tr><td>${monthNames[m].charAt(0).toLocaleUpperCase('fr')+monthNames[m].slice(1)}</td><td>${items.length}</td>${fields.map(([k])=>`<td>${display(k,total(items,k))}</td>`).join('')}</tr>`).join('');
-  const foot=`<tr><th>TOTAL ANNUEL</th><th>${rows.length}</th>${fields.map(([k])=>`<th>${display(k,total(rows,k))}</th>`).join('')}</tr>`;
+  const head='<tr><th style="width:16%">Mois</th><th>Journées</th><th>Km</th><th>Conduite</th><th>Travail</th><th>Repas</th><th>Tarif repas</th><th>Nuits</th><th>Tarif nuit</th><th>Congés</th><th>Repos</th><th>Récup.</th></tr>';
+  const body=monthRows.map(({m,items})=>`<tr><td>${monthNames[m].charAt(0).toLocaleUpperCase('fr')+monthNames[m].slice(1)}</td><td>${items.length}</td><td>${display('km',total(items,'km'))}</td><td>${fmt(total(items,'drive'))}</td><td>${fmt(total(items,'work'))}</td><td>${total(items,'meals')}</td><td>${total(items,'meals')&&mealAmount!==null?money(mealRate):'—'}</td><td>${total(items,'nights')}</td><td>${total(items,'nights')&&nightAmount!==null?money(nightRate):'—'}</td><td>${total(items,'leaveDays')}</td><td>${total(items,'restDays')}</td><td>${total(items,'recoveryDays')}</td></tr>`).join('');
+  const foot=`<tr><th>TOTAL ANNUEL</th><th>${rows.length}</th><th>${display('km',total(rows,'km'))}</th><th>${fmt(total(rows,'drive'))}</th><th>${fmt(total(rows,'work'))}</th><th>${total(rows,'meals')}</th><th>${mealAmount===null?'—':money(mealRate)}</th><th>${total(rows,'nights')}</th><th>${nightAmount===null?'—':money(nightRate)}</th><th>${total(rows,'leaveDays')}</th><th>${total(rows,'restDays')}</th><th>${total(rows,'recoveryDays')}</th></tr>`;
   table=`<h2>Bilan des 12 mois</h2><table><thead>${head}</thead><tbody>${body}</tbody><tfoot>${foot}</tfoot></table>`;
  }
  $('printDocument').innerHTML=`<h1>MON CARNET ROUTIER</h1><div class="print-sub"><b>Relevé d’activité — ${esc(range.label)}</b><br>Document personnel de suivi · Période du ${labelDate(range.start)} au ${labelDate(range.end)}</div><div class="print-summary">${summary.map(v=>`<div>${esc(v[0])}<b>${esc(v[1])}</b></div>`).join('')}</div>${table}<div class="print-footer">Relevé généré le ${new Date().toLocaleString('fr-FR')} · Données issues des journées enregistrées dans l’application.</div>`;
