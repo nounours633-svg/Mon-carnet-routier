@@ -62,7 +62,7 @@ main{padding:12px 13px 24px}
 
 
 /* Saisies rapides du tableau de bord */
-.mini-metric{position:relative;padding-right:52px}.mini-metric-priced{display:flex;flex-direction:column;align-items:flex-start;gap:5px;padding:12px 14px}.mini-metric-priced>strong{position:absolute;right:14px;top:40px}.mini-metric-priced .rate-label{font-size:10px;color:#9ec9ed;margin-top:5px}.mini-metric-priced .rate-input{width:100%;min-width:0;box-sizing:border-box;border:1px solid #28689d;border-radius:9px;background:#09264a;color:#fff;padding:7px 9px;font:600 13px inherit}.mini-metric-priced .rate-input::placeholder{color:#9ab6d0}.mini-metric-priced .amount-label{font-size:10px;color:#9ec9ed}.mini-metric-priced .month-amount{font-size:19px;color:#fff;font-weight:800;font-variant-numeric:tabular-nums}quick-plus{position:absolute;right:12px;top:50%;transform:translateY(-50%);width:34px;height:34px;border:1px solid #55baff;border-radius:50%;background:linear-gradient(145deg,#087cff,#0751a8);color:#fff;font-size:24px;font-weight:800;line-height:1;box-shadow:0 3px 10px #0005}.quick-plus:active{transform:translateY(-50%) scale(.94)}
+.mini-metric{position:relative;padding-right:52px}.mini-metric-priced{display:flex;flex-direction:column;align-items:flex-start;gap:5px;padding:12px 14px}.mini-metric-priced>strong{position:absolute;right:14px;top:40px}.mini-metric-priced .rate-label{font-size:10px;color:#9ec9ed;margin-top:5px}.rate-settings{width:100%;margin-top:5px}.rate-settings summary{display:inline-block;cursor:pointer;color:#b8d7f2;font-size:11px;font-weight:700;padding:5px 8px;border:1px solid #28689d;border-radius:8px;list-style:none}.rate-settings summary::-webkit-details-marker{display:none}.rate-settings[open] summary{margin-bottom:5px}.rate-settings .rate-label{display:block}.mini-metric-priced .rate-input{width:100%;min-width:0;box-sizing:border-box;border:1px solid #28689d;border-radius:9px;background:#09264a;color:#fff;padding:7px 9px;font:600 13px inherit}.mini-metric-priced .rate-input::placeholder{color:#9ab6d0}.mini-metric-priced .amount-label{font-size:10px;color:#9ec9ed}.mini-metric-priced .month-amount{font-size:19px;color:#fff;font-weight:800;font-variant-numeric:tabular-nums}quick-plus{position:absolute;right:12px;top:50%;transform:translateY(-50%);width:34px;height:34px;border:1px solid #55baff;border-radius:50%;background:linear-gradient(145deg,#087cff,#0751a8);color:#fff;font-size:24px;font-weight:800;line-height:1;box-shadow:0 3px 10px #0005}.quick-plus:active{transform:translateY(-50%) scale(.94)}
 .quick-modal-backdrop{position:fixed;inset:0;z-index:9999;display:none;align-items:center;justify-content:center;padding:18px;background:#020916d9;backdrop-filter:blur(5px)}.quick-modal-backdrop.open{display:flex}.quick-modal{width:min(100%,390px);padding:19px;border:1px solid #2478ba;border-radius:22px;background:linear-gradient(155deg,#102e52,#07172d);box-shadow:0 18px 55px #000b;color:#fff}.quick-modal-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px}.quick-modal-head h2{font-size:19px;margin:0}.quick-close{width:34px;height:34px;border:0;border-radius:50%;background:#183e67;color:#fff;font-size:25px}.quick-modal-date{margin:0 0 15px;color:#a9c9e8;font-size:12px}.quick-modal label{display:block;margin:12px 0 6px;color:#cfe7ff;font-size:13px;font-weight:700}.quick-modal input{box-sizing:border-box;width:100%;min-height:46px;padding:10px 12px;border:1px solid #347db8;border-radius:12px;background:#061a32;color:#fff;font:inherit}.quick-modal-actions{display:flex;gap:10px;margin-top:19px}.quick-modal-actions button{flex:1;min-height:44px}.quick-modal-actions .btn{border:0}.quick-modal-actions .secondary{border:1px solid #35668f}
 
 .quick-entry-panel{margin:0 0 12px;padding:13px;border:1px solid #2478ba;border-radius:18px;background:linear-gradient(145deg,#10345e,#071a34);box-shadow:inset 0 0 18px #168cff14}
@@ -206,16 +206,20 @@ main{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
     <div class="mini-metric mini-metric-priced">
       <span>🍴 Repas</span><strong id="totalMeals">0</strong><small>Jour en cours</small>
       <small class="month-total">Mois : <b id="monthMeals">0</b></small>
-      <label class="rate-label" for="mealRate">Tarif par repas (€)</label>
-      <input class="rate-input" id="mealRate" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Saisir le tarif">
       <small class="amount-label">Montant du mois</small><b class="month-amount" id="mealAmount">—</b>
+      <details class="rate-settings"><summary>Modifier le tarif</summary>
+        <label class="rate-label" for="mealRate">Tarif par repas (€)</label>
+        <input class="rate-input" id="mealRate" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Saisir le tarif">
+      </details>
     </div>
     <div class="mini-metric mini-metric-priced">
       <span>🛏 Nuitées</span><strong id="totalNights">0</strong><small>Jour en cours</small>
       <small class="month-total">Mois : <b id="monthNights">0</b></small>
-      <label class="rate-label" for="nightRate">Tarif par nuitée (€)</label>
-      <input class="rate-input" id="nightRate" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Saisir le tarif">
       <small class="amount-label">Montant du mois</small><b class="month-amount" id="nightAmount">—</b>
+      <details class="rate-settings"><summary>Modifier le tarif</summary>
+        <label class="rate-label" for="nightRate">Tarif par nuitée (€)</label>
+        <input class="rate-input" id="nightRate" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Saisir le tarif">
+      </details>
     </div>
   </div>
   <div class="day-count-panel" aria-live="polite"><div class="day-count-title">Cumul des jours — période sélectionnée</div><div class="day-count-item"><small>Congés</small><strong id="countConge">0</strong></div><div class="day-count-item"><small>Repos</small><strong id="countRepos">0</strong></div><div class="day-count-item"><small>Récupérations</small><strong id="countRecup">0</strong></div></div>
