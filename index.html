@@ -422,6 +422,27 @@ main{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
     overflow-wrap:normal!important;
   }
 }
+
+/* Correction définitive : cinq boutons = cinq colonnes, aucune sixième case vide */
+@media(max-width:760px){
+  .nav{
+    display:grid!important;
+    grid-template-columns:repeat(5,minmax(0,1fr))!important;
+    width:100vw!important;
+    max-width:none!important;
+    left:0!important;right:0!important;
+    box-sizing:border-box!important;
+    gap:4px!important;
+    padding-left:5px!important;padding-right:5px!important;
+  }
+  .nav button{
+    width:100%!important;min-width:0!important;
+    min-height:68px!important;
+    padding:9px 2px!important;
+    font-size:12px!important;
+    box-sizing:border-box!important;
+  }
+}
 </style>
 
 <style id="dashboard-capture-layout">
