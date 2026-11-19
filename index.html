@@ -606,6 +606,16 @@ main{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
     overflow-wrap:anywhere!important;
   }
 }
+
+/* Disposition demandée : exactement quatre cartes principales */
+@media(max-width:760px){#home .dashboard-top-metrics{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media(min-width:761px){#home .dashboard-top-metrics{grid-template-columns:repeat(4,minmax(0,1fr))!important}}
+#home .weekly-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+.calendar-day-kind{display:block!important;font-weight:800!important;border-radius:5px;padding:2px 3px;margin-top:2px}
+.calendar-day-kind.leave{background:#145f9d;color:#fff}
+.calendar-day-kind.rest{background:#45566b;color:#fff}
+.calendar-day-kind.recovery{background:#176b4c;color:#fff}
+.calendar-cell .calendar-day-kind{font-size:clamp(8px,1.8vw,11px)!important;line-height:1.15}
 </style>
 </head>
 <body>
@@ -629,10 +639,9 @@ main{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
 <div class="cockpit-metric working"><span class="cockpit-icon">♟</span><div><small>Travail</small><strong id="dashWork">0 h 00</strong><em>Cette semaine</em></div></div>
 <div class="cockpit-metric total"><span class="cockpit-icon">◷</span><div><small>Total cumulé</small><strong id="dashTotal">0 h 00</strong><em>Cette semaine</em></div></div>
 <div class="cockpit-metric nights"><span class="cockpit-icon">▰</span><div><small>Nuitées</small><strong id="dashNights">0</strong><em>Cette semaine</em></div></div>
-<div class="cockpit-metric meals"><span class="cockpit-icon">🍴</span><div><small>Repas</small><strong id="dashTopMeals">0</strong><em>Cette semaine</em></div></div>
 </div>
 <section class="weekly-panel"><div class="weekly-heading"><b>▥ Bilan hebdomadaire</b><span id="dashWeekLabel">Semaine en cours</span></div><div class="weekly-grid">
-<div><span>▦</span><small>Jours travaillés</small><strong id="dashWorked">0 / 7</strong></div><div><span>▰</span><small>Nuitées</small><strong id="dashWeekNights">0</strong></div><div><span>◷</span><small>Repos</small><strong id="dashRest">0</strong></div><div><span>☀</span><small>Congés payés</small><strong id="dashLeave">0</strong></div><div><span>↻</span><small>Récupération</small><strong id="dashRecovery">0</strong></div><div><span>🍴</span><small>Repas</small><strong id="dashMeals">0</strong></div><div><span>★</span><small>Total semaine</small><strong id="dashWeekTotal">0 h 00</strong></div>
+<div><span>▦</span><small>Jours travaillés</small><strong id="dashWorked">0 / 7</strong></div><div><span>🍴</span><small>Repas</small><strong id="dashMeals">0</strong></div><div><span>▰</span><small>Nuitées</small><strong id="dashWeekNights">0</strong></div><div><span>★</span><small>Total semaine</small><strong id="dashWeekTotal">0 h 00</strong></div>
 </div></section>
 <section class="timeline-panel"><div class="timeline-heading"><b>◷ Chronologie du jour</b><label class="timeline-date-wrap"><span class="visually-hidden">Journée affichée</span><select id="dashDaySelect" aria-label="Choisir la journée"></select></label></div>
 <div id="dashboardTimeline" class="dashboard-timeline"><div class="timeline-empty">Aucune journée enregistrée pour le moment.</div></div>
@@ -949,6 +958,9 @@ function renderCalendar(){
    cells+=`<button type="button" class="calendar-cell ${date===today()?'today':''} ${date===selectedCalendarDate?'selected':''} ${holiday?'public-holiday':''} ${x&&(hasElevenHourRestAfter(x)||hasElevenHourRestBefore(x))?'rest-11h-pair':''} ${x&&hasElevenHourRestAfter(x)?'rest-11h-after':''}" data-calendar-date="${date}">
     <span class="date-num">${Number(date.slice(8,10))}${x&&isStarDay(x)?' <span class="star">★</span>':''}</span>
     ${holiday?'<small class="calendar-holiday">Férié · '+holiday+'</small>':''}
+    ${x&&Number(x.leaveDays)>0?`<small class="calendar-day-kind leave">Congé${Number(x.leaveDays)>1?' · '+x.leaveDays+' j':''}</small>`:''}
+    ${x&&Number(x.restDays)>0?`<small class="calendar-day-kind rest">Repos${Number(x.restDays)>1?' · '+x.restDays+' j':''}</small>`:''}
+    ${x&&Number(x.recoveryDays)>0?`<small class="calendar-day-kind recovery">Récupération${Number(x.recoveryDays)>1?' · '+x.recoveryDays+' j':''}</small>`:''}
     ${x?`<small>${fmt(x.work)} travail</small><small>${fmt(x.drive)} conduite</small><small>${Number(x.km)||0} km</small><small class="calendar-tariffs">${dayPriceChips(x).replace(/<span class="chip">|<\/span>/g,'').replace(/ · /g,' | ')}</small>`:''}
    </button>`;
   }
@@ -963,7 +975,7 @@ function renderCalendar(){
 function renderCalendarSummary(){
  const x=days.find(v=>v.date===selectedCalendarDate);
  if(!x){$('calendarDaySummary').innerHTML='<div class="panel empty">Sélectionne une journée enregistrée pour voir son détail.</div>';return;}
- $('calendarDaySummary').innerHTML=`<div class="panel"><b>${labelDate(x.date)} ${isStarDay(x)?'<span class="day-star">★</span>':''}</b><div class="chips"><span class="chip">Travail ${fmt(x.work)}</span><span class="chip">Conduite ${fmt(x.drive)}</span><span class="chip">${Number(x.km)||0} km</span><span class="chip">${x.nights||0} nuit(s)</span><span class="chip">${x.meals||0} repas</span></div><div class="btnrow"><button class="btn full" type="button" data-detail="${esc(x.id)}">Voir le détail de la journée</button></div></div>`;
+ $('calendarDaySummary').innerHTML=`<div class="panel"><b>${labelDate(x.date)} ${isStarDay(x)?'<span class="day-star">★</span>':''}</b><div class="chips"><span class="chip">Travail ${fmt(x.work)}</span><span class="chip">Conduite ${fmt(x.drive)}</span><span class="chip">${Number(x.km)||0} km</span><span class="chip">${x.nights||0} nuit(s)</span><span class="chip">${x.meals||0} repas</span>${Number(x.restDays)>0?`<span class="chip calendar-day-kind rest">Repos ${x.restDays} j</span>`:'' }${Number(x.leaveDays)>0?`<span class="chip calendar-day-kind leave">Congé payé ${x.leaveDays} j</span>`:'' }${Number(x.recoveryDays)>0?`<span class="chip calendar-day-kind recovery">Récupération ${x.recoveryDays} j</span>`:'' }</div><div class="btnrow"><button class="btn full" type="button" data-detail="${esc(x.id)}">Voir le détail de la journée</button></div></div>`;
 }
 function openDayDetail(id){
  const x=days.find(v=>v.id===id);if(!x)return;
@@ -992,8 +1004,8 @@ function renderDashboardPanels(){
  const start=weekStart(today()),endDate=new Date(start+'T12:00:00');endDate.setDate(endDate.getDate()+6);const end=iso(endDate);
  const week=days.filter(x=>x.date>=start&&x.date<=end),drive=sum(week,'drive'),work=sum(week,'work'),total=drive+work;
  const worked=week.filter(x=>(Number(x.drive)||0)+(Number(x.work)||0)+(Number(x.km)||0)>0||(Array.isArray(x.operations)&&x.operations.length>0)||!!x.startCity||!!x.endCity).length;
- $('dashDrive').textContent=fmt(drive);$('dashWork').textContent=fmt(work);$('dashTotal').textContent=fmt(total);$('dashNights').textContent=sum(week,'nights');$('dashTopMeals').textContent=sum(week,'meals');
- $('dashWorked').textContent=worked+' / 7';$('dashMeals').textContent=sum(week,'meals');$('dashWeekNights').textContent=sum(week,'nights');$('dashRest').textContent=countKind(week,'repos');$('dashLeave').textContent=countKind(week,'conge');$('dashRecovery').textContent=countKind(week,'recuperation');$('dashWeekTotal').textContent=fmt(total);
+ $('dashDrive').textContent=fmt(drive);$('dashWork').textContent=fmt(work);$('dashTotal').textContent=fmt(total);$('dashNights').textContent=sum(week,'nights');
+ $('dashWorked').textContent=worked+' / 7';$('dashMeals').textContent=sum(week,'meals');$('dashWeekNights').textContent=sum(week,'nights');$('dashWeekTotal').textContent=fmt(total);
  $('dashWeekLabel').textContent='Du '+labelDate(start)+' au '+labelDate(end);$('dashStatusText').textContent=worked+' jour(s) renseigné(s) sur 7';$('dashStatusBar').style.width=(Math.min(7,worked)/7*100)+'%';
  const sel=$('dashDaySelect'),old=sel.value,dates=[...days].sort((a,b)=>b.date.localeCompare(a.date));
  sel.innerHTML=dates.map(x=>'<option value="'+esc(x.id)+'">'+labelDate(x.date)+(x.startCity?' · '+esc(x.startCity):'')+'</option>').join('');
