@@ -372,6 +372,28 @@ main{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
 @media(max-width:370px){.operation-main{grid-template-columns:1fr!important}.operation-main select{grid-column:auto}.operation-controls{flex-wrap:nowrap}}
 #home .home-side-menu.dashboard-menu-collapsed{display:none}
 .nav{grid-template-columns:repeat(6,minmax(0,1fr))!important}.nav button{font-size:9px!important;padding-left:1px!important;padding-right:1px!important}
+
+/* Ajustement des cinq indicateurs et des trois compteurs de jours */
+#home .dashboard-top-metrics{grid-template-columns:repeat(5,minmax(0,1fr))}
+#home .cockpit-metric.meals{border-color:#20cfff;background:linear-gradient(145deg,#087b9d,#07314f)}
+#home .weekly-grid{grid-template-columns:repeat(7,minmax(0,1fr))}
+#home .weekly-grid>div{border-right:1px solid #a8d8ff66!important;border-bottom:0!important}
+#home .weekly-grid>div:last-child{border-right:0!important}
+#home .weekly-grid small{font-size:clamp(7px,.85vw,10px)}
+@media(max-width:760px){
+#home .dashboard-top-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}
+#home .weekly-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+#home .weekly-grid>div{border-right:1px solid #a8d8ff55!important;border-bottom:1px solid #a8d8ff55!important}
+#home .weekly-grid>div:nth-child(4n){border-right:0!important}
+#home .weekly-grid>div:nth-last-child(-n+3){border-bottom:0!important}
+#home .weekly-grid small{font-size:8px;min-height:21px}
+}
+@media(max-width:520px){
+#home .weekly-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+#home .weekly-grid>div{border-right:1px solid #a8d8ff55!important;border-bottom:1px solid #a8d8ff55!important}
+#home .weekly-grid>div:nth-child(4n){border-right:0!important}
+#home .weekly-grid>div:nth-last-child(-n+3){border-bottom:0!important}
+}
 </style>
 
 <style id="dashboard-capture-layout">
@@ -559,9 +581,10 @@ main{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
 <div class="cockpit-metric working"><span class="cockpit-icon">♟</span><div><small>Travail</small><strong id="dashWork">0 h 00</strong><em>Cette semaine</em></div></div>
 <div class="cockpit-metric total"><span class="cockpit-icon">◷</span><div><small>Total cumulé</small><strong id="dashTotal">0 h 00</strong><em>Cette semaine</em></div></div>
 <div class="cockpit-metric nights"><span class="cockpit-icon">▰</span><div><small>Nuitées</small><strong id="dashNights">0</strong><em>Cette semaine</em></div></div>
+<div class="cockpit-metric meals"><span class="cockpit-icon">🍴</span><div><small>Repas</small><strong id="dashTopMeals">0</strong><em>Cette semaine</em></div></div>
 </div>
 <section class="weekly-panel"><div class="weekly-heading"><b>▥ Bilan hebdomadaire</b><span id="dashWeekLabel">Semaine en cours</span></div><div class="weekly-grid">
-<div><span>▦</span><small>Jours travaillés</small><strong id="dashWorked">0 / 7</strong></div><div><span>🍴</span><small>Repas</small><strong id="dashMeals">0</strong></div><div><span>▰</span><small>Nuitées</small><strong id="dashWeekNights">0</strong></div><div><span>◷</span><small>Jours de repos</small><strong id="dashRest">0</strong></div><div><span>★</span><small>Total semaine</small><strong id="dashWeekTotal">0 h 00</strong></div>
+<div><span>▦</span><small>Jours travaillés</small><strong id="dashWorked">0 / 7</strong></div><div><span>▰</span><small>Nuitées</small><strong id="dashWeekNights">0</strong></div><div><span>◷</span><small>Repos</small><strong id="dashRest">0</strong></div><div><span>☀</span><small>Congés payés</small><strong id="dashLeave">0</strong></div><div><span>↻</span><small>Récupération</small><strong id="dashRecovery">0</strong></div><div><span>🍴</span><small>Repas</small><strong id="dashMeals">0</strong></div><div><span>★</span><small>Total semaine</small><strong id="dashWeekTotal">0 h 00</strong></div>
 </div></section>
 <section class="timeline-panel"><div class="timeline-heading"><b>◷ Chronologie du jour</b><label class="timeline-date-wrap"><span class="visually-hidden">Journée affichée</span><select id="dashDaySelect" aria-label="Choisir la journée"></select></label></div>
 <div id="dashboardTimeline" class="dashboard-timeline"><div class="timeline-empty">Aucune journée enregistrée pour le moment.</div></div>
@@ -921,8 +944,8 @@ function renderDashboardPanels(){
  const start=weekStart(today()),endDate=new Date(start+'T12:00:00');endDate.setDate(endDate.getDate()+6);const end=iso(endDate);
  const week=days.filter(x=>x.date>=start&&x.date<=end),drive=sum(week,'drive'),work=sum(week,'work'),total=drive+work;
  const worked=week.filter(x=>(Number(x.drive)||0)+(Number(x.work)||0)+(Number(x.km)||0)>0||(Array.isArray(x.operations)&&x.operations.length>0)||!!x.startCity||!!x.endCity).length;
- $('dashDrive').textContent=fmt(drive);$('dashWork').textContent=fmt(work);$('dashTotal').textContent=fmt(total);$('dashNights').textContent=sum(week,'nights');
- $('dashWorked').textContent=worked+' / 7';$('dashMeals').textContent=sum(week,'meals');$('dashWeekNights').textContent=sum(week,'nights');$('dashRest').textContent=countKind(week,'repos');$('dashWeekTotal').textContent=fmt(total);
+ $('dashDrive').textContent=fmt(drive);$('dashWork').textContent=fmt(work);$('dashTotal').textContent=fmt(total);$('dashNights').textContent=sum(week,'nights');$('dashTopMeals').textContent=sum(week,'meals');
+ $('dashWorked').textContent=worked+' / 7';$('dashMeals').textContent=sum(week,'meals');$('dashWeekNights').textContent=sum(week,'nights');$('dashRest').textContent=countKind(week,'repos');$('dashLeave').textContent=countKind(week,'conge');$('dashRecovery').textContent=countKind(week,'recuperation');$('dashWeekTotal').textContent=fmt(total);
  $('dashWeekLabel').textContent='Du '+labelDate(start)+' au '+labelDate(end);$('dashStatusText').textContent=worked+' jour(s) renseigné(s) sur 7';$('dashStatusBar').style.width=(Math.min(7,worked)/7*100)+'%';
  const sel=$('dashDaySelect'),old=sel.value,dates=[...days].sort((a,b)=>b.date.localeCompare(a.date));
  sel.innerHTML=dates.map(x=>'<option value="'+esc(x.id)+'">'+labelDate(x.date)+(x.startCity?' · '+esc(x.startCity):'')+'</option>').join('');
