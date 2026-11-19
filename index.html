@@ -478,7 +478,7 @@ function renderCalendar(){
    cells+=`<button type="button" class="calendar-cell ${date===today()?'today':''} ${date===selectedCalendarDate?'selected':''} ${holiday?'public-holiday':''} ${x&&hasElevenHourRestAfter(x)?'rest-11h-after':''}" data-calendar-date="${date}">
     <span class="date-num">${Number(date.slice(8,10))}${x&&isStarDay(x)?' <span class="star">★</span>':''}</span>
     ${holiday?'<small class="calendar-holiday">Férié · '+holiday+'</small>':''}
-    ${x?`<small>${fmt(x.work)} travail</small><small>${fmt(x.drive)} conduite</small><small>${Number(x.km)||0} km</small><small class="calendar-tariffs">${dayPriceChips(x).replace(/<span class="chip">|<\\/span>/g,'').replace(/ · /g,' | ')}</small>`:''}
+    ${x?`<small>${fmt(x.work)} travail</small><small>${fmt(x.drive)} conduite</small><small>${Number(x.km)||0} km</small><small class="calendar-tariffs">${dayPriceChips(x).replace(/<span class="chip">|<\/span>/g,'').replace(/ · /g,' | ')}</small>`:''}
    </button>`;
   }
   const opened=expandedCalendarWeeks.has(weekStartDate);
