@@ -1,7 +1,7 @@
 /* Mon Carnet Routier — historique chronologique des journées et tournées
    Mise à jour du 19/11/2026 — disposition fidèle à la maquette approuvée */
 
-const CACHE_NAME = 'mon-carnet-routier-v20261119-dashboard-cockpit-30';;
+const CACHE_NAME = 'mon-carnet-routier-v20261119-dashboard-cockpit-31';;;
 
 const APP_FILES = [
   './',
