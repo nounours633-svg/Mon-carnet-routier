@@ -506,6 +506,16 @@ function printHistory(){
  const mode=$('printPeriod').value,ref=$('printDate').value||today();
  const range=printPeriodRange(mode,ref),rows=days.filter(x=>x.date>=range.start&&x.date<=range.end).sort((a,b)=>a.date.localeCompare(b.date));
  if(!rows.length){alert('Aucune journée enregistrée sur cette période.');return;}
+ const calendarRows=[];
+ if(mode==='month'){
+  const savedByDate=new Map(rows.map(x=>[x.date,x]));
+  const cursor=new Date(range.start+'T12:00:00'),last=new Date(range.end+'T12:00:00');
+  while(cursor<=last){
+   const date=iso(cursor),saved=savedByDate.get(date);
+   calendarRows.push(saved?{...saved,nonWorking:false}:{date,km:0,drive:0,work:0,meals:0,nights:0,leaveDays:0,restDays:0,recoveryDays:0,nonWorking:true});
+   cursor.setDate(cursor.getDate()+1);
+  }
+ }
  const total=(a,k)=>a.reduce((n,x)=>n+(Number(x[k])||0),0);
  const fields=[['km','Km'],['drive','Conduite'],['work','Travail'],['meals','Repas'],['nights','Nuits'],['leaveDays','Congés'],['restDays','Repos'],['recoveryDays','Récup.']];
  const display=(k,v)=>k==='drive'||k==='work'?fmt(v):(Number(v)||0).toLocaleString('fr-FR');
@@ -517,7 +527,7 @@ function printHistory(){
  let table='';
  if(mode==='month'){
   const head='<tr><th style="width:11%">Date</th><th>Km</th><th>Conduite</th><th>Travail</th><th>Repas</th><th>Montant repas</th><th>Nuits</th><th>Montant nuitées</th><th>Congés</th><th>Repos</th><th>Récup.</th></tr>';
-  const body=rows.map(x=>`<tr><td>${labelDate(x.date)}</td><td>${display('km',x.km)}</td><td>${display('drive',x.drive)}</td><td>${display('work',x.work)}</td><td>${display('meals',x.meals)}</td><td>${Number(x.meals)>0&&mealRate!==null?money(Number(x.meals)*mealRate):'—'}</td><td>${display('nights',x.nights)}</td><td>${Number(x.nights)>0&&nightRate!==null?money(Number(x.nights)*nightRate):'—'}</td><td>${display('leaveDays',x.leaveDays)}</td><td>${display('restDays',x.restDays)}</td><td>${display('recoveryDays',x.recoveryDays)}</td></tr>`).join('');
+  const body=calendarRows.map(x=>`<tr${x.nonWorking?' class="non-working"':''}><td>${labelDate(x.date)}${x.nonWorking?'<br><small>Non travaillé</small>':''}</td><td>${display('km',x.km)}</td><td>${display('drive',x.drive)}</td><td>${display('work',x.work)}</td><td>${display('meals',x.meals)}</td><td>${mealRate!==null?money(Number(x.meals)*mealRate):'0'}</td><td>${display('nights',x.nights)}</td><td>${nightRate!==null?money(Number(x.nights)*nightRate):'0'}</td><td>${display('leaveDays',x.leaveDays)}</td><td>${display('restDays',x.restDays)}</td><td>${display('recoveryDays',x.recoveryDays)}</td></tr>`).join('');
   const foot=`<tr><th>TOTAL</th><th>${display('km',total(rows,'km'))}</th><th>${fmt(total(rows,'drive'))}</th><th>${fmt(total(rows,'work'))}</th><th>${total(rows,'meals')}</th><th>${mealAmount===null?'—':money(mealAmount)}</th><th>${total(rows,'nights')}</th><th>${nightAmount===null?'—':money(nightAmount)}</th><th>${total(rows,'leaveDays')}</th><th>${total(rows,'restDays')}</th><th>${total(rows,'recoveryDays')}</th></tr>`;
   table=`<h2>Détail des journées enregistrées</h2><table><thead>${head}</thead><tbody>${body}</tbody><tfoot>${foot}</tfoot></table>`;
  }else{
