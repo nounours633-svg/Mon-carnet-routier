@@ -445,6 +445,8 @@ main{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
 }
  #home .cockpit-metric.nights{width:100%;font:inherit;text-align:inherit;cursor:pointer;appearance:none;-webkit-appearance:none} #home .cockpit-metric.nights:active{filter:brightness(1.18);transform:scale(.985)}
 .meal-night-summary{margin:12px 0 0;padding:12px;border:1px solid #286da8;border-radius:14px;background:#081d38}.meal-night-summary b{display:block;font-size:13px;color:#fff}.meal-night-summary span{display:block;margin-top:5px;font-size:12px;color:#c6e4ff}
+
+#home .cockpit-metric.driving,#home .cockpit-metric.working{width:100%;font:inherit;text-align:inherit;cursor:pointer;appearance:none;-webkit-appearance:none}#home .cockpit-metric.driving:active,#home .cockpit-metric.working:active{filter:brightness(1.18);transform:scale(.985)}
 </style>
 
 <style id="dashboard-capture-layout">
@@ -695,8 +697,8 @@ main{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
 <section class="view" id="home">
 <div class="dashboard-layout"><div class="dashboard-main">
 <div class="dashboard-top-metrics">
-<div class="cockpit-metric driving"><span class="cockpit-icon">◉</span><div><small>Conduite</small><strong id="dashDrive">0 h 00</strong><em>Ce mois-ci</em></div></div>
-<div class="cockpit-metric working"><span class="cockpit-icon">♟</span><div><small>Travail</small><strong id="dashWork">0 h 00</strong><em>Ce mois-ci</em></div></div>
+<button type="button" class="cockpit-metric driving" id="openDriveHoursModal" aria-label="Ajouter des heures de conduite"><span class="cockpit-icon">◉</span><div><small>Conduite</small><strong id="dashDrive">0 h 00</strong><em>Toucher pour ajouter</em></div></button>
+<button type="button" class="cockpit-metric working" id="openWorkHoursModal" aria-label="Ajouter des heures de travail"><span class="cockpit-icon">♟</span><div><small>Travail</small><strong id="dashWork">0 h 00</strong><em>Toucher pour ajouter</em></div></button>
 <div class="cockpit-metric total"><span class="cockpit-icon">◷</span><div><small>Total cumulé</small><strong id="dashTotal">0 h 00</strong><em>Ce mois-ci</em></div></div>
 <button type="button" class="cockpit-metric nights" id="openMealNightModal" aria-label="Ajouter un repas ou une nuitée"><span class="cockpit-icon">🛏🍴</span><div><small>Nuitées / repas</small><strong id="dashNights">0 / 0</strong><em>Toucher pour ajouter</em></div></button>
 </div>
@@ -905,6 +907,7 @@ main{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
     <div class="meal-night-summary"><b id="mealNightWeekLabel">Bilan de la semaine</b><span id="mealNightWeekMeals">Repas : 0</span><span id="mealNightWeekNights">Nuitées : 0</span></div>
   </section>
 </div>
+<div class="quick-modal-backdrop" id="hoursModal" aria-hidden="true"><section class="quick-modal" role="dialog" aria-modal="true" aria-labelledby="hoursModalTitle"><div class="quick-modal-head"><h2 id="hoursModalTitle">Ajouter des heures</h2><button type="button" id="hoursModalClose" class="quick-close" aria-label="Fermer">×</button></div><p id="hoursModalDate" class="quick-modal-date"></p><label for="hoursToAdd" id="hoursToAddLabel">Durée à ajouter (H:MM)</label><input id="hoursToAdd" type="text" inputmode="decimal" placeholder="Exemple : 2:30" autocomplete="off"><div class="meal-night-summary"><b id="hoursWeekLabel">Bilan de la semaine</b><span id="hoursWeekDrive">Conduite : 0 h 00</span><span id="hoursWeekWork">Travail : 0 h 00</span><span id="hoursWeekTotal">Total conduite + travail : 0 h 00</span></div><div class="quick-modal-actions"><button type="button" class="btn secondary" id="hoursModalCancel">Annuler</button><button type="button" class="btn" id="hoursModalAdd">Ajouter les heures</button></div></section></div>
 <div id="printDocument" aria-hidden="true"></div>
 <div class="foot">MON CARNET ROUTIER · DONNÉES PERSONNELLES LOCALES</div>
 </main>
@@ -1109,6 +1112,13 @@ function refreshMealNightModal(){const range=mealNightWeekRange(mealNightTargetD
 function openMealNightModal(){let x=days.find(v=>v.id===$('dashDaySelect').value);if(!x)x=todayEntry();mealNightTargetDate=x.date;refreshMealNightModal();$('mealNightModal').classList.add('open');$('mealNightModal').setAttribute('aria-hidden','false');}
 function closeMealNightModal(){$('mealNightModal').classList.remove('open');$('mealNightModal').setAttribute('aria-hidden','true');}
 function addMealNight(kind){let x=days.find(v=>v.date===mealNightTargetDate);if(!x){x=todayEntry();mealNightTargetDate=x.date;}x[kind]=(Number(x[kind])||0)+1;save();refreshMealNightModal();}
+
+let hoursTargetDate='',hoursTargetKind='drive';
+function refreshHoursModal(){const range=mealNightWeekRange(hoursTargetDate),week=days.filter(x=>x.date>=range.start&&x.date<=range.end),d=sum(week,'drive'),w=sum(week,'work');$('hoursModalDate').textContent='Journée du '+labelDate(hoursTargetDate);$('hoursModalTitle').textContent=hoursTargetKind==='drive'?'Ajouter des heures de conduite':'Ajouter des heures de travail';$('hoursToAddLabel').textContent=(hoursTargetKind==='drive'?'Conduite':'Travail')+' · durée à ajouter (H:MM)';$('hoursWeekLabel').textContent='Bilan de la semaine · '+labelDate(range.start)+' au '+labelDate(range.end);$('hoursWeekDrive').textContent='Conduite : '+fmt(d);$('hoursWeekWork').textContent='Travail : '+fmt(w);$('hoursWeekTotal').textContent='Total conduite + travail : '+fmt(d+w);}
+function openHoursModal(kind){let x=days.find(v=>v.id===$('dashDaySelect').value);if(!x)x=todayEntry();hoursTargetDate=x.date;hoursTargetKind=kind;$('hoursToAdd').value='';refreshHoursModal();$('hoursModal').classList.add('open');$('hoursModal').setAttribute('aria-hidden','false');setTimeout(()=>$('hoursToAdd').focus(),60);}
+function closeHoursModal(){$('hoursModal').classList.remove('open');$('hoursModal').setAttribute('aria-hidden','true');}
+function addHoursToDay(){let raw=$('hoursToAdd').value.trim();if(!raw){$('hoursToAdd').focus();return;}let mins;try{mins=parseDur(raw);}catch(e){alert(e.message);$('hoursToAdd').focus();return;}if(mins<=0){alert('Saisis une durée supérieure à zéro, par exemple 2:30.');return;}let x=days.find(v=>v.date===hoursTargetDate);if(!x){x=todayEntry();hoursTargetDate=x.date;}x[hoursTargetKind]=(Number(x[hoursTargetKind])||0)+mins;save();refreshHoursModal();$('hoursToAdd').value='';}
+$('openDriveHoursModal').addEventListener('click',()=>openHoursModal('drive'));$('openWorkHoursModal').addEventListener('click',()=>openHoursModal('work'));$('hoursModalClose').addEventListener('click',closeHoursModal);$('hoursModalCancel').addEventListener('click',closeHoursModal);$('hoursModal').addEventListener('click',e=>{if(e.target===$('hoursModal'))closeHoursModal();});$('hoursModalAdd').addEventListener('click',addHoursToDay);
 $('openMealNightModal').addEventListener('click',openMealNightModal);
 $('mealNightClose').addEventListener('click',closeMealNightModal);
 $('mealNightModal').addEventListener('click',e=>{if(e.target===$('mealNightModal'))closeMealNightModal();});
