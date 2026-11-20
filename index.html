@@ -709,6 +709,8 @@ main{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
  #home .cockpit-metric.nights strong{font-size:clamp(18px,5vw,25px)!important;white-space:nowrap}
  #home .weekly-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
 }
+/* Masquer les commandes du bandeau supérieur : accès déjà disponibles dans la navigation */
+.banner-menu-button,.banner-settings-button{display:none!important;visibility:hidden!important;pointer-events:none!important}
 </style>
 </head>
 <body>
