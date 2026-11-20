@@ -237,6 +237,14 @@ main{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
 #home .weekly-heading span{font-size:10px;color:#e1f3ff;text-align:right}
 #home .weekly-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));padding:9px 4px}
 #home .weekly-grid>div{min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:5px 3px;border-right:1px solid #a8d8ff88}
+#home .weekly-grid>button.monthly-detail-tile{appearance:none;-webkit-appearance:none;font:inherit;color:inherit;background:transparent;border:0;border-right:1px solid #a8d8ff88;cursor:pointer;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:7px 3px;gap:3px}
+#home .weekly-grid>button.monthly-detail-tile:last-child{border-right:0}
+#home .weekly-grid>button.monthly-detail-tile:active{background:#ffffff12}
+#home .weekly-grid>button.monthly-detail-tile em{font-size:9px;color:#9ed8ff;font-style:normal}
+.monthly-detail-list{max-height:min(55vh,430px);overflow:auto;margin-top:12px;border-top:1px solid #2b5d89}
+.monthly-detail-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:11px 4px;border-bottom:1px solid #244b70;color:#e8f5ff;font-size:13px}
+.monthly-detail-row span{color:#a9c9e8;font-size:11px;text-align:right}
+.monthly-detail-empty{padding:18px 4px;color:#a9c9e8;font-size:13px;text-align:center}
 #home .weekly-grid>div:last-child{border-right:0}
 #home .weekly-grid span{font-size:22px;color:#28baff;line-height:1.1}
 #home .weekly-grid small{font-size:clamp(8px,1vw,11px);color:#e2f2ff;line-height:1.15;min-height:23px;display:flex;align-items:center}
@@ -703,7 +711,7 @@ main{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
 <button type="button" class="cockpit-metric nights" id="openMealNightModal" aria-label="Ajouter un repas ou une nuitée"><span class="cockpit-icon">🛏🍴</span><div><small>Nuitées / repas</small><strong id="dashNights">0 / 0</strong><em>Toucher pour ajouter</em></div></button>
 </div>
 <section class="weekly-panel"><div class="weekly-heading"><b>▥ Bilan mensuel</b><span id="dashWeekLabel">Mois en cours</span></div><div class="weekly-grid">
-<div><span>▦</span><small>Jours travaillés</small><strong id="dashWorked">0 / 7</strong></div><div><span>★</span><small>Total du mois</small><strong id="dashWeekTotal">0 h 00</strong></div><div><span>🛣</span><small>Kilomètres du mois</small><strong id="dashMonthKm">0 km</strong></div>
+<button type="button" class="monthly-detail-tile" data-monthly-detail="days"><span>▦</span><small>Jours travaillés</small><strong id="dashWorked">0 / 7</strong><em>Voir le détail ›</em></button><button type="button" class="monthly-detail-tile" data-monthly-detail="hours"><span>★</span><small>Total du mois</small><strong id="dashWeekTotal">0 h 00</strong><em>Voir le détail ›</em></button><button type="button" class="monthly-detail-tile" data-monthly-detail="km"><span>🛣</span><small>Kilomètres du mois</small><strong id="dashMonthKm">0 km</strong><em>Voir le détail ›</em></button>
 </div></section>
 <section class="timeline-panel"><div class="timeline-heading"><b>◷ Chronologie du jour</b><label class="timeline-date-wrap"><span class="visually-hidden">Journée affichée</span><select id="dashDaySelect" aria-label="Choisir la journée"></select></label></div>
 <div id="dashboardTimeline" class="dashboard-timeline"><div class="timeline-empty">Aucune journée enregistrée pour le moment.</div></div>
@@ -908,6 +916,8 @@ main{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
   </section>
 </div>
 <div class="quick-modal-backdrop" id="hoursModal" aria-hidden="true"><section class="quick-modal" role="dialog" aria-modal="true" aria-labelledby="hoursModalTitle"><div class="quick-modal-head"><h2 id="hoursModalTitle">Ajouter des heures</h2><button type="button" id="hoursModalClose" class="quick-close" aria-label="Fermer">×</button></div><p id="hoursModalDate" class="quick-modal-date"></p><label for="hoursToAdd" id="hoursToAddLabel">Durée à ajouter (H:MM)</label><input id="hoursToAdd" type="text" inputmode="decimal" placeholder="Exemple : 2:30" autocomplete="off"><div id="hoursKmFields" style="display:none;margin-top:12px"><label for="hoursKmAdd">Kilomètres parcourus à ajouter</label><input id="hoursKmAdd" type="number" min="0" step="1" inputmode="numeric" placeholder="Exemple : 450"><label for="hoursKmDeduct" style="display:block;margin-top:10px">Kilomètres à déduire si besoin</label><input id="hoursKmDeduct" type="number" min="0" step="1" inputmode="numeric" placeholder="Exemple : 80"></div><div class="meal-night-summary"><b id="hoursWeekLabel">Bilan de la semaine</b><span id="hoursWeekDrive">Conduite : 0 h 00</span><span id="hoursWeekWork">Travail : 0 h 00</span><span id="hoursWeekTotal">Total conduite + travail : 0 h 00</span><span id="hoursWeekKm">Kilomètres de la semaine : 0 km</span></div><div class="quick-modal-actions"><button type="button" class="btn secondary" id="hoursModalCancel">Annuler</button><button type="button" class="btn" id="hoursModalAdd">Ajouter les heures</button></div></section></div>
+
+<div class="quick-modal-backdrop" id="monthlyDetailModal" aria-hidden="true"><section class="quick-modal" role="dialog" aria-modal="true" aria-labelledby="monthlyDetailTitle"><div class="quick-modal-head"><h2 id="monthlyDetailTitle">Détail du mois</h2><button type="button" id="monthlyDetailClose" class="quick-close" aria-label="Fermer">×</button></div><p id="monthlyDetailSubtitle" class="quick-modal-date"></p><div id="monthlyDetailList" class="monthly-detail-list"></div></section></div>
 <div id="printDocument" aria-hidden="true"></div>
 <div class="foot">MON CARNET ROUTIER · DONNÉES PERSONNELLES LOCALES</div>
 </main>
@@ -1071,6 +1081,22 @@ let homePeriod='month';
 function setupHomePeriod(){let sel=$('homePeriodSelect');if(!sel)return;let now=new Date(),yy=now.getFullYear(),mm=String(now.getMonth()+1).padStart(2,'0');homePeriod='month';sel.innerHTML=Array.from({length:24},(_,i)=>{let d=new Date(yy,now.getMonth()-i,1),v=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;return `<option value="${v}">${d.toLocaleDateString('fr-FR',{month:'long',year:'numeric'})}</option>`}).join('')+`<option value="${yy}">${yy}</option>`;sel.value=yy+'-'+mm;}
 function syncQuickStats(){let x=days.find(v=>v.date===today());$('quickKm').value=x&&Number(x.km)?x.km:'';$('quickKmDeduct').value=x&&Number(x.kmDeduct)?x.kmDeduct:'';$('quickDriving').value=x&&Number(x.drive)?`${Math.floor(x.drive/60)}:${String(x.drive%60).padStart(2,'0')}`:'';$('quickWork').value=x&&Number(x.work)?`${Math.floor(x.work/60)}:${String(x.work%60).padStart(2,'0')}`:'';$('quickMeals').value=x?Number(x.meals)||0:0;$('quickNights').value=x?Number(x.nights)||0:0;}
 
+function openMonthlyDetail(kind){
+ const month=today().slice(0,7),items=days.filter(x=>inMonth(x,month)).slice().sort((a,b)=>a.date.localeCompare(b.date));
+ const isWorked=x=>(Number(x.drive)||0)+(Number(x.work)||0)+(Number(x.km)||0)>0||(Array.isArray(x.operations)&&x.operations.length>0)||!!x.startCity||!!x.endCity;
+ let title='',rows=[];
+ if(kind==='days'){title='Jours travaillés';rows=items.filter(isWorked).map(x=>({date:x.date,value:'Conduite '+fmt(Number(x.drive)||0)+' · Travail '+fmt(Number(x.work)||0),extra:countedKm(x).toLocaleString('fr-FR')+' km'}));}
+ else if(kind==='hours'){title='Total des heures du mois';rows=items.filter(x=>(Number(x.drive)||0)+(Number(x.work)||0)>0).map(x=>({date:x.date,value:'Conduite '+fmt(Number(x.drive)||0)+' · Travail '+fmt(Number(x.work)||0),extra:'Total '+fmt((Number(x.drive)||0)+(Number(x.work)||0))}));}
+ else {title='Kilomètres du mois';rows=items.filter(x=>countedKm(x)>0).map(x=>({date:x.date,value:countedKm(x).toLocaleString('fr-FR')+' km',extra:''}));}
+ $('monthlyDetailTitle').textContent=title;
+ $('monthlyDetailSubtitle').textContent=new Date(month+'-15T12:00:00').toLocaleDateString('fr-FR',{month:'long',year:'numeric'});
+ $('monthlyDetailList').innerHTML=rows.length?rows.map(x=>'<div class="monthly-detail-row"><b>'+labelDate(x.date)+'</b><span>'+esc(x.value)+(x.extra?' · '+esc(x.extra):'')+'</span></div>').join(''):'<div class="monthly-detail-empty">Aucune donnée enregistrée pour cette rubrique ce mois-ci.</div>';
+ $('monthlyDetailModal').classList.add('open');$('monthlyDetailModal').setAttribute('aria-hidden','false');
+}
+document.querySelectorAll('[data-monthly-detail]').forEach(b=>b.addEventListener('click',()=>openMonthlyDetail(b.dataset.monthlyDetail)));
+function closeMonthlyDetail(){$('monthlyDetailModal').classList.remove('open');$('monthlyDetailModal').setAttribute('aria-hidden','true')}
+$('monthlyDetailClose').addEventListener('click',closeMonthlyDetail);
+$('monthlyDetailModal').addEventListener('click',e=>{if(e.target===$('monthlyDetailModal'))closeMonthlyDetail()});
 function renderDashboardPanels(){
  const now=new Date(),month=today().slice(0,7),daysInMonth=new Date(now.getFullYear(),now.getMonth()+1,0).getDate(),weekRange=mealNightWeekRange(today()),todayRecord=days.find(x=>x.date===today());
  const monthly=days.filter(x=>inMonth(x,month)),weekDays=days.filter(x=>x.date>=weekRange.start&&x.date<=weekRange.end),drive=sum(monthly,'drive'),work=sum(monthly,'work'),total=drive+work;
