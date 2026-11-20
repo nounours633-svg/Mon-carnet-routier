@@ -1078,7 +1078,7 @@ function renderDashboardPanels(){
  $('dashDrive').textContent=fmt(drive);$('dashDriveKm').textContent='Km semaine : '+sumCountedKm(weekDays).toLocaleString('fr-FR')+' km';$('dashWork').textContent=fmt(work);$('dashTotal').textContent=fmt(total);$('dashNights').textContent=sum(monthly,'nights')+' / '+sum(monthly,'meals');
  $('dashWorked').textContent=worked+' / '+daysInMonth;$('dashWeekTotal').textContent=fmt(total);$('dashMonthKm').textContent=sumCountedKm(monthly).toLocaleString('fr-FR')+' km';
  $('dashWeekLabel').textContent=now.toLocaleDateString('fr-FR',{month:'long',year:'numeric'});$('dashStatusText').textContent=worked+' jour(s) renseigné(s) sur '+daysInMonth;$('dashStatusBar').style.width=(Math.min(daysInMonth,worked)/daysInMonth*100)+'%';
- const sel=$('dashDaySelect'),old=sel.value,dates=[...days].sort((a,b)=>b.date.localeCompare(a.date)),todayDay=dates.find(x=>x.date===today());
+ const sel=$('dashDaySelect'),old=sel.value,dates=[...days].filter(x=>x.date<=today()).sort((a,b)=>b.date.localeCompare(a.date)),todayDay=dates.find(x=>x.date===today());
  sel.innerHTML=(todayDay?'':'<option value="__today__">Aujourd’hui · '+labelDate(today())+'</option>')+dates.map(x=>'<option value="'+esc(x.id)+'">'+labelDate(x.date)+(x.startCity?' · '+esc(x.startCity):'')+'</option>').join('');
  if(dates.some(x=>x.id===old))sel.value=old;else sel.value=todayDay?todayDay.id:'__today__';
  const day=dates.find(x=>x.id===sel.value),timeline=$('dashboardTimeline');
