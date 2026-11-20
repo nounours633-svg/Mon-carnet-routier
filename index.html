@@ -697,8 +697,8 @@ main{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
 <section class="view" id="home">
 <div class="dashboard-layout"><div class="dashboard-main">
 <div class="dashboard-top-metrics">
-<button type="button" class="cockpit-metric driving" id="openDriveHoursModal" aria-label="Ajouter des heures de conduite"><span class="cockpit-icon">◉</span><div><small>Conduite</small><strong id="dashDrive">0 h 00</strong><em id="dashDriveKm">Km semaine : 0 km</em><em>Toucher pour ajouter</em></div></button>
-<button type="button" class="cockpit-metric working" id="openWorkHoursModal" aria-label="Ajouter des heures de travail"><span class="cockpit-icon">♟</span><div><small>Travail</small><strong id="dashWork">0 h 00</strong><em>Toucher pour ajouter</em></div></button>
+<button type="button" class="cockpit-metric driving" id="openDriveHoursModal" aria-label="Ajouter des heures de conduite"><span class="cockpit-icon">◉</span><div><small>Conduite</small><strong id="dashDrive">0 h 00</strong><em id="dashDriveDay">Journée : 0 h 00</em><em id="dashDriveKm">Km semaine : 0 km</em><em>Toucher pour ajouter</em></div></button>
+<button type="button" class="cockpit-metric working" id="openWorkHoursModal" aria-label="Ajouter des heures de travail"><span class="cockpit-icon">♟</span><div><small>Travail</small><strong id="dashWork">0 h 00</strong><em id="dashWorkDay">Journée : 0 h 00</em><em>Toucher pour ajouter</em></div></button>
 <div class="cockpit-metric total"><span class="cockpit-icon">◷</span><div><small>Total cumulé</small><strong id="dashTotal">0 h 00</strong><em>Ce mois-ci</em></div></div>
 <button type="button" class="cockpit-metric nights" id="openMealNightModal" aria-label="Ajouter un repas ou une nuitée"><span class="cockpit-icon">🛏🍴</span><div><small>Nuitées / repas</small><strong id="dashNights">0 / 0</strong><em>Toucher pour ajouter</em></div></button>
 </div>
@@ -1082,7 +1082,8 @@ function renderDashboardPanels(){
  sel.innerHTML=dates.map(x=>'<option value="'+esc(x.id)+'">'+labelDate(x.date)+(x.startCity?' · '+esc(x.startCity):'')+'</option>').join('');
  if(dates.some(x=>x.id===old))sel.value=old;else if(dates.length)sel.value=dates[0].id;
  const day=dates.find(x=>x.id===sel.value),timeline=$('dashboardTimeline');
- if(!day){timeline.innerHTML='<div class="timeline-empty">Aucune journée enregistrée. Appuie sur « Nouvelle intervention » pour commencer.</div>';$('dashEditDay').disabled=true;return;}
+ if(!day){$('dashDriveDay').textContent='Journée : 0 h 00';$('dashWorkDay').textContent='Journée : 0 h 00';timeline.innerHTML='<div class="timeline-empty">Aucune journée enregistrée. Appuie sur « Nouvelle intervention » pour commencer.</div>';$('dashEditDay').disabled=true;return;}
+ $('dashDriveDay').textContent='Journée : '+fmt(Number(day.drive)||0);$('dashWorkDay').textContent='Journée : '+fmt(Number(day.work)||0);
  $('dashEditDay').disabled=false;const events=[];
  events.push({type:'departure',symbol:'🚛',title:'Ville de départ : '+(day.startCity||'Non renseignée'),sub:'Départ de la journée',time:day.departure||''});
  const ops=Array.isArray(day.operations)?day.operations:legacyOperations(day);
