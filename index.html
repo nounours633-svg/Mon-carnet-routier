@@ -1004,7 +1004,7 @@ function renderHistory(){
  else a=a.filter(x=>x.date.slice(0,4)===String(historyCursor.getFullYear()));
  a=a.filter(x=>(x.date+' '+(x.remarks||'')+' '+(x.startCity||'')+' '+cityArray(x,'loading').join(' ')+' '+cityArray(x,'unloading').join(' ')+' '+routeLines(x).join(' ')+' '+(x.endCity||'')).toLocaleLowerCase('fr').includes(q));
  a.sort((x,y)=>x.date.localeCompare(y.date));
- $('historyPeriodLabel').textContent=historyMode==='day'?new Date(iso(historyCursor)+'T12:00:00').toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'}):periodLabel(historyCursor,historyMode);
+ $('historyPeriodLabel').textContent=historyMode==='day'?new Date(iso(historyCursor)+'T12:00:00').toLocaleDateString('fr-FR',{weekday:'long',day:'2-digit',month:'2-digit',year:'numeric'}):periodLabel(historyCursor,historyMode);
  document.querySelectorAll('[data-history-mode]').forEach(b=>b.classList.toggle('active',b.dataset.historyMode===historyMode));
  $('entries').innerHTML=a.map(dayHTML).join('')||'<div class="panel empty">Aucune journée trouvée pour cette période.</div>';
 }
