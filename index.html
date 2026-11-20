@@ -443,6 +443,8 @@ main{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
     box-sizing:border-box!important;
   }
 }
+ #home .cockpit-metric.nights{width:100%;font:inherit;text-align:inherit;cursor:pointer;appearance:none;-webkit-appearance:none} #home .cockpit-metric.nights:active{filter:brightness(1.18);transform:scale(.985)}
+.meal-night-summary{margin:12px 0 0;padding:12px;border:1px solid #286da8;border-radius:14px;background:#081d38}.meal-night-summary b{display:block;font-size:13px;color:#fff}.meal-night-summary span{display:block;margin-top:5px;font-size:12px;color:#c6e4ff}
 </style>
 
 <style id="dashboard-capture-layout">
@@ -696,7 +698,7 @@ main{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
 <div class="cockpit-metric driving"><span class="cockpit-icon">◉</span><div><small>Conduite</small><strong id="dashDrive">0 h 00</strong><em>Ce mois-ci</em></div></div>
 <div class="cockpit-metric working"><span class="cockpit-icon">♟</span><div><small>Travail</small><strong id="dashWork">0 h 00</strong><em>Ce mois-ci</em></div></div>
 <div class="cockpit-metric total"><span class="cockpit-icon">◷</span><div><small>Total cumulé</small><strong id="dashTotal">0 h 00</strong><em>Ce mois-ci</em></div></div>
-<div class="cockpit-metric nights"><span class="cockpit-icon">🛏🍴</span><div><small>Nuitées / repas</small><strong id="dashNights">0 / 0</strong><em>Ce mois-ci</em></div></div>
+<button type="button" class="cockpit-metric nights" id="openMealNightModal" aria-label="Ajouter un repas ou une nuitée"><span class="cockpit-icon">🛏🍴</span><div><small>Nuitées / repas</small><strong id="dashNights">0 / 0</strong><em>Toucher pour ajouter</em></div></button>
 </div>
 <section class="weekly-panel"><div class="weekly-heading"><b>▥ Bilan mensuel</b><span id="dashWeekLabel">Mois en cours</span></div><div class="weekly-grid">
 <div><span>▦</span><small>Jours travaillés</small><strong id="dashWorked">0 / 7</strong></div><div><span>★</span><small>Total du mois</small><strong id="dashWeekTotal">0 h 00</strong></div><div><span>🛣</span><small>Kilomètres du mois</small><strong id="dashMonthKm">0 km</strong></div>
@@ -893,6 +895,14 @@ main{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
     <label id="quickCityLabel" for="quickCity">Ville</label><input id="quickCity" type="text" autocomplete="address-level2" placeholder="Saisir une ville">
     <div id="quickTimeWrap"><label id="quickTimeLabel" for="quickTime">Heure</label><input id="quickTime" type="time"></div>
     <div class="quick-modal-actions"><button type="button" class="btn secondary" id="quickCancel">Annuler</button><button type="button" class="btn" id="quickSave">Enregistrer</button></div>
+  </section>
+</div>
+<div class="quick-modal-backdrop" id="mealNightModal" aria-hidden="true">
+  <section class="quick-modal" role="dialog" aria-modal="true" aria-labelledby="mealNightTitle">
+    <div class="quick-modal-head"><h2 id="mealNightTitle">Repas et nuitées</h2><button type="button" id="mealNightClose" class="quick-close" aria-label="Fermer">×</button></div>
+    <p id="mealNightDate" class="quick-modal-date"></p>
+    <div class="quick-modal-actions"><button type="button" class="btn" id="addMealBtn">＋ Ajouter un repas</button><button type="button" class="btn secondary" id="addNightBtn">＋ Ajouter une nuit</button></div>
+    <div class="meal-night-summary"><b id="mealNightWeekLabel">Bilan de la semaine</b><span id="mealNightWeekMeals">Repas : 0</span><span id="mealNightWeekNights">Nuitées : 0</span></div>
   </section>
 </div>
 <div id="printDocument" aria-hidden="true"></div>
@@ -1092,6 +1102,18 @@ document.querySelectorAll('#home .home-side-menu button').forEach(button=>button
 document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>{if(b.dataset.view==='form')clearForm();show(b.dataset.view)}));document.querySelectorAll('[data-goto]').forEach(b=>b.addEventListener('click',()=>{if(b.dataset.goto==='form'&&b.dataset.newDay==='true')clearForm();show(b.dataset.goto)}));
 
 
+
+let mealNightTargetDate='';
+function mealNightWeekRange(date){const start=weekStart(date),d=new Date(start+'T12:00:00');d.setDate(d.getDate()+6);return {start,end:iso(d)};}
+function refreshMealNightModal(){const range=mealNightWeekRange(mealNightTargetDate),week=days.filter(x=>x.date>=range.start&&x.date<=range.end);$('mealNightDate').textContent='Journée du '+labelDate(mealNightTargetDate);$('mealNightWeekLabel').textContent='Bilan de la semaine · '+labelDate(range.start)+' au '+labelDate(range.end);$('mealNightWeekMeals').textContent='🍴 Repas : '+sum(week,'meals');$('mealNightWeekNights').textContent='🛏 Nuitées : '+sum(week,'nights');}
+function openMealNightModal(){let x=days.find(v=>v.id===$('dashDaySelect').value);if(!x)x=todayEntry();mealNightTargetDate=x.date;refreshMealNightModal();$('mealNightModal').classList.add('open');$('mealNightModal').setAttribute('aria-hidden','false');}
+function closeMealNightModal(){$('mealNightModal').classList.remove('open');$('mealNightModal').setAttribute('aria-hidden','true');}
+function addMealNight(kind){let x=days.find(v=>v.date===mealNightTargetDate);if(!x){x=todayEntry();mealNightTargetDate=x.date;}x[kind]=(Number(x[kind])||0)+1;save();refreshMealNightModal();}
+$('openMealNightModal').addEventListener('click',openMealNightModal);
+$('mealNightClose').addEventListener('click',closeMealNightModal);
+$('mealNightModal').addEventListener('click',e=>{if(e.target===$('mealNightModal'))closeMealNightModal();});
+$('addMealBtn').addEventListener('click',()=>addMealNight('meals'));
+$('addNightBtn').addEventListener('click',()=>addMealNight('nights'));
 $('dashDaySelect').addEventListener('change',renderDashboardPanels);
 $('dashEditDay').addEventListener('click',()=>{const x=days.find(v=>v.id===$('dashDaySelect').value);if(x)edit(x.id);});
  $('dashEditKm').addEventListener('click',()=>{const x=days.find(v=>v.id===$('dashDaySelect').value);if(!x)return;const value=prompt('Kilomètres parcourus le '+new Date(x.date+'T12:00:00').toLocaleDateString('fr-FR')+' :',String(Number(x.km)||0));if(value===null)return;const km=value.trim();if(km===''||!Number.isFinite(Number(km))||Number(km)<0||!Number.isInteger(Number(km))){alert('Saisis un nombre entier de kilomètres valide.');return;}x.km=Number(km);save();});
