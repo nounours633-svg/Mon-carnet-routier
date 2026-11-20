@@ -478,6 +478,18 @@ main{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
 #home .cockpit-metric.total{width:100%;font:inherit;text-align:inherit;cursor:pointer;appearance:none;-webkit-appearance:none}#home .cockpit-metric.total:active{filter:brightness(1.18);transform:scale(.985)}
 #home .cockpit-metric.driving,#home .cockpit-metric.working{width:100%;font:inherit;text-align:inherit;cursor:pointer;appearance:none;-webkit-appearance:none}#home .cockpit-metric.driving:active,#home .cockpit-metric.working:active{filter:brightness(1.18);transform:scale(.985)}
 .meal-night-remove-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}.meal-night-remove-row .btn{font-size:12px;padding:9px 7px}.meal-night-remove-row .btn:disabled{opacity:.4;cursor:not-allowed}
+
+/* Navigation basse — boutons légèrement réduits, sans modifier la disposition */
+@media(max-width:649px){
+  .nav button{
+    min-height:54px!important;
+    padding:6px 3px!important;
+    font-size:clamp(8px,2vw,9px)!important;
+    line-height:1.2!important;
+    border-radius:11px!important;
+  }
+}
+
 </style>
 
 <style id="dashboard-capture-layout">
