@@ -1078,10 +1078,10 @@ function renderDashboardPanels(){
  $('dashDrive').textContent=fmt(drive);$('dashDriveKm').textContent='Km semaine : '+sumCountedKm(weekDays).toLocaleString('fr-FR')+' km';$('dashWork').textContent=fmt(work);$('dashTotal').textContent=fmt(total);$('dashNights').textContent=sum(monthly,'nights')+' / '+sum(monthly,'meals');
  $('dashWorked').textContent=worked+' / '+daysInMonth;$('dashWeekTotal').textContent=fmt(total);$('dashMonthKm').textContent=sumCountedKm(monthly).toLocaleString('fr-FR')+' km';
  $('dashWeekLabel').textContent=now.toLocaleDateString('fr-FR',{month:'long',year:'numeric'});$('dashStatusText').textContent=worked+' jour(s) renseigné(s) sur '+daysInMonth;$('dashStatusBar').style.width=(Math.min(daysInMonth,worked)/daysInMonth*100)+'%';
- const sel=$('dashDaySelect'),old=sel.value,dates=[...days].filter(x=>x.date<=today()).sort((a,b)=>b.date.localeCompare(a.date)),todayDay=dates.find(x=>x.date===today());
- sel.innerHTML=(todayDay?'':'<option value="__today__">Aujourd’hui · '+labelDate(today())+'</option>')+dates.map(x=>'<option value="'+esc(x.id)+'">'+labelDate(x.date)+(x.startCity?' · '+esc(x.startCity):'')+'</option>').join('');
- if(dates.some(x=>x.id===old))sel.value=old;else sel.value=todayDay?todayDay.id:'__today__';
- const day=dates.find(x=>x.id===sel.value),timeline=$('dashboardTimeline');
+ const sel=$('dashDaySelect'),todayDay=days.find(x=>x.date===today());
+ sel.innerHTML=todayDay?'<option value="'+esc(todayDay.id)+'">Aujourd’hui · '+labelDate(today())+'</option>':'<option value="__today__">Aujourd’hui · '+labelDate(today())+'</option>';
+ sel.value=todayDay?todayDay.id:'__today__';
+ const day=todayDay,timeline=$('dashboardTimeline');
  if(!day){$('dashDriveDay').textContent='Journée : 0 h 00';$('dashWorkDay').textContent='Journée : 0 h 00';timeline.innerHTML='<div class="timeline-empty">Aucune journée enregistrée. Appuie sur « Nouvelle intervention » pour commencer.</div>';$('dashEditDay').disabled=true;return;}
  $('dashDriveDay').textContent='Journée : '+fmt(Number(day.drive)||0);$('dashWorkDay').textContent='Journée : '+fmt(Number(day.work)||0);
  $('dashEditDay').disabled=false;const events=[];
