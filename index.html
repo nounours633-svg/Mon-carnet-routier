@@ -19,7 +19,7 @@ header{position:sticky;top:0;z-index:5;padding:calc(15px + env(safe-area-inset-t
 .truck-banner{max-width:920px;margin:0 auto 14px;border:1px solid #435365;border-radius:18px;overflow:hidden;box-shadow:0 12px 32px #0008;background:#101720}.truck-banner img{display:block;width:100%;height:auto;max-height:245px;object-fit:cover}.city-list{display:grid;gap:7px}.city-row{display:flex;gap:7px;align-items:center}.city-row input{flex:1;min-width:0}.city-row button{flex:0 0 42px;height:42px;border:1px solid #536273;border-radius:11px;background:#263342;color:#fff;font-size:20px}.add-city{margin-top:7px;padding:9px 12px;border:1px solid #3d8ed1;border-radius:10px;background:#172c40;color:#9ed3ff;font-weight:700;font-size:12px}
 .operations-list{display:grid;gap:8px;margin-top:8px}.operation-row{display:grid;grid-template-columns:minmax(0,1fr) 42px;gap:7px;align-items:center;padding:8px;border:1px solid #28649b;border-radius:12px;background:#071d39}.operation-main{display:grid;grid-template-columns: minmax(112px,.8fr) minmax(0,1.4fr);gap:7px;min-width:0}.operation-main select,.operation-main input{min-width:0;min-height:42px;padding:8px;font-size:13px}.operation-remove{height:42px;border:1px solid #76505a;border-radius:10px;background:#422632;color:#ffe1e5;font-size:20px}.operation-add-buttons{display:flex;gap:8px;flex-wrap:wrap}.operation-add-buttons .add-city{flex:1;min-width:145px}.operation-row select{color:#fff}
 @media(max-width:370px){.operation-main{grid-template-columns:1fr}.operation-row{grid-template-columns:minmax(0,1fr) 38px}}
-main{max-width:920px;margin:auto;padding:16px 14px 40px}.nav{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:17px}.nav button{border:1px solid var(--line);border-radius:12px;padding:10px 3px;background:#171e28;color:#bdcad8;font-size:11px;font-weight:650}.nav button.active{background:linear-gradient(135deg,#1688ff,#0863c4);border-color:#319cff;color:white;box-shadow:0 6px 18px #087cff30}
+main{max-width:920px;margin:auto;padding:16px 14px 40px}.nav{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:17px}.nav button{border:1px solid var(--line);border-radius:12px;padding:10px 3px;background:#171e28;color:#bdcad8;font-size:11px;font-weight:650}.nav button.active{background:linear-gradient(135deg,#1688ff,#0863c4);border-color:#319cff;color:white;box-shadow:0 6px 18px #087cff30}.nav button img{display:inline-block;width:66px;height:19px;object-fit:contain;vertical-align:middle;margin:0 auto 2px}
 .view.hidden{display:none}.eyebrow{font-size:11px;letter-spacing:1.6px;color:var(--muted);font-weight:700;margin:19px 2px 10px;text-transform:uppercase}
 .panel{background:linear-gradient(145deg,#202a36,#111820);border:1px solid var(--line);border-radius:18px;padding:15px;margin-bottom:12px;box-shadow:0 12px 28px #0002}
 .hero{padding:18px;background:linear-gradient(125deg,#263342,#111820 72%);position:relative;overflow:hidden}.hero:after{content:"";position:absolute;width:180px;height:180px;border:1px solid #ffffff12;border-radius:50%;right:-65px;top:-95px;box-shadow:0 0 0 22px #ffffff06,0 0 0 44px #ffffff04}.hero .sub{font-size:11px;color:#b5c9dc;letter-spacing:1.3px}.hero strong{font-size:34px;display:block;letter-spacing:-1px;margin:5px 0 0;font-variant-numeric:tabular-nums}.hero small{color:#75bdff}
@@ -722,7 +722,7 @@ main{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
 <nav class="nav">
 <button class="active" data-view="home">⌂<br>Accueil</button>
 <button data-view="history">▤<br>Historique</button>
-<button data-view="calendar">▦<br>Calendrier</button>
+<button type="button" data-truckfly aria-label="Ouvrir MICHELIN Truckfly"><img src="https://truckfly-cybehwgxdra6ckdh.a03.azurefd.net/static/img/v2/home/truckfly-logo.webp" alt="Truckfly"><br>Truckfly</button>
 <button data-view="form">＋<br>Journée</button>
 <button data-view="backup">⚙<br>Sauvegarde</button>
 </nav>
@@ -1182,7 +1182,8 @@ function renderAll(){renderHome();renderHistory();renderCalendar();fillYears()}
 function fillYears(){let old=$('yearFilter').value;let ys=[...new Set(days.map(x=>x.date.slice(0,4)))].sort().reverse();$('yearFilter').innerHTML='<option value="all">Toutes les années</option>'+ys.map(y=>`<option value="${y}">${y}</option>`).join('');if(ys.includes(old))$('yearFilter').value=old}
 function show(v){document.querySelectorAll('.view').forEach(x=>x.classList.toggle('hidden',x.id!==v));document.querySelectorAll('.nav button').forEach(x=>x.classList.toggle('active',x.dataset.view===v));if(v==='history')renderHistory();if(v==='calendar')renderCalendar();if(v==='home')renderHome()}
 
-document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>{if(b.dataset.view==='form')clearForm();show(b.dataset.view)}));document.querySelectorAll('[data-goto]').forEach(b=>b.addEventListener('click',()=>{if(b.dataset.goto==='form'&&b.dataset.newDay==='true')clearForm();show(b.dataset.goto)}));
+document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>{if(b.dataset.view==='form')clearForm();show(b.dataset.view)}));
+document.querySelector('[data-truckfly]').addEventListener('click',()=>{window.location.href='https://truckfly.onelink.me/rNAz/google';});document.querySelectorAll('[data-goto]').forEach(b=>b.addEventListener('click',()=>{if(b.dataset.goto==='form'&&b.dataset.newDay==='true')clearForm();show(b.dataset.goto)}));
 
 
 
