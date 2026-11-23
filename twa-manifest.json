@@ -2,7 +2,7 @@
   "name": "Mon Carnet Routier",
   "launcherName": "Carnet Routier",
   "packageId": "fr.nounours79.moncarnetroutier",
-  "host": "https://nounours633-svg.github.io",
+  "host": "nounours633-svg.github.io",
   "startUrl": "/Mon-carnet-routier/",
   "webManifestUrl": "https://nounours633-svg.github.io/Mon-carnet-routier/manifest.json",
   "iconUrl": "https://nounours633-svg.github.io/Mon-carnet-routier/icon-512.png",
