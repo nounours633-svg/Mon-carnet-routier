@@ -1,0 +1,23 @@
+{
+  "name": "Mon Carnet Routier",
+  "launcherName": "Carnet Routier",
+  "packageId": "fr.nounours79.moncarnetroutier",
+  "host": "https://nounours633-svg.github.io",
+  "startUrl": "/Mon-carnet-routier/",
+  "webManifestUrl": "https://nounours633-svg.github.io/Mon-carnet-routier/manifest.json",
+  "iconUrl": "https://nounours633-svg.github.io/Mon-carnet-routier/icon-512.png",
+  "backgroundColor": "#090d13",
+  "themeColor": "#071426",
+  "themeColorDark": "#071426",
+  "navigationColor": "#071426",
+  "display": "standalone",
+  "orientation": "portrait",
+  "appVersion": "1.0.0",
+  "appVersionCode": 1,
+  "enableNotifications": false,
+  "splashScreenFadeOutDuration": 300,
+  "signingKey": {
+    "path": "upload-key.jks",
+    "alias": "carnet-routier-upload"
+  }
+}
