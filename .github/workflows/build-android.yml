@@ -1,0 +1,60 @@
+name: Build Android App Bundle
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Check signing secrets
+        shell: bash
+        env:
+          KEYSTORE_B64: ${{ secrets.UPLOAD_KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.UPLOAD_KEYSTORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.UPLOAD_KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          if [[ -z "$KEYSTORE_B64" || -z "$KEYSTORE_PASSWORD" || -z "$KEY_PASSWORD" ]]; then
+            echo "::error::Missing signing secrets. Add UPLOAD_KEYSTORE_BASE64, UPLOAD_KEYSTORE_PASSWORD and UPLOAD_KEY_PASSWORD in repository Actions secrets."
+            exit 1
+          fi
+          printf '%s' "$KEYSTORE_B64" | base64 --decode > upload-key.jks
+          test -s upload-key.jks
+
+      - name: Build signed Android App Bundle with Bubblewrap
+        env:
+          BUBBLEWRAP_KEYSTORE_PASSWORD: ${{ secrets.UPLOAD_KEYSTORE_PASSWORD }}
+          BUBBLEWRAP_KEY_PASSWORD: ${{ secrets.UPLOAD_KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          docker run --rm \
+            -v "$GITHUB_WORKSPACE:/workspace" \
+            -w /workspace \
+            -e BUBBLEWRAP_KEYSTORE_PASSWORD \
+            -e BUBBLEWRAP_KEY_PASSWORD \
+            ghcr.io/googlechromelabs/bubblewrap:latest \
+            build --manifest=/workspace/twa-manifest.json \
+            --signingKeyPath=/workspace/upload-key.jks \
+            --signingKeyAlias=carnet-routier-upload
+
+      - name: Upload Android build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: mon-carnet-routier-android
+          path: |
+            app-release-bundle.aab
+            app-release-signed.apk
+            assetlinks.json
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Remove temporary private key
+        if: always()
+        run: rm -f upload-key.jks
