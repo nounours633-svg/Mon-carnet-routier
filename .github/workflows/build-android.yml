@@ -38,21 +38,32 @@ jobs:
           printf '%s' "$KEYSTORE_B64" | base64 --decode > upload-key.jks
           test -s upload-key.jks
 
-      - name: Build signed Android App Bundle with Bubblewrap
+      - name: Accept Android SDK licences and build signed App Bundle
         env:
           BUBBLEWRAP_KEYSTORE_PASSWORD: ${{ secrets.UPLOAD_KEYSTORE_PASSWORD }}
           BUBBLEWRAP_KEY_PASSWORD: ${{ secrets.UPLOAD_KEY_PASSWORD }}
         run: |
           set -euo pipefail
           docker run --rm \
+            --entrypoint /bin/bash \
             -v "$GITHUB_WORKSPACE:/workspace" \
             -w /workspace \
             -e BUBBLEWRAP_KEYSTORE_PASSWORD \
             -e BUBBLEWRAP_KEY_PASSWORD \
             ghcr.io/googlechromelabs/bubblewrap:latest \
-            build --manifest=/workspace/twa-manifest.json \
-            --signingKeyPath=/workspace/upload-key.jks \
-            --signingKeyAlias=carnet-routier-upload
+            -lc '
+              set -euo pipefail
+              SDK_ROOT=/root/.bubblewrap/android_sdk
+              SDKMANAGER="$(find "$SDK_ROOT" -type f -name sdkmanager -print -quit)"
+              if [[ -z "$SDKMANAGER" ]]; then
+                echo "Android SDK manager not found in Bubblewrap image."
+                exit 1
+              fi
+              yes | "$SDKMANAGER" --sdk_root="$SDK_ROOT" --licenses
+              bubblewrap build --manifest=/workspace/twa-manifest.json \
+                --signingKeyPath=/workspace/upload-key.jks \
+                --signingKeyAlias=carnet-routier-upload
+            '
 
       - name: Upload Android build artifacts
         uses: actions/upload-artifact@v4
