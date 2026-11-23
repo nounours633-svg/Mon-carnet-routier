@@ -490,6 +490,13 @@ main{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
   }
 }
 
+
+/* Accès discret aux tarifs repas et nuitées */
+.mini-metric-priced .metric-heading{display:flex;align-items:center;gap:7px;min-height:22px}
+.mini-metric-priced .metric-heading .rate-settings{width:auto;margin:0}
+.mini-metric-priced .metric-heading .rate-settings summary{display:inline-flex;align-items:center;justify-content:center;min-width:20px;min-height:22px;padding:0 3px!important;border:0!important;border-radius:6px;background:transparent!important;color:#8dcaff;font-size:17px!important;font-weight:900;line-height:1;cursor:pointer}
+.mini-metric-priced .metric-heading .rate-settings summary:focus-visible{outline:2px solid #8dcaff;outline-offset:2px}
+
 </style>
 
 <style id="dashboard-capture-layout">
@@ -790,22 +797,24 @@ main{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
   </details>
   <div class="home-secondary">
     <div class="mini-metric mini-metric-priced">
-      <span>🍴 Repas</span><strong id="totalMeals">0</strong><small>Jour en cours</small>
+      <div class="metric-heading"><span>🍴 Repas</span>
+        <details class="rate-settings"><summary title="Modifier le tarif des repas" aria-label="Modifier le tarif des repas">*</summary>
+          <label class="rate-label" for="mealRate">Tarif par repas (€)</label>
+          <input class="rate-input" id="mealRate" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Saisir le tarif">
+        </details>
+      </div><strong id="totalMeals">0</strong><small>Jour en cours</small>
       <small class="month-total">Mois : <b id="monthMeals">0</b></small>
       <small class="amount-label">Montant du mois</small><b class="month-amount" id="mealAmount">—</b>
-      <details class="rate-settings"><summary>Modifier le tarif</summary>
-        <label class="rate-label" for="mealRate">Tarif par repas (€)</label>
-        <input class="rate-input" id="mealRate" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Saisir le tarif">
-      </details>
     </div>
     <div class="mini-metric mini-metric-priced">
-      <span>🛏 Nuitées</span><strong id="totalNights">0</strong><small>Jour en cours</small>
+      <div class="metric-heading"><span>🛏 Nuitées</span>
+        <details class="rate-settings"><summary title="Modifier le tarif des nuitées" aria-label="Modifier le tarif des nuitées">*</summary>
+          <label class="rate-label" for="nightRate">Tarif par nuitée (€)</label>
+          <input class="rate-input" id="nightRate" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Saisir le tarif">
+        </details>
+      </div><strong id="totalNights">0</strong><small>Jour en cours</small>
       <small class="month-total">Mois : <b id="monthNights">0</b></small>
       <small class="amount-label">Montant du mois</small><b class="month-amount" id="nightAmount">—</b>
-      <details class="rate-settings"><summary>Modifier le tarif</summary>
-        <label class="rate-label" for="nightRate">Tarif par nuitée (€)</label>
-        <input class="rate-input" id="nightRate" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Saisir le tarif">
-      </details>
     </div>
   </div>
   <div class="day-count-panel" aria-live="polite"><div class="day-count-title">Cumul des jours — période sélectionnée</div><div class="day-count-item"><small>Congés</small><strong id="countConge">0</strong></div><div class="day-count-item"><small>Repos</small><strong id="countRepos">0</strong></div><div class="day-count-item"><small>Récupérations</small><strong id="countRecup">0</strong></div></div>
