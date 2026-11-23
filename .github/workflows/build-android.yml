@@ -28,6 +28,15 @@ jobs:
           printf '%s' "$KEYSTORE_B64" | base64 --decode > upload-key.jks
           test -s upload-key.jks
 
+      - name: Generate Android project from TWA manifest
+        run: |
+          set -euo pipefail
+          docker run --rm \
+            -v "$GITHUB_WORKSPACE:/workspace" \
+            -w /workspace \
+            ghcr.io/googlechromelabs/bubblewrap:latest \
+            update --skipVersionUpgrade --manifest=/workspace
+
       - name: Build signed Android App Bundle with Bubblewrap
         env:
           BUBBLEWRAP_KEYSTORE_PASSWORD: ${{ secrets.UPLOAD_KEYSTORE_PASSWORD }}
@@ -51,7 +60,6 @@ jobs:
           path: |
             app-release-bundle.aab
             app-release-signed.apk
-            assetlinks.json
           if-no-files-found: error
           retention-days: 7
 
