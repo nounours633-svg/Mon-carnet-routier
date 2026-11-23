@@ -40,7 +40,7 @@ jobs:
             -e BUBBLEWRAP_KEYSTORE_PASSWORD \
             -e BUBBLEWRAP_KEY_PASSWORD \
             ghcr.io/googlechromelabs/bubblewrap:latest \
-            build --manifest=/workspace/twa-manifest.json \
+            build --manifest=/workspace \
             --signingKeyPath=/workspace/upload-key.jks \
             --signingKeyAlias=carnet-routier-upload
 
