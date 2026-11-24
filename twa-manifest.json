@@ -14,6 +14,7 @@
   "orientation": "portrait",
   "appVersion": "1.0.0",
   "appVersionCode": 1,
+  "minSdkVersion": 24,
   "enableNotifications": false,
   "splashScreenFadeOutDuration": 300,
   "signingKey": {
