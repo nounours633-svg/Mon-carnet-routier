@@ -490,7 +490,7 @@ main{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
   }
 }
 
-.rate-star{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;margin-top:7px;border:1px solid #55baff;border-radius:50%;background:#0a3b69;color:#fff;font-size:19px;font-weight:900;line-height:1;cursor:pointer}.rate-star:active{transform:scale(.94)}#rateEditModal .rate-input{box-sizing:border-box;width:100%;min-height:46px;padding:10px 12px;border:1px solid #347db8;border-radius:12px;background:#061a32;color:#fff;font:inherit}
+.rate-star{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;margin-top:7px;border:1px solid #55baff;border-radius:50%;background:#0a3b69;color:#fff;font-size:19px;font-weight:900;line-height:1;cursor:pointer}.rate-star:active{transform:scale(.94)}.rate-star.rate-star-inline{width:21px;height:21px;margin:0 0 0 5px;font-size:14px;vertical-align:middle}#rateEditModal .rate-input{box-sizing:border-box;width:100%;min-height:46px;padding:10px 12px;border:1px solid #347db8;border-radius:12px;background:#061a32;color:#fff;font:inherit}
 </style>
 
 <style id="dashboard-capture-layout">
@@ -960,7 +960,7 @@ main{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
     <div class="quick-modal-head"><h2 id="mealNightTitle">Repas et nuitées</h2><button type="button" id="mealNightClose" class="quick-close" aria-label="Fermer">×</button></div>
     <p id="mealNightDate" class="quick-modal-date"></p>
     <div class="quick-modal-actions"><button type="button" class="btn" id="addMealBtn">＋ Ajouter un repas</button><button type="button" class="btn secondary" id="addNightBtn">＋ Ajouter une nuit</button></div>
-    <div class="meal-night-summary"><b id="mealNightDayLabel">Bilan de la journée</b><span id="mealNightDayMeals">🍴 Repas aujourd’hui : 0</span><span id="mealNightDayNights">🛏 Nuitées aujourd’hui : 0</span><div class="meal-night-remove-row"><button type="button" class="btn secondary" id="removeMealBtn">− Supprimer un repas</button><button type="button" class="btn secondary" id="removeNightBtn">− Supprimer une nuitée</button></div><b id="mealNightWeekLabel">Bilan de la semaine</b><span id="mealNightWeekMeals">Repas : 0</span><span id="mealNightWeekNights">Nuitées : 0</span></div>
+    <div class="meal-night-summary"><b id="mealNightDayLabel">Bilan de la journée</b><span id="mealNightDayMeals">🍴 Repas aujourd’hui : 0 <button type="button" class="rate-star rate-star-inline" data-edit-rate="meal" aria-label="Modifier le tarif des repas" title="Modifier le tarif des repas">*</button></span><span id="mealNightDayNights">🛏 Nuitées aujourd’hui : 0 <button type="button" class="rate-star rate-star-inline" data-edit-rate="night" aria-label="Modifier le tarif des nuitées" title="Modifier le tarif des nuitées">*</button></span><div class="meal-night-remove-row"><button type="button" class="btn secondary" id="removeMealBtn">− Supprimer un repas</button><button type="button" class="btn secondary" id="removeNightBtn">− Supprimer une nuitée</button></div><b id="mealNightWeekLabel">Bilan de la semaine</b><span id="mealNightWeekMeals">Repas : 0</span><span id="mealNightWeekNights">Nuitées : 0</span></div>
   </section>
 </div>
 <div class="quick-modal-backdrop" id="hoursModal" aria-hidden="true"><section class="quick-modal" role="dialog" aria-modal="true" aria-labelledby="hoursModalTitle"><div class="quick-modal-head"><h2 id="hoursModalTitle">Ajouter des heures</h2><button type="button" id="hoursModalClose" class="quick-close" aria-label="Fermer">×</button></div><p id="hoursModalDate" class="quick-modal-date"></p><label for="hoursToAdd" id="hoursToAddLabel">Durée à ajouter (H:MM)</label><input id="hoursToAdd" type="text" inputmode="text" placeholder="Exemple : 2:30" autocomplete="off" autocapitalize="off" spellcheck="false"><div id="hoursKmFields" style="display:none;margin-top:12px"><label for="hoursKmAdd">Kilomètres parcourus à ajouter</label><input id="hoursKmAdd" type="number" min="0" step="1" inputmode="numeric" placeholder="Exemple : 450"><label for="hoursKmDeduct" style="display:block;margin-top:10px">Kilomètres à déduire si besoin</label><input id="hoursKmDeduct" type="number" min="0" step="1" inputmode="numeric" placeholder="Exemple : 80"></div><div class="meal-night-summary"><b id="hoursWeekLabel">Bilan de la semaine</b><span id="hoursWeekDrive">Conduite : 0 h 00</span><span id="hoursWeekWork">Travail : 0 h 00</span><span id="hoursWeekTotal">Total conduite + travail : 0 h 00</span><span id="hoursWeekKm">Kilomètres de la semaine : 0 km</span></div><div class="quick-modal-actions"><button type="button" class="btn secondary" id="hoursModalCancel">Annuler</button><button type="button" class="btn" id="hoursModalAdd">Ajouter les heures</button></div></section></div>
@@ -1332,11 +1332,36 @@ function printHistory(){
 }
 $('printDate').value=today();$('printHistoryBtn').addEventListener('click',printHistory);
 
-const savedMealRate=localStorage.getItem(MEAL_RATE_KEY);const savedNightRate=localStorage.getItem(NIGHT_RATE_KEY);if(savedMealRate!==null)$('mealRate').value=savedMealRate;if(savedNightRate!==null)$('nightRate').value=savedNightRate;
-['mealRate','nightRate'].forEach(id=>$(id).addEventListener('input',()=>{const rate=readRate(id);const key=id==='mealRate'?MEAL_RATE_KEY:NIGHT_RATE_KEY;if($(id).value.trim()==='')localStorage.removeItem(key);else if(rate!==null)localStorage.setItem(key,String(rate));renderHome();}));
-document.querySelectorAll('[data-open-rate-modal]').forEach(b=>b.addEventListener('click',()=>{$('rateEditModal').classList.add('open');$('rateEditModal').setAttribute('aria-hidden','false');}));
+let activeRateKind='meal';
+function openRateEditModal(kind){
+ activeRateKind=kind;
+ const isMeal=kind==='meal';
+ $('rateEditTitle').textContent=isMeal?'Modifier le tarif des repas':'Modifier le tarif des nuitées';
+ $('mealRate').previousElementSibling.style.display=isMeal?'block':'none';
+ $('mealRate').style.display=isMeal?'block':'none';
+ $('nightRate').previousElementSibling.style.display=isMeal?'none':'block';
+ $('nightRate').style.display=isMeal?'none':'block';
+ $('mealRate').value=localStorage.getItem(MEAL_RATE_KEY)||'';
+ $('nightRate').value=localStorage.getItem(NIGHT_RATE_KEY)||'';
+ $('rateEditModal').classList.add('open');
+ $('rateEditModal').setAttribute('aria-hidden','false');
+}
+document.querySelectorAll('[data-edit-rate]').forEach(b=>b.addEventListener('click',()=>openRateEditModal(b.dataset.editRate)));
 function closeRateEditModal(){$('rateEditModal').classList.remove('open');$('rateEditModal').setAttribute('aria-hidden','true');}
-$('rateEditClose').addEventListener('click',closeRateEditModal);$('rateEditCancel').addEventListener('click',closeRateEditModal);$('rateEditSave').addEventListener('click',closeRateEditModal);
+function saveRateEdit(){
+ const id=activeRateKind==='meal'?'mealRate':'nightRate';
+ const key=activeRateKind==='meal'?MEAL_RATE_KEY:NIGHT_RATE_KEY;
+ const raw=$(id).value.trim();
+ if(raw===''){localStorage.removeItem(key);}
+ else{
+  const rate=readRate(id);
+  if(rate===null){alert('Saisis un tarif valide, égal ou supérieur à 0.');$(id).focus();return;}
+  localStorage.setItem(key,String(rate));
+ }
+ renderAll();
+ closeRateEditModal();
+}
+$('rateEditClose').addEventListener('click',closeRateEditModal);$('rateEditCancel').addEventListener('click',closeRateEditModal);$('rateEditSave').addEventListener('click',saveRateEdit);
 setupHomePeriod();clearForm();renderAll();
 })();
 if ('serviceWorker' in navigator && location.protocol.startsWith('http')) { window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {})); }
