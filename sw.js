@@ -1,7 +1,7 @@
 /* Mon Carnet Routier — historique chronologique des journées et tournées
    Mise à jour du 19/11/2026 — disposition fidèle à la maquette approuvée */
 
-const CACHE_NAME = 'mon-carnet-routier-v20261124-tarifs-repas-nuitees-date-stars';;
+const CACHE_NAME = 'mon-carnet-routier-v20261124-tarifs-repas-nuitees-date-stars2';;
 
 const APP_FILES = [
   './',
