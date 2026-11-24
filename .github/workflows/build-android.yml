@@ -3,6 +3,9 @@ name: Build Android App Bundle
 on:
   workflow_dispatch:
   pull_request:
+  push:
+    branches:
+      - android-play-build
 
 permissions:
   contents: read
