@@ -490,6 +490,7 @@ main{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
   }
 }
 
+.rate-star{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;margin-top:7px;border:1px solid #55baff;border-radius:50%;background:#0a3b69;color:#fff;font-size:19px;font-weight:900;line-height:1;cursor:pointer}.rate-star:active{transform:scale(.94)}#rateEditModal .rate-input{box-sizing:border-box;width:100%;min-height:46px;padding:10px 12px;border:1px solid #347db8;border-radius:12px;background:#061a32;color:#fff;font:inherit}
 </style>
 
 <style id="dashboard-capture-layout">
@@ -793,19 +794,13 @@ main{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
       <span>🍴 Repas</span><strong id="totalMeals">0</strong><small>Jour en cours</small>
       <small class="month-total">Mois : <b id="monthMeals">0</b></small>
       <small class="amount-label">Montant du mois</small><b class="month-amount" id="mealAmount">—</b>
-      <details class="rate-settings"><summary aria-label="Modifier le tarif des repas" title="Modifier le tarif des repas">*</summary>
-        <label class="rate-label" for="mealRate">Tarif par repas (€)</label>
-        <input class="rate-input" id="mealRate" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Saisir le tarif">
-      </details>
+      <button type="button" class="rate-star" data-open-rate-modal aria-label="Modifier les tarifs" title="Modifier les tarifs">*</button>
     </div>
     <div class="mini-metric mini-metric-priced">
       <span>🛏 Nuitées</span><strong id="totalNights">0</strong><small>Jour en cours</small>
       <small class="month-total">Mois : <b id="monthNights">0</b></small>
       <small class="amount-label">Montant du mois</small><b class="month-amount" id="nightAmount">—</b>
-      <details class="rate-settings"><summary aria-label="Modifier le tarif des nuitées" title="Modifier le tarif des nuitées">*</summary>
-        <label class="rate-label" for="nightRate">Tarif par nuitée (€)</label>
-        <input class="rate-input" id="nightRate" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Saisir le tarif">
-      </details>
+      <button type="button" class="rate-star" data-open-rate-modal aria-label="Modifier les tarifs" title="Modifier les tarifs">*</button>
     </div>
   </div>
   <div class="day-count-panel" aria-live="polite"><div class="day-count-title">Cumul des jours — période sélectionnée</div><div class="day-count-item"><small>Congés</small><strong id="countConge">0</strong></div><div class="day-count-item"><small>Repos</small><strong id="countRepos">0</strong></div><div class="day-count-item"><small>Récupérations</small><strong id="countRecup">0</strong></div></div>
@@ -942,6 +937,15 @@ main{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
 <div class="panel"><h2 class="formtitle">Restaurer une sauvegarde</h2><p class="note">L'import remplace les relevés actuellement enregistrés. Exporte d'abord une sauvegarde récente si tu veux conserver les données présentes.</p><div class="field"><label for="importFile">Fichier de sauvegarde JSON</label><input id="importFile" type="file" accept=".json,application/json"></div><div class="btnrow"><button class="btn secondary full" id="importBtn">IMPORTER LA SAUVEGARDE</button></div></div>
 <div class="panel"><h2 class="formtitle">Données et confidentialité</h2><p class="note">Le site sert uniquement à ouvrir l’application. Tes journées sont enregistrées dans le stockage local de ce navigateur sur ce téléphone : elles ne sont pas envoyées au site. Si tu effaces les données du navigateur, elles peuvent disparaître : garde une sauvegarde JSON.</p><button class="btn danger" id="clearBtn">Effacer toutes les journées</button></div>
 </section>
+<div class="quick-modal-backdrop" id="rateEditModal" aria-hidden="true">
+  <section class="quick-modal" role="dialog" aria-modal="true" aria-labelledby="rateEditTitle">
+    <div class="quick-modal-head"><h2 id="rateEditTitle">Modifier les tarifs</h2><button type="button" id="rateEditClose" class="quick-close" aria-label="Fermer">×</button></div>
+    <p class="quick-modal-date">Les nouveaux montants seront utilisés dans les calculs.</p>
+    <label for="mealRate">Tarif par repas (€)</label><input class="rate-input" id="mealRate" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Saisir le tarif">
+    <label for="nightRate">Tarif par nuitée (€)</label><input class="rate-input" id="nightRate" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Saisir le tarif">
+    <div class="quick-modal-actions"><button type="button" class="btn secondary" id="rateEditCancel">Fermer</button><button type="button" class="btn" id="rateEditSave">Enregistrer</button></div>
+  </section>
+</div>
 <div class="quick-modal-backdrop" id="quickModal" aria-hidden="true">
   <section class="quick-modal" role="dialog" aria-modal="true" aria-labelledby="quickModalTitle">
     <div class="quick-modal-head"><h2 id="quickModalTitle">Saisie rapide</h2><button type="button" id="quickClose" class="quick-close" aria-label="Fermer">×</button></div>
@@ -1330,6 +1334,9 @@ $('printDate').value=today();$('printHistoryBtn').addEventListener('click',print
 
 const savedMealRate=localStorage.getItem(MEAL_RATE_KEY);const savedNightRate=localStorage.getItem(NIGHT_RATE_KEY);if(savedMealRate!==null)$('mealRate').value=savedMealRate;if(savedNightRate!==null)$('nightRate').value=savedNightRate;
 ['mealRate','nightRate'].forEach(id=>$(id).addEventListener('input',()=>{const rate=readRate(id);const key=id==='mealRate'?MEAL_RATE_KEY:NIGHT_RATE_KEY;if($(id).value.trim()==='')localStorage.removeItem(key);else if(rate!==null)localStorage.setItem(key,String(rate));renderHome();}));
+document.querySelectorAll('[data-open-rate-modal]').forEach(b=>b.addEventListener('click',()=>{$('rateEditModal').classList.add('open');$('rateEditModal').setAttribute('aria-hidden','false');}));
+function closeRateEditModal(){$('rateEditModal').classList.remove('open');$('rateEditModal').setAttribute('aria-hidden','true');}
+$('rateEditClose').addEventListener('click',closeRateEditModal);$('rateEditCancel').addEventListener('click',closeRateEditModal);$('rateEditSave').addEventListener('click',closeRateEditModal);
 setupHomePeriod();clearForm();renderAll();
 })();
 if ('serviceWorker' in navigator && location.protocol.startsWith('http')) { window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {})); }
