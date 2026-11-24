@@ -793,7 +793,7 @@ main{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
       <span>🍴 Repas</span><strong id="totalMeals">0</strong><small>Jour en cours</small>
       <small class="month-total">Mois : <b id="monthMeals">0</b></small>
       <small class="amount-label">Montant du mois</small><b class="month-amount" id="mealAmount">—</b>
-      <details class="rate-settings"><summary>Modifier le tarif</summary>
+      <details class="rate-settings"><summary aria-label="Modifier le tarif des repas" title="Modifier le tarif des repas">*</summary>
         <label class="rate-label" for="mealRate">Tarif par repas (€)</label>
         <input class="rate-input" id="mealRate" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Saisir le tarif">
       </details>
@@ -802,7 +802,7 @@ main{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
       <span>🛏 Nuitées</span><strong id="totalNights">0</strong><small>Jour en cours</small>
       <small class="month-total">Mois : <b id="monthNights">0</b></small>
       <small class="amount-label">Montant du mois</small><b class="month-amount" id="nightAmount">—</b>
-      <details class="rate-settings"><summary>Modifier le tarif</summary>
+      <details class="rate-settings"><summary aria-label="Modifier le tarif des nuitées" title="Modifier le tarif des nuitées">*</summary>
         <label class="rate-label" for="nightRate">Tarif par nuitée (€)</label>
         <input class="rate-input" id="nightRate" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Saisir le tarif">
       </details>
