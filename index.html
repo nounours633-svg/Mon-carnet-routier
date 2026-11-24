@@ -146,6 +146,31 @@ main{padding:12px 13px 24px}
 .print-panel h3{margin:0 0 6px;font-size:16px}.print-panel p{margin:0 0 12px;color:#c2d7f2;font-size:12px}
 .print-controls{display:grid;grid-template-columns:1fr 1fr;gap:9px;align-items:end}
 .print-controls .field{margin:0}.print-action{grid-column:1/-1;border:0;border-radius:12px;padding:13px;background:linear-gradient(145deg,#12a8ff,#0758c7);color:#fff;font-weight:900;font-size:13px}
+/* Aperçu du relevé directement dans l'application, sans ouvrir l'impression */
+.print-preview-backdrop{position:fixed;inset:0;z-index:10020;display:none;align-items:center;justify-content:center;padding:10px;background:#020916ed;backdrop-filter:blur(6px)}
+.print-preview-backdrop.open{display:flex}
+.print-preview-shell{display:flex;flex-direction:column;width:min(100%,900px);height:min(94dvh,100%);min-height:0;border:1px solid #287fc2;border-radius:18px;background:#081a32;box-shadow:0 20px 60px #000c;overflow:hidden}
+.print-preview-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:13px 14px;border-bottom:1px solid #24517e;background:#0b2546}
+.print-preview-head h2{margin:0;font-size:16px;color:#fff}
+.print-preview-close{flex:0 0 36px;width:36px;height:36px;border:1px solid #3975a8;border-radius:50%;background:#153a60;color:#fff;font-size:24px}
+.print-preview-help{margin:0;padding:9px 13px;color:#c4ddf5;font-size:11px;line-height:1.4}
+.print-preview-scroll{flex:1;min-height:0;overflow:auto;padding:10px;background:#26384c}
+#printPreviewPaper{width:100%;min-height:100%;margin:0 auto;padding:16px;background:#fff;color:#111;font:9px Arial,sans-serif;box-shadow:0 3px 14px #0005}
+#printPreviewPaper h1{font-size:18px;margin:0 0 7px;color:#10243c}
+#printPreviewPaper h2{font-size:12px;margin:12px 0 6px;color:#10243c}
+#printPreviewPaper .print-sub{font-size:9px;color:#444;margin-bottom:9px;line-height:1.35}
+#printPreviewPaper .print-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;margin:8px 0 10px}
+#printPreviewPaper .print-summary div{border:1px solid #aaa;padding:5px;border-radius:3px;font-size:8px;overflow-wrap:anywhere}
+#printPreviewPaper .print-summary b{display:block;font-size:10px;margin-top:2px}
+#printPreviewPaper table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:7px}
+#printPreviewPaper th,#printPreviewPaper td{border:1px solid #999;padding:3px 2px;text-align:center;vertical-align:middle;line-height:1.2;overflow-wrap:anywhere}
+#printPreviewPaper th{background:#eaf0f6}
+#printPreviewPaper tfoot{font-weight:900}
+#printPreviewPaper .print-footer{margin-top:10px;font-size:7px;color:#555;border-top:1px solid #aaa;padding-top:5px}
+.print-preview-actions{display:flex;gap:8px;padding:11px;background:#081a32;border-top:1px solid #24517e}
+.print-preview-actions .btn{flex:1;min-width:0;padding:12px 8px;font-size:12px}
+@media(min-width:650px){#printPreviewPaper{max-width:794px;padding:28px;font-size:10px}#printPreviewPaper table{font-size:8px}}
+@media(max-width:370px){.print-preview-backdrop{padding:5px}.print-preview-shell{height:96dvh}.print-preview-actions .btn{font-size:11px;padding:11px 5px}#printPreviewPaper{padding:9px;font-size:8px}#printPreviewPaper .print-summary{gap:3px}#printPreviewPaper .print-summary div{padding:3px;font-size:7px}#printPreviewPaper .print-summary b{font-size:9px}}
 #printDocument{display:none}
 @media print{
  @page{size:A4 portrait;margin:7mm}
@@ -974,6 +999,14 @@ main{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
 <div class="quick-modal-backdrop" id="activitySummaryModal" aria-hidden="true"><section class="quick-modal activity-summary-modal" role="dialog" aria-modal="true" aria-labelledby="activitySummaryTitle"><div class="quick-modal-head"><h2 id="activitySummaryTitle">Récapitulatif d’activité</h2><button type="button" id="activitySummaryClose" class="quick-close" aria-label="Fermer">×</button></div><p class="quick-modal-date">Comparaison des heures et kilomètres enregistrés.</p><div class="activity-summary-scroll"><table class="activity-summary-table"><thead><tr><th>Indicateur</th><th id="activityDayHeading">Aujourd’hui</th><th id="activityWeekHeading">Cette semaine</th><th id="activityMonthHeading">Ce mois-ci</th></tr></thead><tbody><tr><td>Conduite</td><td id="activityDayDrive">0 h 00</td><td id="activityWeekDrive">0 h 00</td><td id="activityMonthDrive">0 h 00</td></tr><tr><td>Travail</td><td id="activityDayWork">0 h 00</td><td id="activityWeekWork">0 h 00</td><td id="activityMonthWork">0 h 00</td></tr><tr class="activity-total-row"><td>Total temps</td><td id="activityDayTotal">0 h 00</td><td id="activityWeekTotal">0 h 00</td><td id="activityMonthTotal">0 h 00</td></tr><tr><td>Kilomètres</td><td id="activityDayKm">0 km</td><td id="activityWeekKm">0 km</td><td id="activityMonthKm">0 km</td></tr></tbody></table></div><p class="activity-summary-note">Les kilomètres affichés tiennent compte des kilomètres déduits dans tes journées. Les totaux sont calculés automatiquement à partir des relevés déjà enregistrés.</p></section></div>
 
 <div class="quick-modal-backdrop" id="monthlyDetailModal" aria-hidden="true"><section class="quick-modal" role="dialog" aria-modal="true" aria-labelledby="monthlyDetailTitle"><div class="quick-modal-head"><h2 id="monthlyDetailTitle">Détail du mois</h2><button type="button" id="monthlyDetailClose" class="quick-close" aria-label="Fermer">×</button></div><p id="monthlyDetailSubtitle" class="quick-modal-date"></p><div id="monthlyDetailList" class="monthly-detail-list"></div></section></div>
+<div class="print-preview-backdrop" id="printPreviewModal" aria-hidden="true">
+ <section class="print-preview-shell" role="dialog" aria-modal="true" aria-labelledby="printPreviewTitle">
+  <div class="print-preview-head"><h2 id="printPreviewTitle">Aperçu de mon relevé</h2><button type="button" class="print-preview-close" id="closePrintPreview" aria-label="Fermer">×</button></div>
+  <p class="print-preview-help">Voici ton relevé avant impression. Tu peux le consulter même sans imprimante. Pour garder une copie, appuie sur « Enregistrer en PDF ».</p>
+  <div class="print-preview-scroll"><div id="printPreviewPaper"></div></div>
+  <div class="print-preview-actions"><button type="button" class="btn secondary" id="savePrintPdfBtn">Enregistrer en PDF</button><button type="button" class="btn" id="printPreviewPrintBtn">Imprimer</button></div>
+ </section>
+</div>
 <div id="printDocument" aria-hidden="true"></div>
 <div class="foot">MON CARNET ROUTIER · DONNÉES PERSONNELLES LOCALES</div>
 </main>
@@ -1334,8 +1367,23 @@ function printHistory(){
   table=`<h2>Bilan des 12 mois</h2><table><thead>${head}</thead><tbody>${body}</tbody><tfoot>${foot}</tfoot></table>`;
  }
  $('printDocument').innerHTML=`<h1>MON CARNET ROUTIER</h1><div class="print-sub"><b>Relevé d’activité — ${esc(range.label)}</b><br>Document personnel de suivi · Période du ${labelDate(range.start)} au ${labelDate(range.end)}</div><div class="print-summary">${summary.map(v=>`<div>${esc(v[0])}<b>${esc(v[1])}</b></div>`).join('')}</div>${table}<div class="print-footer">Relevé généré le ${new Date().toLocaleString('fr-FR')} · Données issues des journées enregistrées dans l’application.</div>`;
- $('printDocument').setAttribute('aria-hidden','false');window.print();setTimeout(()=>$('printDocument').setAttribute('aria-hidden','true'),1000);
+ $('printPreviewPaper').innerHTML=$('printDocument').innerHTML;
+ $('printPreviewModal').classList.add('open');
+ $('printPreviewModal').setAttribute('aria-hidden','false');
 }
+function closePrintPreview(){
+ $('printPreviewModal').classList.remove('open');
+ $('printPreviewModal').setAttribute('aria-hidden','true');
+}
+function launchPrintFromPreview(){
+ $('printDocument').setAttribute('aria-hidden','false');
+ window.print();
+ setTimeout(()=>$('printDocument').setAttribute('aria-hidden','true'),1000);
+}
+$('closePrintPreview').addEventListener('click',closePrintPreview);
+$('printPreviewModal').addEventListener('click',e=>{if(e.target===$('printPreviewModal'))closePrintPreview();});
+$('savePrintPdfBtn').addEventListener('click',launchPrintFromPreview);
+$('printPreviewPrintBtn').addEventListener('click',launchPrintFromPreview);
 $('printDate').value=today();$('printHistoryBtn').addEventListener('click',printHistory);
 
 let activeRateKind='meal';
