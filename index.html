@@ -1352,7 +1352,7 @@ function openRateEditModal(kind){
  $('rateEditModal').classList.add('open');
  $('rateEditModal').setAttribute('aria-hidden','false');
 }
-document.querySelectorAll('[data-edit-rate]').forEach(b=>b.addEventListener('click',()=>openRateEditModal(b.dataset.editRate)));
+document.addEventListener('click',function(e){const b=e.target.closest('[data-edit-rate]');if(!b)return;e.preventDefault();e.stopPropagation();openRateEditModal(b.dataset.editRate);},true);
 function closeRateEditModal(){$('rateEditModal').classList.remove('open');$('rateEditModal').setAttribute('aria-hidden','true');}
 function saveRateEdit(){
  const id=activeRateKind==='meal'?'mealRate':'nightRate';
