@@ -1361,12 +1361,12 @@ function printHistory(showPreview=true){
   const monthRows=[];
   for(let m=0;m<12;m++){
    const monthDays=rows.filter(x=>Number(x.date.slice(5,7))===m+1);
-   monthRows.push({m,items:monthDays});
+   if(monthDays.length)monthRows.push({m,items:monthDays});
   }
   const head='<tr><th style="width:16%">Mois</th><th>Journées</th><th>Km</th><th>Conduite</th><th>Travail</th><th>Repas</th><th>Montant repas</th><th>Nuits</th><th>Montant nuitées</th><th>Congés</th><th>Repos</th><th>Récup.</th></tr>';
   const body=monthRows.map(({m,items})=>`<tr><td>${monthNames[m].charAt(0).toLocaleUpperCase('fr')+monthNames[m].slice(1)}</td><td>${items.length}</td><td>${display('km',total(items,'km'))}</td><td>${fmt(total(items,'drive'))}</td><td>${fmt(total(items,'work'))}</td><td>${total(items,'meals')}</td><td>${total(items,'meals')&&mealRate!==null?money(total(items,'meals')*mealRate):'—'}</td><td>${total(items,'nights')}</td><td>${total(items,'nights')&&nightRate!==null?money(total(items,'nights')*nightRate):'—'}</td><td>${total(items,'leaveDays')}</td><td>${total(items,'restDays')}</td><td>${total(items,'recoveryDays')}</td></tr>`).join('');
   const foot=`<tr><th>TOTAL ANNUEL</th><th>${rows.length}</th><th>${display('km',total(rows,'km'))}</th><th>${fmt(total(rows,'drive'))}</th><th>${fmt(total(rows,'work'))}</th><th>${total(rows,'meals')}</th><th>${mealAmount===null?'—':money(mealAmount)}</th><th>${total(rows,'nights')}</th><th>${nightAmount===null?'—':money(nightAmount)}</th><th>${total(rows,'leaveDays')}</th><th>${total(rows,'restDays')}</th><th>${total(rows,'recoveryDays')}</th></tr>`;
-  table=`<h2>Bilan des 12 mois</h2><table><thead>${head}</thead><tbody>${body}</tbody><tfoot>${foot}</tfoot></table>`;
+  table=`<h2>Bilan mensuel de l’année</h2><table><thead>${head}</thead><tbody>${body}</tbody><tfoot>${foot}</tfoot></table>`;
  }
  $('printDocument').innerHTML=`<h1>MON CARNET ROUTIER</h1><div class="print-sub"><b>Relevé d’activité — ${esc(range.label)}</b><br>Document personnel de suivi · Période du ${labelDate(range.start)} au ${labelDate(range.end)}</div><div class="print-summary">${summary.map(v=>`<div>${esc(v[0])}<b>${esc(v[1])}</b></div>`).join('')}</div>${table}<div class="print-footer">Relevé généré le ${new Date().toLocaleString('fr-FR')} · Données issues des journées enregistrées dans l’application.</div>`;
  $('printPreviewPaper').innerHTML=$('printDocument').innerHTML;
