@@ -145,7 +145,7 @@ main{padding:12px 13px 24px}
 .print-panel{margin:12px 0;padding:14px;border:1px solid #287fc2;border-radius:16px;background:linear-gradient(145deg,#0c315d,#071a34)}
 .print-panel h3{margin:0 0 6px;font-size:16px}.print-panel p{margin:0 0 12px;color:#c2d7f2;font-size:12px}
 .print-controls{display:grid;grid-template-columns:1fr 1fr;gap:9px;align-items:end}
-.print-controls .field{margin:0}.print-action{grid-column:1/-1;border:0;border-radius:12px;padding:13px;background:linear-gradient(145deg,#12a8ff,#0758c7);color:#fff;font-weight:900;font-size:13px}
+.print-controls .field{margin:0}.print-action{grid-column:span 1;border:0;border-radius:12px;padding:13px 8px;background:linear-gradient(145deg,#12a8ff,#0758c7);color:#fff;font-weight:900;font-size:12px}.print-action.secondary{background:linear-gradient(145deg,#345777,#1a3552)}
 /* Aperçu du relevé directement dans l'application, sans ouvrir l'impression */
 .print-preview-backdrop{position:fixed;inset:0;z-index:10020;display:none;align-items:center;justify-content:center;padding:10px;background:#020916ed;backdrop-filter:blur(6px)}
 .print-preview-backdrop.open{display:flex}
@@ -917,7 +917,8 @@ main{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
  <div class="print-controls">
   <div class="field"><label for="printPeriod">Période</label><select id="printPeriod"><option value="month" selected>Mois</option><option value="year">Année</option></select></div>
   <div class="field"><label for="printDate">Date de référence</label><input id="printDate" type="date"></div>
-  <button type="button" class="print-action" id="printHistoryBtn">▤ PRÉPARER ET IMPRIMER MON HISTORIQUE</button>
+  <button type="button" class="print-action secondary" id="printHistoryPreviewBtn">◉ APERÇU</button>
+  <button type="button" class="print-action" id="printHistoryBtn">▤ IMPRIMER</button>
  </div>
 </div>
 <div id="entries"></div>
@@ -1328,7 +1329,7 @@ function printPeriodRange(mode,ref){
  else {start=new Date(d.getFullYear(),d.getMonth(),1);end=new Date(d.getFullYear(),d.getMonth()+1,0);label=d.toLocaleDateString('fr-FR',{month:'long',year:'numeric'});label=label.charAt(0).toLocaleUpperCase('fr')+label.slice(1);}
  return {start:iso(start),end:iso(end),label,year:d.getFullYear(),month:d.getMonth()};
 }
-function printHistory(){
+function printHistory(showPreview=true){
  const mode=$('printPeriod').value,ref=$('printDate').value||today();
  const range=printPeriodRange(mode,ref),rows=days.filter(x=>x.date>=range.start&&x.date<=range.end).sort((a,b)=>a.date.localeCompare(b.date));
  if(!rows.length){alert('Aucune journée enregistrée sur cette période.');return;}
@@ -1349,7 +1350,7 @@ function printHistory(){
  const nightRate=storedRate(NIGHT_RATE_KEY);
  const mealAmount=Number.isFinite(mealRate)&&mealRate>=0?total(rows,'meals')*mealRate:null;
  const nightAmount=Number.isFinite(nightRate)&&nightRate>=0?total(rows,'nights')*nightRate:null;
- const summary=[['Journées',rows.length],['Conduite',fmt(total(rows,'drive'))],['Travail',fmt(total(rows,'work'))],['Total heures',fmt(total(rows,'drive')+total(rows,'work'))],['Kilomètres',total(rows,'km').toLocaleString('fr-FR')+' km'],['Repas',total(rows,'meals')],['Nuitées',total(rows,'nights')],...(mealAmount===null?[]:[['Montant repas',money(mealAmount)]]),...(nightAmount===null?[]:[['Montant nuitées',money(nightAmount)]]),['Congés',total(rows,'leaveDays')],['Repos',total(rows,'restDays')],['Récupérations',total(rows,'recoveryDays')]];
+ const summary=[['Journées',rows.length],['Conduite',fmt(total(rows,'drive'))],['Travail',fmt(total(rows,'work'))],['Total heures',fmt(total(rows,'drive')+total(rows,'work'))],['Kilomètres',total(rows,'km').toLocaleString('fr-FR')+' km'],['Repas',total(rows,'meals')],['Nuitées',total(rows,'nights')],...(mealAmount===null?[]:[['Montant repas',money(mealAmount)]]),...(nightAmount===null?[]:[['Montant nuitées',money(nightAmount)]]),['Total frais de route',mealAmount!==null&&nightAmount!==null?money(mealAmount+nightAmount):'Tarifs à renseigner'],['Congés',total(rows,'leaveDays')],['Repos',total(rows,'restDays')],['Récupérations',total(rows,'recoveryDays')]];
  let table='';
  if(mode==='month'){
   const head='<tr><th style="width:11%">Date</th><th>Km</th><th>Conduite</th><th>Travail</th><th>Repas</th><th>Montant repas</th><th>Nuits</th><th>Montant nuitées</th><th>Congés</th><th>Repos</th><th>Récup.</th></tr>';
@@ -1369,8 +1370,12 @@ function printHistory(){
  }
  $('printDocument').innerHTML=`<h1>MON CARNET ROUTIER</h1><div class="print-sub"><b>Relevé d’activité — ${esc(range.label)}</b><br>Document personnel de suivi · Période du ${labelDate(range.start)} au ${labelDate(range.end)}</div><div class="print-summary">${summary.map(v=>`<div>${esc(v[0])}<b>${esc(v[1])}</b></div>`).join('')}</div>${table}<div class="print-footer">Relevé généré le ${new Date().toLocaleString('fr-FR')} · Données issues des journées enregistrées dans l’application.</div>`;
  $('printPreviewPaper').innerHTML=$('printDocument').innerHTML;
- $('printPreviewModal').classList.add('open');
- $('printPreviewModal').setAttribute('aria-hidden','false');
+ if(showPreview){
+  $('printPreviewModal').classList.add('open');
+  $('printPreviewModal').setAttribute('aria-hidden','false');
+ }else{
+  launchPrintFromPreview();
+ }
 }
 function closePrintPreview(){
  $('printPreviewModal').classList.remove('open');
@@ -1385,7 +1390,7 @@ $('closePrintPreview').addEventListener('click',closePrintPreview);
 $('printPreviewModal').addEventListener('click',e=>{if(e.target===$('printPreviewModal'))closePrintPreview();});
 $('savePrintPdfBtn').addEventListener('click',launchPrintFromPreview);
 $('printPreviewPrintBtn').addEventListener('click',launchPrintFromPreview);
-$('printDate').value=today();$('printHistoryBtn').addEventListener('click',printHistory);
+$('printDate').value=today();$('printHistoryPreviewBtn').addEventListener('click',()=>printHistory(true));$('printHistoryBtn').addEventListener('click',()=>printHistory(false));
 
 let activeRateKind='meal';
 function openRateEditModal(kind){
