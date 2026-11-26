@@ -1130,7 +1130,8 @@ function load(){try{let d=JSON.parse(localStorage.getItem(KEY)||'[]');return Arr
 function save(){localStorage.setItem(KEY,JSON.stringify(days));renderAll()}
 function iso(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
 function today(){return iso(new Date())}
-function toTimeValue(v){const m=String(v??'').trim().match(/^(\d{1,2})\s*[:hH]\s*([0-5]?\d)$/);return m?String(Number(m[1])).padStart(2,'0')+':'+String(Number(m[2])).padStart(2,'0'):''}\nfunction parseDur(v){if(!v||!v.trim())return 0;let m=v.trim().match(/^(\d{1,3})\s*[:hH]\s*([0-5]?\d)$/);if(!m)throw Error('Durée incorrecte. Saisis H:MM, par exemple 8:45.');return +m[1]*60+(+m[2])}
+function toTimeValue(v){const m=String(v??'').trim().match(/^(\d{1,2})\s*[:hH]\s*([0-5]?\d)$/);return m?String(Number(m[1])).padStart(2,'0')+':'+String(Number(m[2])).padStart(2,'0'):''}
+function parseDur(v){if(!v||!v.trim())return 0;let m=v.trim().match(/^(\d{1,3})\s*[:hH]\s*([0-5]?\d)$/);if(!m)throw Error('Durée incorrecte. Saisis H:MM, par exemple 8:45.');return +m[1]*60+(+m[2])}
 function fmt(n){n=Number(n)||0;return `${Math.floor(n/60)} h ${String(n%60).padStart(2,'0')}`}
 function sum(a,k){return a.reduce((s,x)=>s+(Number(x[k])||0),0)}
 function countedKm(x){return Math.max(0,(Number(x.km)||0)-(Number(x.kmDeduct)||0))}
