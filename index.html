@@ -840,6 +840,12 @@ main{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
  #printDocument .print-day-remarks div{font-size:8pt;line-height:1.35}
 }
 
+
+/* Navigation et affichage Jour / Mois / Année dans l'historique */
+.history-day-picker{margin-top:10px}
+.history-month-summary{cursor:default}
+.history-month-summary .daydate{text-transform:capitalize}
+.history-month-summary .chips{margin-top:10px}
 </style>
 </head>
 <body>
@@ -994,10 +1000,11 @@ main{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
     <strong id="historyPeriodLabel">Historique</strong>
     <button type="button" id="historyNext" aria-label="Période suivante">›</button>
   </div>
+  <div class="field history-day-picker" id="historyDayPickerWrap"><label for="historyDatePicker">Choisir le jour à consulter</label><input id="historyDatePicker" type="date"></div>
   <div class="field"><label for="search">Rechercher une date, un lieu, un chargement, une livraison…</label><input id="search" type="search" placeholder="Date, ville, remarque…"></div>
   <div class="formgrid history-filters">
-    <div class="field"><label for="yearFilter">Année</label><select id="yearFilter"><option value="all">Toutes les années</option></select></div>
-    <div class="field"><label for="monthFilter">Mois</label><select id="monthFilter"><option value="all">Tous les mois</option><option value="01">Janvier</option><option value="02">Février</option><option value="03">Mars</option><option value="04">Avril</option><option value="05">Mai</option><option value="06">Juin</option><option value="07">Juillet</option><option value="08">Août</option><option value="09">Septembre</option><option value="10">Octobre</option><option value="11">Novembre</option><option value="12">Décembre</option></select></div>
+    <div class="field history-year-field"><label for="yearFilter">Année</label><select id="yearFilter"><option value="all">Toutes les années</option></select></div>
+    <div class="field history-month-field"><label for="monthFilter">Mois</label><select id="monthFilter"><option value="all">Tous les mois</option><option value="01">Janvier</option><option value="02">Février</option><option value="03">Mars</option><option value="04">Avril</option><option value="05">Mai</option><option value="06">Juin</option><option value="07">Juillet</option><option value="08">Août</option><option value="09">Septembre</option><option value="10">Octobre</option><option value="11">Novembre</option><option value="12">Décembre</option></select></div>
     <div class="field"><label for="sort">Ordre</label><select id="sort"><option value="asc" selected>Chronologie : plus anciennes d’abord</option></select></div>
   </div>
 </div>
@@ -1185,18 +1192,29 @@ function hasElevenHourRestAfter(x){
  return restMinutes>=660;
 }
 function periodLabel(d,mode){return mode==='year'?String(d.getFullYear()):d.toLocaleDateString('fr-FR',{month:'long',year:'numeric'});}
-function historyMove(delta){if(historyMode==='year')historyCursor.setFullYear(historyCursor.getFullYear()+delta);else if(historyMode==='day')historyCursor.setDate(historyCursor.getDate()+delta);else historyCursor.setMonth(historyCursor.getMonth()+delta);renderHistory();}
+function historyMove(delta){if(historyMode==='year')historyCursor.setFullYear(historyCursor.getFullYear()+delta);else if(historyMode==='day')historyCursor.setDate(historyCursor.getDate()+delta);else historyCursor.setMonth(historyCursor.getMonth()+delta);syncHistorySelectors();renderHistory();}
+function syncHistorySelectors(){
+ const y=String(historyCursor.getFullYear()),m=String(historyCursor.getMonth()+1).padStart(2,'0');
+ if($('historyDatePicker'))$('historyDatePicker').value=iso(historyCursor);
+ if(Array.from($('yearFilter').options).some(o=>o.value===y))$('yearFilter').value=y;
+ $('monthFilter').value=m;
+}
 function renderHistory(){
- let q=$('search').value.toLocaleLowerCase('fr'),yr=$('yearFilter').value,mo=$('monthFilter').value,ord=$('sort').value;
- let a=[...days].filter(x=>(yr==='all'||x.date.startsWith(yr))&&(mo==='all'||x.date.slice(5,7)===mo));
- if(historyMode==='day')a=a.filter(x=>x.date===iso(historyCursor));
- else if(historyMode==='month')a=a.filter(x=>x.date.slice(0,7)===iso(historyCursor).slice(0,7));
- else a=a.filter(x=>x.date.slice(0,4)===String(historyCursor.getFullYear()));
- a=a.filter(x=>(x.date+' '+(x.remarks||'')+' '+(x.startCity||'')+' '+cityArray(x,'loading').join(' ')+' '+cityArray(x,'unloading').join(' ')+' '+routeLines(x).join(' ')+' '+(x.endCity||'')).toLocaleLowerCase('fr').includes(q));
- a.sort((x,y)=>x.date.localeCompare(y.date));
- $('historyPeriodLabel').textContent=historyMode==='day'?new Date(iso(historyCursor)+'T12:00:00').toLocaleDateString('fr-FR',{weekday:'long',day:'2-digit',month:'2-digit',year:'numeric'}):periodLabel(historyCursor,historyMode);
+ const q=$('search').value.toLocaleLowerCase('fr'),year=String(historyCursor.getFullYear()),month=String(historyCursor.getMonth()+1).padStart(2,'0'),date=iso(historyCursor);
+ const allForPeriod=days.filter(x=>historyMode==='day'?x.date===date:historyMode==='month'?x.date.slice(0,7)===date.slice(0,7):x.date.slice(0,4)===year);
+ const matches=allForPeriod.filter(x=>(x.date+' '+(x.remarks||'')+' '+(x.startCity||'')+' '+cityArray(x,'loading').join(' ')+' '+cityArray(x,'unloading').join(' ')+' '+routeLines(x).join(' ')+' '+(x.endCity||'')).toLocaleLowerCase('fr').includes(q)).sort((x,y)=>x.date.localeCompare(y.date));
+ $('historyPeriodLabel').textContent=historyMode==='day'?new Date(date+'T12:00:00').toLocaleDateString('fr-FR',{weekday:'long',day:'2-digit',month:'long',year:'numeric'}):historyMode==='month'?periodLabel(historyCursor,'month'):year;
+ $('historyDayPickerWrap').classList.toggle('hidden',historyMode!=='day');
+ document.querySelector('.history-year-field').classList.toggle('hidden',historyMode==='day');
+ document.querySelector('.history-month-field').classList.toggle('hidden',historyMode!=='month');
+ $('sort').parentElement.classList.toggle('hidden',historyMode==='year');
  document.querySelectorAll('[data-history-mode]').forEach(b=>b.classList.toggle('active',b.dataset.historyMode===historyMode));
- $('entries').innerHTML=a.map(dayHTML).join('')||'<div class="panel empty">Aucune journée trouvée pour cette période.</div>';
+ if(historyMode==='year'){
+  const grouped=Array.from({length:12},(_,idx)=>({month:String(idx+1).padStart(2,'0'),items:matches.filter(x=>x.date.slice(5,7)===String(idx+1).padStart(2,'0'))})).filter(g=>g.items.length);
+  $('entries').innerHTML=grouped.length?grouped.map(g=>'<article class="day history-month-summary"><div class="daytop"><div class="daydate">'+monthNames[Number(g.month)-1].replace(/^./,c=>c.toLocaleUpperCase('fr'))+' '+year+'</div><b>'+g.items.length+' journée(s)</b></div><div class="chips">'+periodStats(g.items).filter(v=>v[1]!=='Journées').map(v=>'<span class="chip">'+esc(v[1])+' · '+esc(v[2])+'</span>').join('')+'</div></article>').join(''):'<div class="panel empty">Aucun mois avec activité enregistré pour cette année.</div>';
+ }else{
+  $('entries').innerHTML=matches.map(dayHTML).join('')||'<div class="panel empty">Aucune journée trouvée pour cette période.</div>';
+ }
 }
 let expandedCalendarWeeks=new Set();
 function renderCalendar(){
@@ -1391,9 +1409,12 @@ $('clearBtn').addEventListener('click',()=>{if(confirm('Effacer toutes les journ
 document.querySelectorAll('[data-home-period]').forEach(b=>b.addEventListener('click',()=>{homePeriod=b.dataset.homePeriod;document.querySelectorAll('[data-home-period]').forEach(x=>x.classList.toggle('active',x===b));let sel=$('homePeriodSelect');let now=new Date();if(homePeriod==='year'){sel.innerHTML=[...new Set([String(now.getFullYear()),...days.map(x=>x.date.slice(0,4))])].sort().reverse().map(y=>`<option value="${y}">${y}</option>`).join('');sel.value=String(now.getFullYear());}else{setupHomePeriod();}renderHome();}));
 $('homePeriodSelect').addEventListener('change',renderHome);
 
-document.querySelectorAll('[data-history-mode]').forEach(b=>b.addEventListener('click',()=>{historyMode=b.dataset.historyMode;historyCursor=new Date();historyCursor.setDate(1);if(historyMode==='day')historyCursor=new Date(today()+'T12:00:00');renderHistory();}));
+document.querySelectorAll('[data-history-mode]').forEach(b=>b.addEventListener('click',()=>{historyMode=b.dataset.historyMode;historyCursor=new Date();historyCursor.setDate(1);if(historyMode==='day')historyCursor=new Date(today()+'T12:00:00');syncHistorySelectors();renderHistory();}));
 $('historyPrev').addEventListener('click',()=>historyMove(-1));
 $('historyNext').addEventListener('click',()=>historyMove(1));
+$('historyDatePicker').addEventListener('change',()=>{if(!$('historyDatePicker').value)return;historyCursor=new Date($('historyDatePicker').value+'T12:00:00');renderHistory();});
+$('yearFilter').addEventListener('change',()=>{if($('yearFilter').value!=='all'){historyCursor.setFullYear(Number($('yearFilter').value));renderHistory();}});
+$('monthFilter').addEventListener('change',()=>{if($('monthFilter').value!=='all'){historyCursor.setMonth(Number($('monthFilter').value)-1);renderHistory();}});
 $('calendarPrev').addEventListener('click',()=>{calendarCursor.setMonth(calendarCursor.getMonth()-1);renderCalendar();});
 $('calendarNext').addEventListener('click',()=>{calendarCursor.setMonth(calendarCursor.getMonth()+1);renderCalendar();});
 $('calendarGrid').addEventListener('click',e=>{const week=e.target.closest('[data-week-toggle]');if(week){const key=week.dataset.weekToggle;if(expandedCalendarWeeks.has(key))expandedCalendarWeeks.delete(key);else expandedCalendarWeeks.add(key);renderCalendar();return;}const b=e.target.closest('[data-calendar-date]');if(!b)return;selectedCalendarDate=b.dataset.calendarDate;renderCalendar();const x=days.find(v=>v.date===selectedCalendarDate);if(x)openDayDetail(x.id);});
