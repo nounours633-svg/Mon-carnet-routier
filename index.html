@@ -1234,10 +1234,7 @@ function renderHistory(){
    const monday=new Date(key+'T12:00:00'),sunday=new Date(monday);
    sunday.setDate(sunday.getDate()+6);
    const weekLabel='Semaine du '+labelDate(iso(monday))+' au '+labelDate(iso(sunday));
-   const rows=weeks[key].map(x=>{
-    const star=isStarDay(x)?' <span class="history-day-star" aria-label="Plus de 9 heures de conduite">*</span>':'';
-    return '<div class="history-month-day-group">'+dayHTML(x).replace('</div>',star+'</div>');
-   }).join('');
+   const rows=weeks[key].map(x=>dayHTML(x)).join('');
    return '<section class="history-week-group"><div class="history-week-title">'+weekLabel+'</div>'+rows+'</section>';
   }).join('');
   $('entries').innerHTML=matches.length?weekHTML:'<div class="panel empty">Aucune journée trouvée pour cette période.</div>';
