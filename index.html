@@ -846,6 +846,13 @@ main{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
 .history-month-summary{cursor:default}
 .history-month-summary .daydate{text-transform:capitalize}
 .history-month-summary .chips{margin-top:10px}
+
+/* Les mois du récapitulatif annuel sont des boutons ouvrant leur liste de jours */
+.history-month-summary{width:100%;display:block;text-align:left;color:inherit;font:inherit;cursor:pointer}
+.history-month-summary:active{transform:scale(.99);border-color:#168cff}
+.history-month-day{width:100%;text-align:left;background:transparent;border:0;border-bottom:1px solid #244b70;cursor:pointer;color:#e8f5ff;font:inherit}
+.history-month-day:active{background:#12375d}
+.history-month-day span{line-height:1.45}
 </style>
 </head>
 <body>
@@ -1211,7 +1218,7 @@ function renderHistory(){
  document.querySelectorAll('[data-history-mode]').forEach(b=>b.classList.toggle('active',b.dataset.historyMode===historyMode));
  if(historyMode==='year'){
   const grouped=Array.from({length:12},(_,idx)=>({month:String(idx+1).padStart(2,'0'),items:matches.filter(x=>x.date.slice(5,7)===String(idx+1).padStart(2,'0'))})).filter(g=>g.items.length);
-  $('entries').innerHTML=grouped.length?grouped.map(g=>'<article class="day history-month-summary"><div class="daytop"><div class="daydate">'+monthNames[Number(g.month)-1].replace(/^./,c=>c.toLocaleUpperCase('fr'))+' '+year+'</div><b>'+g.items.length+' journée(s)</b></div><div class="chips">'+periodStats(g.items).filter(v=>v[1]!=='Journées').map(v=>'<span class="chip">'+esc(v[1])+' · '+esc(v[2])+'</span>').join('')+'</div></article>').join(''):'<div class="panel empty">Aucun mois avec activité enregistré pour cette année.</div>';
+  $('entries').innerHTML=grouped.length?grouped.map(g=>'<button type="button" class="day history-month-summary" data-history-month="'+year+'-'+g.month+'"><div class="daytop"><div class="daydate">'+monthNames[Number(g.month)-1].replace(/^./,c=>c.toLocaleUpperCase('fr'))+' '+year+'</div><b>'+g.items.length+' journée(s) ›</b></div><div class="chips">'+periodStats(g.items).filter(v=>v[1]!=='Journées').map(v=>'<span class="chip">'+esc(v[1])+' · '+esc(v[2])+'</span>').join('')+'</div></button>').join(''):'<div class="panel empty">Aucun mois avec activité enregistré pour cette année.</div>';
  }else{
   $('entries').innerHTML=matches.map(dayHTML).join('')||'<div class="panel empty">Aucune journée trouvée pour cette période.</div>';
  }
@@ -1279,6 +1286,14 @@ let homePeriod='month';
 function setupHomePeriod(){let sel=$('homePeriodSelect');if(!sel)return;let now=new Date(),yy=now.getFullYear(),mm=String(now.getMonth()+1).padStart(2,'0');homePeriod='month';sel.innerHTML=Array.from({length:24},(_,i)=>{let d=new Date(yy,now.getMonth()-i,1),v=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;return `<option value="${v}">${d.toLocaleDateString('fr-FR',{month:'long',year:'numeric'})}</option>`}).join('')+`<option value="${yy}">${yy}</option>`;sel.value=yy+'-'+mm;}
 function syncQuickStats(){let x=days.find(v=>v.date===today());$('quickKm').value=x&&Number(x.km)?x.km:'';$('quickKmDeduct').value=x&&Number(x.kmDeduct)?x.kmDeduct:'';$('quickDriving').value=x&&Number(x.drive)?`${Math.floor(x.drive/60)}:${String(x.drive%60).padStart(2,'0')}`:'';$('quickWork').value=x&&Number(x.work)?`${Math.floor(x.work/60)}:${String(x.work%60).padStart(2,'0')}`:'';$('quickMeals').value=x?Number(x.meals)||0:0;$('quickNights').value=x?Number(x.nights)||0:0;}
 
+function openHistoryMonth(monthKey){
+ const items=days.filter(x=>x.date.slice(0,7)===monthKey).sort((a,b)=>a.date.localeCompare(b.date));
+ const label=new Date(monthKey+'-15T12:00:00').toLocaleDateString('fr-FR',{month:'long',year:'numeric'});
+ $('monthlyDetailTitle').textContent='Jours du mois';
+ $('monthlyDetailSubtitle').textContent=label.charAt(0).toLocaleUpperCase('fr')+label.slice(1)+' · '+items.length+' journée(s)';
+ $('monthlyDetailList').innerHTML=items.length?items.map(x=>'<button type="button" class="monthly-detail-row history-month-day" data-history-date="'+x.date+'"><b>'+labelDate(x.date)+'</b><span>Conduite '+fmt(Number(x.drive)||0)+' · Travail '+fmt(Number(x.work)||0)+' · '+countedKm(x).toLocaleString('fr-FR')+' km ›</span></button>').join(''):'<div class="monthly-detail-empty">Aucune journée enregistrée pour ce mois.</div>';
+ $('monthlyDetailModal').classList.add('open');$('monthlyDetailModal').setAttribute('aria-hidden','false');
+}
 function openMonthlyDetail(kind){
  const month=today().slice(0,7),items=days.filter(x=>inMonth(x,month)).slice().sort((a,b)=>a.date.localeCompare(b.date));
  const isWorked=x=>(Number(x.drive)||0)+(Number(x.work)||0)+(Number(x.km)||0)>0||(Array.isArray(x.operations)&&x.operations.length>0)||!!x.startCity||!!x.endCity;
@@ -1418,7 +1433,7 @@ $('monthFilter').addEventListener('change',()=>{if($('monthFilter').value!=='all
 $('calendarPrev').addEventListener('click',()=>{calendarCursor.setMonth(calendarCursor.getMonth()-1);renderCalendar();});
 $('calendarNext').addEventListener('click',()=>{calendarCursor.setMonth(calendarCursor.getMonth()+1);renderCalendar();});
 $('calendarGrid').addEventListener('click',e=>{const week=e.target.closest('[data-week-toggle]');if(week){const key=week.dataset.weekToggle;if(expandedCalendarWeeks.has(key))expandedCalendarWeeks.delete(key);else expandedCalendarWeeks.add(key);renderCalendar();return;}const b=e.target.closest('[data-calendar-date]');if(!b)return;selectedCalendarDate=b.dataset.calendarDate;renderCalendar();const x=days.find(v=>v.date===selectedCalendarDate);if(x)openDayDetail(x.id);});
-$('entries').addEventListener('click',e=>{const b=e.target.closest('[data-detail]');if(b)openDayDetail(b.dataset.detail);});
+$('entries').addEventListener('click',e=>{const monthButton=e.target.closest('[data-history-month]');if(monthButton){openHistoryMonth(monthButton.dataset.historyMonth);return;}const dateButton=e.target.closest('[data-history-date]');if(dateButton){const date=dateButton.dataset.historyDate;closeMonthlyDetail();historyMode='day';historyCursor=new Date(date+'T12:00:00');syncHistorySelectors();renderHistory();return;}const b=e.target.closest('[data-detail]');if(b)openDayDetail(b.dataset.detail);});
 function openFullChronology(){
  const day=days.find(x=>x.date===today());if(!day)return;
  const dateLabel=new Date(day.date+'T12:00:00').toLocaleDateString('fr-FR',{weekday:'long',day:'2-digit',month:'2-digit',year:'numeric'});
