@@ -141,6 +141,45 @@ main{padding:12px 13px 24px}
 @media(max-width:370px){.calendar-cell{min-height:67px}.calendar-cell small{font-size:7px}.calendar-weekdays span{font-size:9px}.history-monthbar strong{font-size:13px}}
 
 
+/* Aperçu et impression de la chronologie quotidienne */
+#printPreviewPaper .print-day-date,#printDocument .print-day-date{font-size:11px;font-weight:800;margin:0 0 10px;color:#16385f}
+#printPreviewPaper .print-day-timeline,#printDocument .print-day-timeline{border:2px solid #168cff;border-radius:15px;padding:8px 10px;background:linear-gradient(155deg,#0b3970,#071d3c);color:#fff}
+#printPreviewPaper .print-day-timeline .timeline-event,#printDocument .print-day-timeline .timeline-event{display:grid;grid-template-columns:22px 30px minmax(0,1fr) auto;align-items:center;gap:7px;min-height:54px;padding:7px 3px;border-bottom:1px solid #28639a;break-inside:avoid;page-break-inside:avoid}
+#printPreviewPaper .print-day-timeline .timeline-event:last-child,#printDocument .print-day-timeline .timeline-event:last-child{border-bottom:0}
+#printPreviewPaper .print-day-timeline .timeline-rail,#printDocument .print-day-timeline .timeline-rail{height:100%;display:flex;align-items:center;justify-content:center;position:relative}
+#printPreviewPaper .print-day-timeline .timeline-rail:before,#printDocument .print-day-timeline .timeline-rail:before{content:"";position:absolute;top:0;bottom:0;width:3px;background:#d9eaff}
+#printPreviewPaper .print-day-timeline .timeline-event:first-child .timeline-rail:before,#printDocument .print-day-timeline .timeline-event:first-child .timeline-rail:before{top:50%}
+#printPreviewPaper .print-day-timeline .timeline-event:last-child .timeline-rail:before,#printDocument .print-day-timeline .timeline-event:last-child .timeline-rail:before{bottom:50%}
+#printPreviewPaper .print-day-timeline .timeline-dot,#printDocument .print-day-timeline .timeline-dot{z-index:1;width:13px;height:13px;border:3px solid #fff;border-radius:50%;background:#1ed66d;box-shadow:0 0 5px #fff8}
+#printPreviewPaper .print-day-timeline .unloading .timeline-dot,#printDocument .print-day-timeline .unloading .timeline-dot{background:#ff9b24}
+#printPreviewPaper .print-day-timeline .arrival .timeline-dot,#printDocument .print-day-timeline .arrival .timeline-dot{background:#2a9fff}
+#printPreviewPaper .print-day-timeline .meal .timeline-dot,#printDocument .print-day-timeline .meal .timeline-dot{background:#b74cff}
+#printPreviewPaper .print-day-timeline .night .timeline-dot,#printDocument .print-day-timeline .night .timeline-dot{background:#55caff}
+#printPreviewPaper .print-day-timeline .timeline-symbol,#printDocument .print-day-timeline .timeline-symbol{font-size:23px;text-align:center}
+#printPreviewPaper .print-day-timeline .timeline-copy,#printDocument .print-day-timeline .timeline-copy{min-width:0;line-height:1.2}
+#printPreviewPaper .print-day-timeline .timeline-copy b,#printDocument .print-day-timeline .timeline-copy b{display:block;font-size:12px;line-height:1.25;color:#fff;overflow-wrap:anywhere}
+#printPreviewPaper .print-day-timeline .timeline-copy small,#printDocument .print-day-timeline .timeline-copy small{display:block;margin-top:3px;font-size:10px;line-height:1.25;color:#c2ddf7;overflow-wrap:anywhere}
+#printPreviewPaper .print-day-timeline .timeline-time,#printDocument .print-day-timeline .timeline-time{font-size:11px;font-weight:850;color:#fff;white-space:nowrap}
+#printPreviewPaper .print-day-timeline .timeline-empty,#printDocument .print-day-timeline .timeline-empty{padding:18px 8px;text-align:center;color:#d4e9ff;font-size:11px}
+#printPreviewPaper .print-day-summary,#printDocument .print-day-summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin:9px 0}
+#printPreviewPaper .print-day-summary div,#printDocument .print-day-summary div{border:1px solid #2a83c7;border-radius:8px;background:#0a2b53;color:#d8ecff;padding:7px;font-size:9px}
+#printPreviewPaper .print-day-summary b,#printDocument .print-day-summary b{display:block;margin-top:3px;color:#fff;font-size:12px}
+#printPreviewPaper .print-day-summary div:first-child,#printPreviewPaper .print-day-summary div:nth-child(2),#printPreviewPaper .print-day-summary div:nth-child(3),#printDocument .print-day-summary div:first-child,#printDocument .print-day-summary div:nth-child(2),#printDocument .print-day-summary div:nth-child(3){background:#0b3970}
+#printPreviewPaper .print-day-summary div:nth-child(3),#printDocument .print-day-summary div:nth-child(3){grid-column:1/-1}
+@media print{
+ #printDocument .print-day-date{font-size:9pt;margin-bottom:2mm}
+ #printDocument .print-day-timeline{padding:2mm 3mm;border-radius:3mm;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+ #printDocument .print-day-timeline .timeline-event{min-height:13mm;grid-template-columns:7mm 10mm minmax(0,1fr) auto;gap:2mm;padding:1.5mm .5mm}
+ #printDocument .print-day-timeline .timeline-dot{width:3.5mm;height:3.5mm}
+ #printDocument .print-day-timeline .timeline-symbol{font-size:15pt}
+ #printDocument .print-day-timeline .timeline-copy b{font-size:8.5pt}
+ #printDocument .print-day-timeline .timeline-copy small{font-size:7.5pt}
+ #printDocument .print-day-timeline .timeline-time{font-size:8pt}
+ #printDocument .print-day-summary{grid-template-columns:repeat(2,minmax(0,1fr));gap:1.5mm;margin:2mm 0}
+ #printDocument .print-day-summary div{padding:1.5mm;font-size:7pt;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+ #printDocument .print-day-summary b{font-size:9pt}
+}
+
 /* Impression A4 du relevé d'activité */
 .print-panel{margin:12px 0;padding:14px;border:1px solid #287fc2;border-radius:16px;background:linear-gradient(145deg,#0c315d,#071a34)}
 .print-panel h3{margin:0 0 6px;font-size:16px}.print-panel p{margin:0 0 12px;color:#c2d7f2;font-size:12px}
@@ -915,7 +954,7 @@ main{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
  <h3>Imprimer mon relevé d’activité</h3>
  <p>Prépare un document A4 détaillé à joindre à tes fiches de paie : chaque journée et les totaux de la période.</p>
  <div class="print-controls">
-  <div class="field"><label for="printPeriod">Période</label><select id="printPeriod"><option value="month" selected>Mois</option><option value="year">Année</option></select></div>
+  <div class="field"><label for="printPeriod">Période</label><select id="printPeriod"><option value="day">Jour</option><option value="month" selected>Mois</option><option value="year">Année</option></select></div>
   <div class="field"><label for="printDate">Date de référence</label><input id="printDate" type="date"></div>
   <button type="button" class="print-action secondary" id="printHistoryPreviewBtn">◉ APERÇU</button>
   <button type="button" class="print-action" id="printHistoryBtn">▤ IMPRIMER</button>
@@ -1187,6 +1226,18 @@ document.querySelectorAll('[data-monthly-detail]').forEach(b=>b.addEventListener
 function closeMonthlyDetail(){$('monthlyDetailModal').classList.remove('open');$('monthlyDetailModal').setAttribute('aria-hidden','true')}
 $('monthlyDetailClose').addEventListener('click',closeMonthlyDetail);
 $('monthlyDetailModal').addEventListener('click',e=>{if(e.target===$('monthlyDetailModal'))closeMonthlyDetail()});
+function buildDayTimelineHTML(day){
+ const events=[];
+ events.push({type:'departure',symbol:'🚛',title:'Ville de départ : '+(day.startCity||'Non renseignée'),sub:'Départ de la journée',time:day.departure||''});
+ const ops=Array.isArray(day.operations)?day.operations:legacyOperations(day),mealOps=[],nightOps=[];
+ ops.forEach(o=>{if(!o||(!o.city&&!o.time))return;const meta={loading:['loading','🚚','Chargement'],trip:['trip','🚗','Trajet'],unloading:['unloading','📦','Déchargement'],pause:['meal','🍴','Pause / repas'],waiting:['waiting','⏳','Attente'],rest:['night','🛏','Repos / nuitée']}[o.type]||['loading','•','Opération'];const event={type:meta[0],symbol:meta[1],title:meta[2]+(o.city?' – '+o.city:''),sub:'Événement de la journée',time:o.time||''};if(o.type==='pause')mealOps.push(event);else if(o.type==='rest')nightOps.push(event);else events.push(event);});
+ events.push({type:'arrival',symbol:'🚛',title:'Ville d’arrivée : '+(day.endCity||'Non renseignée'),sub:'Fin de la journée',time:day.arrival||''});
+ if(mealOps.length)events.push(...mealOps);else if(Number(day.meals)>0)events.push({type:'meal',symbol:'🍴',title:'Repas',sub:Number(day.meals)+' repas saisi(s)',time:''});
+ if(nightOps.length)events.push(...nightOps);else if(Number(day.nights)>0)events.push({type:'night',symbol:'🛏',title:'Nuitée',sub:Number(day.nights)+' nuitée(s) saisie(s)',time:''});
+ if(Number(day.km)>0){const grossKm=Number(day.km)||0,deductKm=Number(day.kmDeduct)||0,netKm=countedKm(day);events.push({type:'km',symbol:'🛣️',title:'Kilométrage retenu : '+netKm.toLocaleString('fr-FR')+' km',sub:deductKm>0?grossKm.toLocaleString('fr-FR')+' km parcourus · '+deductKm.toLocaleString('fr-FR')+' km déduits':'Kilométrage de la journée',time:''});}
+ return events.length?events.map(e=>'<div class="timeline-event '+e.type+'"><div class="timeline-rail"><span class="timeline-dot"></span></div><span class="timeline-symbol">'+e.symbol+'</span><div class="timeline-copy"><b>'+esc(e.title)+'</b><small>'+esc(e.sub)+'</small></div><span class="timeline-time">'+(e.time?esc(e.time):'')+'</span></div>').join(''):'<div class="timeline-empty">Aucun détail de parcours enregistré pour cette journée. Modifie la journée pour ajouter les opérations.</div>';
+}
+
 function renderDashboardPanels(){
  const now=new Date(),month=today().slice(0,7),daysInMonth=new Date(now.getFullYear(),now.getMonth()+1,0).getDate(),weekRange=mealNightWeekRange(today()),todayRecord=days.find(x=>x.date===today());
  const monthly=days.filter(x=>inMonth(x,month)),weekDays=days.filter(x=>x.date>=weekRange.start&&x.date<=weekRange.end),drive=sum(monthly,'drive'),work=sum(monthly,'work'),total=drive+work;
@@ -1200,15 +1251,7 @@ function renderDashboardPanels(){
  const day=todayDay,timeline=$('dashboardTimeline');
  if(!day){$('dashDriveDay').textContent='Aujourd’hui : 0 h 00';$('dashWorkDay').textContent='Aujourd’hui : 0 h 00';$('dashTotal').textContent='0 h 00';$('dashTotalDay').textContent='Kilométrage : 0 km';timeline.innerHTML='<div class="timeline-empty">Aucune journée enregistrée. Appuie sur « Nouvelle intervention » pour commencer.</div>';$('dashEditDay').disabled=true;return;}
  $('dashDriveDay').textContent='Aujourd’hui : '+fmt(Number(day.drive)||0);$('dashWorkDay').textContent='Aujourd’hui : '+fmt(Number(day.work)||0);
- $('dashEditDay').disabled=false;const events=[];
- events.push({type:'departure',symbol:'🚛',title:'Ville de départ : '+(day.startCity||'Non renseignée'),sub:'Départ de la journée',time:day.departure||''});
- const ops=Array.isArray(day.operations)?day.operations:legacyOperations(day),mealOps=[],nightOps=[];
- ops.forEach(o=>{if(!o||(!o.city&&!o.time))return;const meta={loading:['loading','🚚','Chargement'],trip:['trip','🚗','Trajet'],unloading:['unloading','📦','Déchargement'],pause:['meal','🍴','Pause / repas'],waiting:['waiting','⏳','Attente'],rest:['night','🛏','Repos / nuitée']}[o.type]||['loading','•','Opération'];const event={type:meta[0],symbol:meta[1],title:meta[2]+(o.city?' – '+o.city:''),sub:'Événement de la journée',time:o.time||''};if(o.type==='pause')mealOps.push(event);else if(o.type==='rest')nightOps.push(event);else events.push(event);});
- events.push({type:'arrival',symbol:'🚛',title:'Ville d’arrivée : '+(day.endCity||'Non renseignée'),sub:'Fin de la journée',time:day.arrival||''});
- if(mealOps.length)events.push(...mealOps);else if(Number(day.meals)>0)events.push({type:'meal',symbol:'🍴',title:'Repas',sub:Number(day.meals)+' repas saisi(s)',time:''});
- if(nightOps.length)events.push(...nightOps);else if(Number(day.nights)>0)events.push({type:'night',symbol:'🛏',title:'Nuitée',sub:Number(day.nights)+' nuitée(s) saisie(s)',time:''});
- if(Number(day.km)>0){const grossKm=Number(day.km)||0,deductKm=Number(day.kmDeduct)||0,netKm=countedKm(day);events.push({type:'km',symbol:'🛣️',title:'Kilométrage retenu : '+netKm.toLocaleString('fr-FR')+' km',sub:deductKm>0?grossKm.toLocaleString('fr-FR')+' km parcourus · '+deductKm.toLocaleString('fr-FR')+' km déduits':'Kilométrage de la journée',time:''});}
- timeline.innerHTML=events.length?events.map(e=>'<div class="timeline-event '+e.type+'"><div class="timeline-rail"><span class="timeline-dot"></span></div><span class="timeline-symbol">'+e.symbol+'</span><div class="timeline-copy"><b>'+esc(e.title)+'</b><small>'+esc(e.sub)+'</small></div><span class="timeline-time">'+(e.time?esc(e.time):'')+'</span></div>').join(''):'<div class="timeline-empty">Aucun détail de parcours enregistré pour cette journée. Modifie la journée pour ajouter les opérations.</div>';
+ $('dashEditDay').disabled=false;timeline.innerHTML=buildDayTimelineHTML(day);
 }
 
 function activityPeriodValues(a){const drive=sum(a,'drive'),work=sum(a,'work');return {drive:fmt(drive),work:fmt(work),total:fmt(drive+work),km:sumCountedKm(a).toLocaleString('fr-FR')+' km'};}
@@ -1331,6 +1374,25 @@ function printPeriodRange(mode,ref){
 }
 function printHistory(showPreview=true){
  const mode=$('printPeriod').value,ref=$('printDate').value||today();
+ if(mode==='day'){
+  const day=days.find(x=>x.date===ref);
+  if(!day){alert('Aucune journée enregistrée à cette date.');return;}
+  const dateLabel=new Date(ref+'T12:00:00').toLocaleDateString('fr-FR',{weekday:'long',day:'2-digit',month:'long',year:'numeric'});
+  const dateTitle=dateLabel.charAt(0).toLocaleUpperCase('fr')+dateLabel.slice(1);
+  const drive=Number(day.drive)||0,work=Number(day.work)||0,meals=Number(day.meals)||0,nights=Number(day.nights)||0,km=countedKm(day);
+  const mealRate=storedRate(MEAL_RATE_KEY),nightRate=storedRate(NIGHT_RATE_KEY);
+  const mealAmount=mealRate!==null?meals*mealRate:null,nightAmount=nightRate!==null?nights*nightRate:null;
+  const routeAmount=mealAmount!==null&&nightAmount!==null?money(mealAmount+nightAmount):'Tarifs à renseigner';
+  const stats=[['Conduite',fmt(drive)],['Travail',fmt(work)],['Total conduite + travail',fmt(drive+work)],['Repas',meals+(mealAmount!==null?' · '+money(mealAmount):'')],['Nuitées',nights+(nightAmount!==null?' · '+money(nightAmount):'')],['Total frais de route',routeAmount],['Kilomètres parcourus',km.toLocaleString('fr-FR')+' km']];
+  const dayMarkup='<h1>Chronologie du jour</h1><div class="print-day-date">'+esc(dateTitle)+'</div><div class="print-day-timeline">'+buildDayTimelineHTML(day)+'</div><h2>Récapitulatif de la journée</h2><div class="print-day-summary">'+stats.map(v=>'<div>'+esc(v[0])+'<b>'+esc(v[1])+'</b></div>').join('')+'</div><div class="print-footer">MON CARNET ROUTIER · Relevé généré le '+esc(new Date().toLocaleString('fr-FR'))+'</div>';
+  $('printDocument').innerHTML=dayMarkup;
+  $('printPreviewPaper').innerHTML=dayMarkup;
+  $('printPreviewTitle').textContent='Aperçu de la journée';
+  if(showPreview){$('printPreviewModal').classList.add('open');$('printPreviewModal').setAttribute('aria-hidden','false');}
+  else{launchPrintFromPreview();}
+  return;
+ }
+ $('printPreviewTitle').textContent='Aperçu de mon relevé';
  const range=printPeriodRange(mode,ref),rows=days.filter(x=>x.date>=range.start&&x.date<=range.end).sort((a,b)=>a.date.localeCompare(b.date));
  if(!rows.length){alert('Aucune journée enregistrée sur cette période.');return;}
  const calendarRows=[];
