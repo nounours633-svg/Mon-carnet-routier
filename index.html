@@ -828,6 +828,18 @@ main{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
  #printDocument .print-footer{color:#555!important;border-color:#aaa!important}
 }
 
+
+/* Encadré des remarques dans l'aperçu quotidien */
+.print-day-remarks{margin:10px 0;padding:10px 12px;border:1px solid #2d83c9;border-left:4px solid #168cff;border-radius:9px;background:#0b2b52;color:#eaf4ff;break-inside:avoid;page-break-inside:avoid}
+.print-day-remarks b{display:block;font-size:12px;margin-bottom:5px;color:#fff}
+.print-day-remarks div{font-size:11px;line-height:1.45;white-space:normal;overflow-wrap:anywhere;color:#d4e7fa}
+@media print{
+ #printDocument .print-day-remarks{background:#fff!important;color:#222!important;border:1px solid #aaa!important;border-left:3px solid #777!important;padding:2mm 3mm;margin:2mm 0;-webkit-print-color-adjust:economy!important;print-color-adjust:economy!important}
+ #printDocument .print-day-remarks b,#printDocument .print-day-remarks div{color:#111!important}
+ #printDocument .print-day-remarks b{font-size:8.5pt;margin-bottom:1mm}
+ #printDocument .print-day-remarks div{font-size:8pt;line-height:1.35}
+}
+
 </style>
 </head>
 <body>
@@ -1423,7 +1435,9 @@ function printHistory(showPreview=true){
   const mealAmount=mealRate!==null?meals*mealRate:null,nightAmount=nightRate!==null?nights*nightRate:null;
   const routeAmount=mealAmount!==null&&nightAmount!==null?money(mealAmount+nightAmount):'Tarifs à renseigner';
   const stats=[['Conduite',fmt(drive)],['Travail',fmt(work)],['Total conduite + travail',fmt(drive+work)],['Repas',meals+(mealAmount!==null?' · '+money(mealAmount):'')],['Nuitées',nights+(nightAmount!==null?' · '+money(nightAmount):'')],['Total frais de route',routeAmount],['Kilomètres parcourus',km.toLocaleString('fr-FR')+' km']];
-  const dayMarkup='<h1>Chronologie du jour</h1><div class="print-day-date">'+esc(dateTitle)+'</div><div class="print-day-timeline">'+buildDayTimelineHTML(day)+'</div><h2>Récapitulatif de la journée</h2><div class="print-day-summary">'+stats.map(v=>'<div>'+esc(v[0])+'<b>'+esc(v[1])+'</b></div>').join('')+'</div><div class="print-footer">MON CARNET ROUTIER · Relevé généré le '+esc(new Date().toLocaleString('fr-FR'))+'</div>';
+  const remarksText=String(day.remarks??day.notes??'').trim();
+  const remarksMarkup='<section class="print-day-remarks"><b>Remarques de la journée</b><div>'+(remarksText?esc(remarksText).replace(/\\n/g,'<br>'):'Aucune remarque renseignée')+'</div></section>';
+  const dayMarkup='<h1>Chronologie du jour</h1><div class="print-day-date">'+esc(dateTitle)+'</div><div class="print-day-timeline">'+buildDayTimelineHTML(day)+'</div>'+remarksMarkup+'<h2>Récapitulatif de la journée</h2><div class="print-day-summary">'+stats.map(v=>'<div>'+esc(v[0])+'<b>'+esc(v[1])+'</b></div>').join('')+'</div><div class="print-footer">MON CARNET ROUTIER · Relevé généré le '+esc(new Date().toLocaleString('fr-FR'))+'</div>';
   $('printDocument').innerHTML=dayMarkup;
   $('printPreviewPaper').innerHTML=dayMarkup;
   $('printPreviewTitle').textContent='Aperçu de la journée';
