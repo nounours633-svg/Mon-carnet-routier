@@ -1221,6 +1221,26 @@ function renderHistory(){
  if(historyMode==='year'){
   const grouped=Array.from({length:12},(_,idx)=>({month:String(idx+1).padStart(2,'0'),items:matches.filter(x=>x.date.slice(5,7)===String(idx+1).padStart(2,'0'))})).filter(g=>g.items.length);
   $('entries').innerHTML=grouped.length?grouped.map(g=>'<button type="button" class="day history-month-summary" data-history-month="'+year+'-'+g.month+'"><div class="daytop"><div class="daydate">'+monthNames[Number(g.month)-1].replace(/^./,c=>c.toLocaleUpperCase('fr'))+' '+year+'</div><b>'+g.items.length+' journée(s) ›</b></div><div class="chips">'+periodStats(g.items).filter(v=>v[1]!=='Journées').map(v=>'<span class="chip">'+esc(v[1])+' · '+esc(v[2])+'</span>').join('')+'</div></button>').join(''):'<div class="panel empty">Aucun mois avec activité enregistré pour cette année.</div>';
+ }else if(historyMode==='month'){
+  const weeks={};
+  matches.forEach(x=>{
+   const monday=new Date(x.date+'T12:00:00');
+   monday.setDate(monday.getDate()-((monday.getDay()+6)%7));
+   const key=iso(monday);
+   if(!weeks[key])weeks[key]=[];
+   weeks[key].push(x);
+  });
+  const weekHTML=Object.keys(weeks).sort().map(key=>{
+   const monday=new Date(key+'T12:00:00'),sunday=new Date(monday);
+   sunday.setDate(sunday.getDate()+6);
+   const weekLabel='Semaine du '+labelDate(iso(monday))+' au '+labelDate(iso(sunday));
+   const rows=weeks[key].map(x=>{
+    const star=isStarDay(x)?' <span class="history-day-star" aria-label="Plus de 9 heures de conduite">*</span>':'';
+    return '<div class="history-month-day-group">'+dayHTML(x).replace('</div>',star+'</div>');
+   }).join('');
+   return '<section class="history-week-group"><div class="history-week-title">'+weekLabel+'</div>'+rows+'</section>';
+  }).join('');
+  $('entries').innerHTML=matches.length?weekHTML:'<div class="panel empty">Aucune journée trouvée pour cette période.</div>';
  }else{
   $('entries').innerHTML=matches.map(dayHTML).join('')||'<div class="panel empty">Aucune journée trouvée pour cette période.</div>';
  }
