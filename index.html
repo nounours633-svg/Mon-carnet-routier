@@ -789,6 +789,45 @@ main{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
 }
 /* Masquer les commandes du bandeau supérieur : accès déjà disponibles dans la navigation */
 .banner-menu-button,.banner-settings-button{display:none!important;visibility:hidden!important;pointer-events:none!important}
+
+/* Impression quotidienne économique en encre : blanc, noir et bordures grises.
+   Les couleurs restent inchangées dans l'aperçu à l'écran. */
+@media print{
+ #printDocument .print-day-timeline{
+  background:#fff!important;color:#111!important;border:1px solid #999!important;
+  -webkit-print-color-adjust:economy!important;print-color-adjust:economy!important
+ }
+ #printDocument .print-day-timeline .timeline-event{
+  background:#fff!important;border-bottom:1px solid #c8cdd3!important
+ }
+ #printDocument .print-day-timeline .timeline-copy b,
+ #printDocument .print-day-timeline .timeline-time{color:#111!important}
+ #printDocument .print-day-timeline .timeline-copy small,
+ #printDocument .print-day-timeline .timeline-empty{color:#444!important}
+ #printDocument .print-day-timeline .timeline-rail:before{background:#aeb5bd!important}
+ #printDocument .print-day-timeline .timeline-dot{
+  box-shadow:none!important;border:2px solid currentColor!important;
+  -webkit-print-color-adjust:exact;print-color-adjust:exact
+ }
+ #printDocument .print-day-timeline .departure .timeline-dot,
+ #printDocument .print-day-timeline .loading .timeline-dot{background:#28b765!important;border-color:#28b765!important}
+ #printDocument .print-day-timeline .unloading .timeline-dot{background:#ed9a22!important;border-color:#ed9a22!important}
+ #printDocument .print-day-timeline .arrival .timeline-dot{background:#268ee5!important;border-color:#268ee5!important}
+ #printDocument .print-day-timeline .meal .timeline-dot{background:#a64bd7!important;border-color:#a64bd7!important}
+ #printDocument .print-day-timeline .night .timeline-dot{background:#38a9d8!important;border-color:#38a9d8!important}
+ #printDocument .print-day-timeline .timeline-symbol{color:#111!important}
+ #printDocument .print-day-summary div,
+ #printDocument .print-day-summary div:first-child,
+ #printDocument .print-day-summary div:nth-child(2),
+ #printDocument .print-day-summary div:nth-child(3){
+  background:#fff!important;color:#222!important;border:1px solid #aaa!important;
+  -webkit-print-color-adjust:economy!important;print-color-adjust:economy!important
+ }
+ #printDocument .print-day-summary b{color:#111!important}
+ #printDocument .print-day-date{color:#111!important}
+ #printDocument .print-footer{color:#555!important;border-color:#aaa!important}
+}
+
 </style>
 </head>
 <body>
