@@ -556,6 +556,7 @@ main{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
 
 .rate-star{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;margin-top:7px;border:1px solid #55baff;border-radius:50%;background:#0a3b69;color:#fff;font-size:19px;font-weight:900;line-height:1;cursor:pointer}.rate-star:active{transform:scale(.94)}.meal-night-date-row{display:flex;align-items:center;gap:8px;margin:0 0 10px}.meal-night-date-row .quick-modal-date{margin:0;flex:1}.meal-night-rate-shortcuts{display:flex;align-items:center;gap:4px}.meal-night-rate-shortcuts .rate-star{width:22px;height:22px;margin:0;font-size:14px}.rate-star.rate-star-inline{width:21px;height:21px;margin:0 0 0 5px;font-size:14px;vertical-align:middle}#rateEditModal .rate-input{box-sizing:border-box;width:100%;min-height:46px;padding:10px 12px;border:1px solid #347db8;border-radius:12px;background:#061a32;color:#fff;font:inherit}
 .history-day-star{display:inline-block;margin-left:4px;color:#ffd45a;font-size:15px;font-weight:900;line-height:1;text-shadow:0 0 7px #ffd45a55;vertical-align:1px}
+.history-week-group{margin:0 0 14px;padding:0 0 8px;border-bottom:1px solid rgba(120,160,210,.28)}.history-week-group:last-child{border-bottom:0;margin-bottom:0}.history-week-title{position:sticky;top:0;z-index:1;margin:0 0 7px;padding:9px 11px;border-radius:9px;background:rgba(8,124,255,.13);color:var(--blue,#087cff);font-size:12px;font-weight:800;letter-spacing:.35px;text-transform:uppercase}
 </style>
 
 <style id="dashboard-capture-layout">
@@ -1292,7 +1293,22 @@ function openHistoryMonth(monthKey){
  const label=new Date(monthKey+'-15T12:00:00').toLocaleDateString('fr-FR',{month:'long',year:'numeric'});
  $('monthlyDetailTitle').textContent='Jours du mois';
  $('monthlyDetailSubtitle').textContent=label.charAt(0).toLocaleUpperCase('fr')+label.slice(1)+' · '+items.length+' journée(s)';
- $('monthlyDetailList').innerHTML=items.length?items.map(x=>'<button type="button" class="monthly-detail-row history-month-day" data-history-date="'+x.date+'"><b>'+labelDate(x.date)+(isStarDay(x)?' <span class="history-day-star" aria-label="Plus de 9 heures de conduite">*</span>':'')+'</b><span>Conduite '+fmt(Number(x.drive)||0)+' · Travail '+fmt(Number(x.work)||0)+' · '+countedKm(x).toLocaleString('fr-FR')+' km ›</span></button>').join(''):'<div class="monthly-detail-empty">Aucune journée enregistrée pour ce mois.</div>';
+ const weeks={};
+ items.forEach(x=>{
+  const monday=new Date(x.date+'T12:00:00');
+  monday.setDate(monday.getDate()-((monday.getDay()+6)%7));
+  const key=iso(monday);
+  if(!weeks[key])weeks[key]=[];
+  weeks[key].push(x);
+ });
+ const weekHTML=Object.keys(weeks).sort().map(key=>{
+  const monday=new Date(key+'T12:00:00'),sunday=new Date(monday);
+  sunday.setDate(sunday.getDate()+6);
+  const weekLabel='Semaine du '+labelDate(iso(monday))+' au '+labelDate(iso(sunday));
+  const dayHTML=weeks[key].map(x=>'<button type="button" class="monthly-detail-row history-month-day" data-history-date="'+x.date+'"><b>'+labelDate(x.date)+(isStarDay(x)?' <span class="history-day-star" aria-label="Plus de 9 heures de conduite">*</span>':'')+'</b><span>Conduite '+fmt(Number(x.drive)||0)+' · Travail '+fmt(Number(x.work)||0)+' · '+countedKm(x).toLocaleString('fr-FR')+' km ›</span></button>').join('');
+  return '<section class="history-week-group"><div class="history-week-title">'+weekLabel+'</div>'+dayHTML+'</section>';
+ }).join('');
+ $('monthlyDetailList').innerHTML=items.length?weekHTML:'<div class="monthly-detail-empty">Aucune journée enregistrée pour ce mois.</div>';
  $('monthlyDetailModal').classList.add('open');$('monthlyDetailModal').setAttribute('aria-hidden','false');
 }
 function openMonthlyDetail(kind){
