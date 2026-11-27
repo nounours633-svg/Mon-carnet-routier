@@ -1634,12 +1634,26 @@ if ('serviceWorker' in navigator && location.protocol.startsWith('http')) { wind
 (function(){
  const modal=document.createElement('div');modal.id='numericTimePicker';modal.innerHTML='<section class="ntp-card" role="dialog" aria-modal="true" aria-labelledby="ntpTitle"><div class="ntp-head" id="ntpTitle">Sélectionner une heure</div><div class="ntp-body"><div class="ntp-fields"><div><label for="ntpHours">Heures</label><input id="ntpHours" class="ntp-value active" type="text" inputmode="none" readonly value="00"></div><div><label for="ntpMinutes">Minutes</label><input id="ntpMinutes" class="ntp-value" type="text" inputmode="none" readonly value="00"></div></div><div class="ntp-keys"><button type="button" data-k="1">1</button><button type="button" data-k="2">2</button><button type="button" data-k="3">3</button><button type="button" data-k="4">4</button><button type="button" data-k="5">5</button><button type="button" data-k="6">6</button><button type="button" data-k="7">7</button><button type="button" data-k="8">8</button><button type="button" data-k="9">9</button><button type="button" data-k="del" aria-label="Effacer">⌫</button><button type="button" data-k="0">0</button><button type="button" class="primary" data-k="ok">OK</button></div><div class="ntp-actions"><button type="button" data-k="cancel">Annuler</button><button type="button" data-k="save">Valider</button></div></div></section>';
  document.body.appendChild(modal);
- const hh=modal.querySelector('#ntpHours'),mm=modal.querySelector('#ntpMinutes');let target=null,part='h',h='00',m='00';
+ const hh=modal.querySelector('#ntpHours'),mm=modal.querySelector('#ntpMinutes');let target=null,part='h',h='00',m='00',freshH=true,freshM=true;
  function paint(){hh.value=h;mm.value=m;hh.classList.toggle('active',part==='h');mm.classList.toggle('active',part==='m');}
  function close(){modal.classList.remove('open');document.body.classList.remove('ntp-open');if(target)target.focus({preventScroll:true});target=null;}
- function open(input){if(!input||!input.isConnected)return;target=input;const v=String(input.value||'').match(/^(\\d{1,3}):(\\d{2})$/);h=v?String(v[1]).padStart(2,'0'):'00';m=v?v[2]:'00';part='h';paint();modal.classList.add('open');document.body.classList.add('ntp-open');}
- function put(k){if(k==='cancel'){close();return}if(k==='save'||k==='ok'){if(Number(m)>59){m='59';paint();return}if(target){target.value=String(Number(h)).padStart(2,'0')+':'+m;target.dispatchEvent(new Event('input',{bubbles:true}));target.dispatchEvent(new Event('change',{bubbles:true}));}close();return}let v=part==='h'?h:m;if(k==='del')v=v==='00'?'00':('0'+v.slice(0,-1)).slice(-2);else v=(v+k).slice(-2);if(part==='h')h=v;else m=v;paint();if(part==='h'&&h.length===2)part='m';paint();}
- modal.addEventListener('click',e=>{const b=e.target.closest('[data-k]');if(b){put(b.dataset.k);return}if(e.target===modal)close();});hh.addEventListener('click',()=>{part='h';paint()});mm.addEventListener('click',()=>{part='m';paint()});
+ function open(input){if(!input||!input.isConnected)return;target=input;const v=String(input.value||'').match(/^(\\d{1,3}):(\\d{2})$/);h=v?String(v[1]).padStart(2,'0'):'00';m=v?v[2]:'00';part='h';freshH=true;freshM=true;paint();modal.classList.add('open');document.body.classList.add('ntp-open');}
+ function put(k){
+  if(k==='cancel'){close();return}
+  if(k==='save'||k==='ok'){
+   h=String(h||'0').padStart(2,'0');m=String(m||'0').padStart(2,'0');
+   if(Number(h)>23||Number(m)>59){alert('Saisis une heure valide : heures de 00 à 23 et minutes de 00 à 59.');return}
+   if(target){target.value=h+':'+m;target.dispatchEvent(new Event('input',{bubbles:true}));target.dispatchEvent(new Event('change',{bubbles:true}));}close();return;
+  }
+  let v=part==='h'?h:m, fresh=part==='h'?freshH:freshM;
+  if(k==='del'){v=fresh?'00':(v.length>1?'0'+v.slice(0,-1):'00');if(part==='h')freshH=true;else freshM=true;}
+  else {v=fresh?k:(v+k).slice(-2);if(part==='h')freshH=false;else freshM=false;}
+  if(part==='h')h=v;else m=v;
+  if(part==='h'&&!fresh&&v.length===2){part='m';freshM=true;}
+  paint();
+ }
+ modal.addEventListener('click',e=>{const b=e.target.closest('[data-k]');if(b){put(b.dataset.k);return}if(e.target===modal)close();});
+ hh.addEventListener('click',()=>{part='h';freshH=true;paint()});mm.addEventListener('click',()=>{part='m';freshM=true;paint()});
  function convert(root){(root||document).querySelectorAll('input[type="time"]').forEach(input=>{input.type='text';input.readOnly=true;input.setAttribute('inputmode','none');input.setAttribute('autocomplete','off');input.setAttribute('aria-haspopup','dialog');input.addEventListener('click',()=>open(input));input.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();open(input)}});});}
  convert(document);new MutationObserver(records=>records.forEach(r=>r.addedNodes.forEach(n=>{if(n.nodeType===1)convert(n)}))).observe(document.body,{childList:true,subtree:true});
  document.addEventListener('focusin',e=>{if(e.target.matches('input[type="time"]'))open(e.target)});
